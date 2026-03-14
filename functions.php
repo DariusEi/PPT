@@ -804,17 +804,68 @@ html body.pt101 .wc-block-gateway-container {
   color: var(--text-hi) !important;
 }
 
-/* ── 11. TERMS / PRIVACY ───────────────────────────────────── */
-html body.pt101 .wc-block-checkout__terms p,
-html body.pt101 .wc-block-checkout__privacy-policy p {
-  color: var(--text-low) !important;
-  font-size: .78rem !important;
-  line-height: 1.55 !important;
+/* ── 11. TERMS / PRIVACY (default WC text — hidden, replaced by custom checkboxes) ── */
+html body.pt101 .wc-block-checkout__terms,
+html body.pt101 .wc-block-checkout__privacy-policy {
+  display: none !important;
 }
-html body.pt101 .wc-block-checkout__terms a,
-html body.pt101 .wc-block-checkout__privacy-policy a {
+
+/* ── CONSENT CHECKBOXES ────────────────────────────────────── */
+html body.pt101 .pt101-consent {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: var(--r-lg) !important;
+  padding: 24px 28px !important;
+  margin-bottom: 20px !important;
+}
+html body.pt101 .pt101-consent__item {
+  display: flex !important;
+  gap: 14px !important;
+  align-items: flex-start !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin-bottom: 20px !important;
+}
+html body.pt101 .pt101-consent__item:last-child {
+  margin-bottom: 0 !important;
+}
+html body.pt101 .pt101-consent__item input[type="checkbox"] {
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin-top: 2px !important;
+  accent-color: var(--accent) !important;
+  border: 1.5px solid var(--border-mid) !important;
+  border-radius: 4px !important;
+  background: var(--bg-2) !important;
+  cursor: pointer !important;
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+}
+html body.pt101 .pt101-consent__item span {
+  color: var(--text-mid) !important;
+  font-size: .85rem !important;
+  line-height: 1.6 !important;
+}
+html body.pt101 .pt101-consent__item strong {
+  color: var(--text-hi) !important;
+  font-weight: 700 !important;
+}
+html body.pt101 .pt101-consent__item a {
   color: var(--accent) !important;
-  opacity: .8;
+  text-decoration: underline !important;
+}
+html body.pt101 .pt101-consent__item a:hover {
+  color: #fff !important;
+}
+/* Error state when required checkbox not checked */
+html body.pt101 .pt101-consent__error {
+  outline: 2px solid #e05a5a !important;
+  outline-offset: 8px !important;
+  border-radius: 4px !important;
+}
+html body.pt101 .pt101-consent__error input[type="checkbox"] {
+  outline: 2px solid #e05a5a !important;
 }
 
 /* ── 12. PLACE ORDER ───────────────────────────────────────── */
@@ -1152,46 +1203,96 @@ html body.pt101 .woocommerce-order-received h1 {
 }, 999 );
 
 /* ── CHECKOUT PAGE: JS ENHANCEMENT ─────────────────────────────
- * Hides empty checkout steps and cleans up the layout.
+ * Hides empty checkout steps, injects consent checkboxes.
  */
 add_action( 'wp_footer', function () {
     if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) return;
     if ( is_wc_endpoint_url( 'order-received' ) ) return;
+    $terms_url   = get_permalink( wc_terms_and_conditions_page_id() ) ?: home_url( '/terms-and-conditions' );
+    $privacy_url = get_privacy_policy_url() ?: home_url( '/privacy-policy' );
     ?>
 <script>
 (function(){
+  var TERMS_URL   = <?php echo wp_json_encode( esc_url( $terms_url ) ); ?>;
+  var PRIVACY_URL = <?php echo wp_json_encode( esc_url( $privacy_url ) ); ?>;
+
   function cleanup(){
-    /* Hide empty checkout steps (shipping/payment not needed for free products) */
+    /* Hide empty checkout steps */
     document.querySelectorAll('.wc-block-components-checkout-step').forEach(function(step){
       var content = step.querySelector('.wc-block-components-checkout-step__content');
-      if(content && content.children.length === 0){
-        step.style.display = 'none';
-      }
-      /* Also hide if content only has empty/hidden children */
-      if(content){
-        var visible = Array.from(content.children).filter(function(c){
-          var s = window.getComputedStyle(c);
-          return s.display !== 'none' && s.visibility !== 'hidden' && c.offsetHeight > 0;
-        });
-        if(visible.length === 0) step.style.display = 'none';
-      }
+      if(!content) return;
+      var visible = Array.from(content.children).filter(function(c){
+        var s = window.getComputedStyle(c);
+        return s.display !== 'none' && s.visibility !== 'hidden' && c.offsetHeight > 0;
+      });
+      if(visible.length === 0) step.style.display = 'none';
     });
 
-    /* Hide the address card "saved address" view, force the edit form open */
-    var cards = document.querySelectorAll('.wc-block-components-address-card');
-    cards.forEach(function(card){
-      var editBtn = card.querySelector('button, a');
-      if(editBtn) editBtn.click();
-    });
+    /* Inject consent checkboxes — replace the default terms text */
+    if(document.getElementById('pt101-consent')) return;
+
+    var termsBlock = document.querySelector('.wc-block-checkout__terms');
+    var privacyBlock = document.querySelector('.wc-block-checkout__privacy-policy');
+    var target = termsBlock || privacyBlock;
+    if(!target) {
+      /* fallback: insert before the actions row */
+      target = document.querySelector('.wc-block-checkout__actions_row')
+            || document.querySelector('.wc-block-checkout__actions');
+    }
+    if(!target) return;
+
+    /* Hide the default WooCommerce terms/privacy text */
+    if(termsBlock) termsBlock.style.display = 'none';
+    if(privacyBlock) privacyBlock.style.display = 'none';
+
+    var consent = document.createElement('div');
+    consent.id = 'pt101-consent';
+    consent.className = 'pt101-consent';
+    consent.innerHTML = [
+      '<label class="pt101-consent__item pt101-consent__item--required">',
+        '<input type="checkbox" id="pt101-terms-agree" required>',
+        '<span>By signing up, you confirm that you have read and agree to Prop Trading 101\'s ',
+          '<a href="' + TERMS_URL + '" target="_blank">Terms &amp; Conditions</a> and ',
+          '<a href="' + PRIVACY_URL + '" target="_blank">Privacy Policy</a>. ',
+          'These explain how we operate and how your personal data is processed and handled. ',
+          '<strong>(Required)</strong>',
+        '</span>',
+      '</label>',
+      '<label class="pt101-consent__item">',
+        '<input type="checkbox" id="pt101-marketing-agree" name="pt101_marketing_consent" value="1">',
+        '<span>I provide my consent to receive marketing communications such as ',
+          'coupons, news, promotions and product updates via electronic channels ',
+          '(e.g. email, Whatsapp, or SMS messages). I understand I can withdraw ',
+          'my consent at any time by unsubscribing from any such communication ',
+          'or by updating my profile page preferences.</span>',
+      '</label>'
+    ].join('');
+
+    target.parentNode.insertBefore(consent, target);
+
+    /* Prevent form submission if required checkbox is unchecked */
+    var submitBtn = document.querySelector('.wc-block-components-checkout-place-order-button')
+                 || document.querySelector('#place_order');
+    if(submitBtn && !submitBtn._pt101bound){
+      submitBtn._pt101bound = true;
+      submitBtn.addEventListener('click', function(e){
+        var cb = document.getElementById('pt101-terms-agree');
+        if(cb && !cb.checked){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          cb.closest('.pt101-consent__item').classList.add('pt101-consent__error');
+          cb.focus();
+          return false;
+        }
+      }, true);
+    }
   }
 
-  /* Run on DOMContentLoaded and after WC blocks render (delayed) */
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', function(){ setTimeout(cleanup, 600); });
   } else {
     setTimeout(cleanup, 600);
   }
-  /* Also observe for late-rendered blocks */
   var obs = new MutationObserver(function(){ setTimeout(cleanup, 200); });
   var main = document.querySelector('.wc-block-checkout__main');
   if(main) obs.observe(main, {childList:true, subtree:true});
@@ -1200,6 +1301,23 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 999 );
+
+/* ── Validate terms consent on server side ────────────────────── */
+add_action( 'woocommerce_checkout_process', function () {
+    if ( empty( $_POST['pt101_terms_consent'] ) ) {
+        wc_add_notice( __( 'Please accept the Terms & Conditions and Privacy Policy to proceed.', 'prop-trading-101' ), 'error' );
+    }
+});
+/* Save marketing consent as order/user meta */
+add_action( 'woocommerce_checkout_update_order_meta', function ( $order_id ) {
+    if ( ! empty( $_POST['pt101_marketing_consent'] ) ) {
+        update_post_meta( $order_id, '_pt101_marketing_consent', 'yes' );
+        $order = wc_get_order( $order_id );
+        if ( $order && $order->get_customer_id() ) {
+            update_user_meta( $order->get_customer_id(), 'pt101_marketing_consent', 'yes' );
+        }
+    }
+});
 
 /* ── THANK YOU PAGE: JS ENHANCEMENT ────────────────────────────
  * Injects success icon + "What's Next" section on order-received.
