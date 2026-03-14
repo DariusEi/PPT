@@ -634,6 +634,26 @@ html body.pt101 .wc-block-components-checkout-step:last-child {
   margin-bottom: 0 !important;
 }
 
+/* ── Address card (saved address summary view) ─────────────── */
+html body.pt101 .wc-block-components-address-card,
+html body.pt101 .wc-block-components-address-card * {
+  color: var(--text-hi) !important;
+}
+html body.pt101 .wc-block-components-address-card {
+  background: var(--bg-2) !important;
+  border: 1px solid var(--border-mid) !important;
+  border-radius: var(--r-sm) !important;
+  padding: 16px !important;
+}
+html body.pt101 .wc-block-components-address-card__address-info {
+  color: var(--text-mid) !important;
+}
+html body.pt101 .wc-block-components-address-card__edit {
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+  font-size: .85rem !important;
+}
+
 /* ── 8. HIDE EMPTY / UNNECESSARY SECTIONS ──────────────────── */
 html body.pt101 .wc-block-checkout__add-note,
 html body.pt101 .woocommerce-additional-fields { display: none !important; }
@@ -801,6 +821,9 @@ html body.pt101 .wc-block-checkout__actions {
   border: 1px solid var(--border-dark) !important;
   border-radius: var(--r-lg) !important;
   border-top: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
 }
 html body.pt101 .wc-block-components-checkout-place-order-button,
 html body.pt101 #place_order {
@@ -833,9 +856,8 @@ html body.pt101 .wc-block-components-checkout-place-order-button:active,
 html body.pt101 #place_order:active {
   transform: translateY(0) !important;
 }
-/* Trust line */
-html body.pt101 .wc-block-checkout__actions_row::after,
-html body.pt101 .wc-block-checkout__actions::after {
+/* Trust line — only on actions_row to avoid duplication */
+html body.pt101 .wc-block-checkout__actions_row::after {
   content: 'Secure checkout · SSL encrypted · 30-day guarantee' !important;
   display: block !important;
   text-align: center !important;
@@ -843,6 +865,10 @@ html body.pt101 .wc-block-checkout__actions::after {
   color: var(--text-low) !important;
   margin-top: 10px !important;
   letter-spacing: .02em !important;
+}
+html body.pt101 .wc-block-checkout__actions::after {
+  content: none !important;
+  display: none !important;
 }
 
 /* ── 13. NOTICES ────────────────────────────────────────────── */
