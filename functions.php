@@ -337,7 +337,7 @@ function pt101_ensure_course_pages() {
 }
 add_action( 'after_switch_theme', 'pt101_ensure_course_pages' );
 add_action( 'init', function () {
-    if ( get_option( 'pt101_course_pages_v5' ) ) return;
+    if ( get_option( 'pt101_course_pages_v6' ) ) return;
     pt101_ensure_course_pages();
-    update_option( 'pt101_course_pages_v5', '1' );
+    update_option( 'pt101_course_pages_v6', '1' );
 }, 20 );
