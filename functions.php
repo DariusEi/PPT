@@ -408,13 +408,34 @@ html body.pt101 .wp-block-group__inner-container { background:transparent!import
 
 /* ══ 2. LAYOUT ═════════════════════════════════════════════════ */
 html body.pt101 .woocommerce,
-html body.pt101 .wp-block-woocommerce-checkout { max-width:1160px; margin:0 auto; padding:64px 28px 100px!important; }
-html body.pt101 .wc-block-checkout__main { padding-right:32px!important; }
+html body.pt101 .wp-block-woocommerce-checkout { max-width:1160px; margin:0 auto; padding:48px 28px 80px!important; }
+html body.pt101 .wc-block-checkout__main { padding-right:40px!important; }
+
+/* Address form: prevent field overlap with consistent grid gap */
+html body.pt101 .wc-block-components-address-form {
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:16px 20px!important;
+  align-items:start!important;
+}
+html body.pt101 .wc-block-components-address-form > * { grid-column:span 1!important; }
+html body.pt101 .wc-block-components-address-form .wc-block-components-country-input,
+html body.pt101 .wc-block-components-address-form [id$="address_1"],
+html body.pt101 .wc-block-components-address-form [id$="address_2"],
+html body.pt101 .wc-block-components-address-form [id$="company"] { grid-column:span 2!important; }
+
+/* Each field wrapper: isolate stacking so floating labels don't bleed */
+html body.pt101 .wc-block-components-text-input,
+html body.pt101 .wc-block-components-select,
+html body.pt101 .wc-block-components-country-input,
+html body.pt101 .wc-block-components-state-input {
+  position:relative!important;
+  z-index:0!important;
+  isolation:isolate!important;
+  margin:0!important;
+}
 
 /* ══ 3. FORM FIELDS ════════════════════════════════════════════ */
-html body.pt101 .wc-block-components-text-input,
-html body.pt101 .wc-block-components-select { position:relative!important; }
-
 html body.pt101 .wc-block-components-text-input input,
 html body.pt101 .wc-block-components-text-input textarea,
 html body.pt101 .wc-block-components-select select,
@@ -435,13 +456,16 @@ html body.pt101 textarea {
   font-family:inherit!important;
   font-size:.97rem!important;
   line-height:1.4!important;
+  height:54px!important;
   box-shadow:none!important;
   outline:none!important;
   transition:border-color .18s,box-shadow .18s!important;
   -webkit-appearance:none!important;
   appearance:none!important;
   width:100%!important;
+  box-sizing:border-box!important;
 }
+html body.pt101 .wc-block-components-text-input textarea { height:auto!important; min-height:80px!important; }
 html body.pt101 .wc-block-components-text-input input:focus,
 html body.pt101 .wc-block-components-select select:focus,
 html body.pt101 input[type="text"]:focus,
@@ -451,6 +475,7 @@ html body.pt101 select:focus,
 html body.pt101 textarea:focus {
   border-color:#7c6ef5!important;
   box-shadow:0 0 0 3px rgba(124,110,245,.15)!important;
+  outline:none!important;
 }
 html body.pt101 input::placeholder,
 html body.pt101 textarea::placeholder { color:transparent!important; }
@@ -464,7 +489,7 @@ html body.pt101 select {
 }
 html body.pt101 option { background:#1a1d2e!important; color:#f0f0f5!important; }
 
-/* floating labels — default (label acts as placeholder inside field) */
+/* floating labels — default */
 html body.pt101 .wc-block-components-text-input label,
 html body.pt101 .wc-block-components-select label,
 html body.pt101 .wc-block-components-country-input label,
@@ -473,27 +498,31 @@ html body.pt101 .wc-block-components-state-input label {
   top:50%!important;
   left:17px!important;
   transform:translateY(-50%)!important;
-  color:rgba(240,240,245,.32)!important;
+  color:rgba(240,240,245,.38)!important;
   font-size:.88rem!important;
   font-weight:400!important;
   letter-spacing:.01em!important;
   text-transform:none!important;
   pointer-events:none!important;
-  transition:top .15s,font-size .15s,transform .15s!important;
+  transition:top .15s,font-size .15s,transform .15s,color .15s!important;
   white-space:nowrap!important;
+  z-index:1!important;
+  line-height:1!important;
 }
-/* floated (field has value or is focused) */
+/* floated */
 html body.pt101 .wc-block-components-text-input.is-active label,
-html body.pt101 .wc-block-components-select.is-active label {
-  top:9px!important;
+html body.pt101 .wc-block-components-select.is-active label,
+html body.pt101 .wc-block-components-country-input.is-active label,
+html body.pt101 .wc-block-components-state-input.is-active label {
+  top:10px!important;
   transform:none!important;
   font-size:.68rem!important;
-  color:rgba(240,240,245,.38)!important;
+  color:rgba(240,240,245,.4)!important;
   letter-spacing:.06em!important;
   text-transform:uppercase!important;
 }
 
-/* non-floating labels (checkboxes, payment, etc.) */
+/* non-floating labels */
 html body.pt101 .wc-block-components-checkbox .wc-block-components-checkbox__label,
 html body.pt101 .wc-block-components-checkbox__label {
   color:rgba(240,240,245,.55)!important;
@@ -511,19 +540,20 @@ html body.pt101 .woocommerce h2,
 html body.pt101 .woocommerce h3 {
   color:#f0f0f5!important;
   font-family:inherit!important;
-  font-size:1.08rem!important;
+  font-size:1.1rem!important;
   font-weight:700!important;
   letter-spacing:-.01em!important;
-  margin-bottom:18px!important;
+  margin-bottom:20px!important;
 }
 html body.pt101 .wc-block-components-checkout-step__number {
   background:#7c6ef5!important; color:#fff!important; border:none!important;
-  width:24px!important; height:24px!important; font-size:.75rem!important;
+  width:26px!important; height:26px!important; font-size:.75rem!important;
+  flex-shrink:0!important;
 }
 html body.pt101 .wc-block-components-checkout-step {
   background:transparent!important;
   border-bottom:1px solid rgba(255,255,255,0.06)!important;
-  padding-bottom:28px!important; margin-bottom:28px!important;
+  padding-bottom:32px!important; margin-bottom:32px!important;
 }
 html body.pt101 .wc-block-components-checkout-step:last-child { border-bottom:none!important; }
 
@@ -532,21 +562,23 @@ html body.pt101 .wc-block-checkout__add-note,
 html body.pt101 .woocommerce-additional-fields { display:none!important; }
 
 /* ══ 6. ORDER SUMMARY SIDEBAR ══════════════════════════════════ */
+html body.pt101 .wc-block-checkout__sidebar { position:sticky!important; top:88px!important; }
 html body.pt101 .wc-block-checkout__sidebar,
 html body.pt101 .wp-block-woocommerce-checkout-order-summary-block {
   background:#13162a!important;
-  border:1.5px solid rgba(255,255,255,0.07)!important;
-  border-radius:16px!important;
-  padding:24px!important;
+  border:1.5px solid rgba(255,255,255,0.08)!important;
+  border-radius:18px!important;
+  padding:28px!important;
   overflow:hidden!important;
 }
 html body.pt101 .wc-block-components-order-summary { background:transparent!important; }
 html body.pt101 .wc-block-components-order-summary__title,
 html body.pt101 .wc-block-checkout__sidebar h2 {
-  color:#f0f0f5!important; font-size:1rem!important; font-weight:700!important;
+  color:#f0f0f5!important; font-size:1.05rem!important; font-weight:700!important; margin-bottom:20px!important;
 }
+html body.pt101 .wc-block-components-order-summary-item { padding:16px 0!important; }
 html body.pt101 .wc-block-components-order-summary-item__name {
-  color:#f0f0f5!important; font-size:.95rem!important; font-weight:600!important; line-height:1.3!important;
+  color:#f0f0f5!important; font-size:.95rem!important; font-weight:600!important; line-height:1.35!important;
 }
 html body.pt101 .wc-block-components-order-summary-item__description {
   color:rgba(240,240,245,.45)!important; font-size:.78rem!important; line-height:1.4!important;
@@ -555,31 +587,34 @@ html body.pt101 .wc-block-components-order-summary-item__description {
 html body.pt101 .wc-block-components-order-summary-item__quantity {
   background:#7c6ef5!important; color:#fff!important;
   border:2px solid #0d0f1a!important; border-radius:50%!important;
+  font-size:.72rem!important; font-weight:700!important;
+  min-width:20px!important; min-height:20px!important;
 }
 html body.pt101 .wc-block-components-order-summary-item__total-price {
   color:#f0f0f5!important; font-weight:600!important;
 }
 /* totals */
-html body.pt101 .wc-block-components-totals-item { border-top:1px solid rgba(255,255,255,0.07)!important; padding:10px 0!important; }
+html body.pt101 .wc-block-components-totals-item { border-top:1px solid rgba(255,255,255,0.07)!important; padding:12px 0!important; }
 html body.pt101 .wc-block-components-totals-item__label,
 html body.pt101 .wc-block-components-totals-item__value,
-html body.pt101 .wc-block-components-totals-item span { color:rgba(240,240,245,.72)!important; font-size:.9rem!important; }
-html body.pt101 .wc-block-components-totals-footer-item { border-top:1.5px solid rgba(255,255,255,0.13)!important; padding-top:14px!important; }
+html body.pt101 .wc-block-components-totals-item span { color:rgba(240,240,245,.7)!important; font-size:.9rem!important; }
+html body.pt101 .wc-block-components-totals-footer-item { border-top:2px solid rgba(255,255,255,0.12)!important; padding-top:16px!important; margin-top:4px!important; }
 html body.pt101 .wc-block-components-totals-footer-item .wc-block-components-totals-item__label,
 html body.pt101 .wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
-  color:#f0f0f5!important; font-size:1.05rem!important; font-weight:700!important;
+  color:#f0f0f5!important; font-size:1.08rem!important; font-weight:700!important;
 }
 /* coupon */
 html body.pt101 .wc-block-components-totals-coupon details > summary { color:#7c6ef5!important; font-size:.85rem!important; cursor:pointer; }
 html body.pt101 .wc-block-components-totals-coupon__button {
   background:#7c6ef5!important; color:#fff!important; border:none!important; border-radius:8px!important; font-weight:700!important;
 }
+html body.pt101 .wc-block-components-totals-coupon input { height:44px!important; padding:0 14px!important; }
 
 /* ══ 7. PAYMENT BLOCK ══════════════════════════════════════════ */
 html body.pt101 .wc-block-components-payment-methods,
 html body.pt101 .wc-block-checkout__payment-method {
   background:#13162a!important; border:1.5px solid rgba(255,255,255,0.07)!important;
-  border-radius:12px!important; padding:18px!important;
+  border-radius:12px!important; padding:20px!important;
 }
 html body.pt101 .wc-block-components-payment-method-label__name,
 html body.pt101 .wc-block-components-radio-control__label { color:#f0f0f5!important; font-size:.93rem!important; }
@@ -597,32 +632,50 @@ html body.pt101 .wc-block-checkout__privacy-policy p {
 html body.pt101 .wc-block-checkout__terms a,
 html body.pt101 .wc-block-checkout__privacy-policy a { color:rgba(124,110,245,.8)!important; }
 
-/* ══ 9. ACTIONS ROW ════════════════════════════════════════════ */
-/* Hide Return to Cart — cart is bypassed */
+/* ══ 9. PLACE ORDER ACTIONS ════════════════════════════════════ */
 html body.pt101 .wc-block-components-checkout-return-to-cart-button { display:none!important; }
 html body.pt101 .wc-block-checkout__actions_row,
-html body.pt101 .wc-block-checkout__actions { margin-top:24px!important; }
-
-/* PLACE ORDER */
+html body.pt101 .wc-block-checkout__actions {
+  margin-top:28px!important;
+  padding-top:24px!important;
+  border-top:1px solid rgba(255,255,255,0.06)!important;
+}
+/* PLACE ORDER — prominent CTA */
 html body.pt101 .wc-block-components-checkout-place-order-button,
 html body.pt101 #place_order {
   display:flex!important; align-items:center!important; justify-content:center!important;
-  width:100%!important; padding:16px 32px!important;
-  background:#7c6ef5!important; background-color:#7c6ef5!important;
-  color:#fff!important; font-family:inherit!important; font-size:1.02rem!important;
+  width:100%!important; padding:18px 32px!important; min-height:56px!important;
+  background:linear-gradient(135deg,#7c6ef5 0%,#6358d4 100%)!important;
+  color:#fff!important; font-family:inherit!important; font-size:1.05rem!important;
   font-weight:700!important; letter-spacing:-.01em!important;
-  border:none!important; border-radius:12px!important; cursor:pointer!important;
-  transition:background .18s,transform .14s,box-shadow .18s!important;
-  box-shadow:0 6px 28px rgba(124,110,245,.32)!important;
+  border:none!important; border-radius:14px!important; cursor:pointer!important;
+  transition:transform .14s,box-shadow .18s,filter .18s!important;
+  box-shadow:0 8px 32px rgba(124,110,245,.38)!important;
   -webkit-appearance:none!important;
 }
 html body.pt101 .wc-block-components-checkout-place-order-button:hover,
 html body.pt101 #place_order:hover {
-  background:#6358d4!important; transform:translateY(-1px)!important;
-  box-shadow:0 10px 36px rgba(124,110,245,.42)!important;
+  filter:brightness(1.1)!important; transform:translateY(-2px)!important;
+  box-shadow:0 14px 40px rgba(124,110,245,.48)!important;
 }
 html body.pt101 .wc-block-components-checkout-place-order-button:active,
 html body.pt101 #place_order:active { transform:translateY(0)!important; }
+/* Lock icon before button text */
+html body.pt101 .wc-block-components-checkout-place-order-button::before {
+  content:'🔒'!important; margin-right:8px!important; font-size:.85em!important;
+  line-height:1!important;
+}
+/* Trust text under button */
+html body.pt101 .wc-block-checkout__actions_row::after,
+html body.pt101 .wc-block-checkout__actions::after {
+  content:'Secure checkout · SSL encrypted · 30-day guarantee'!important;
+  display:block!important;
+  text-align:center!important;
+  font-size:.73rem!important;
+  color:rgba(240,240,245,.28)!important;
+  margin-top:10px!important;
+  letter-spacing:.02em!important;
+}
 
 /* ══ 10. NOTICES ═══════════════════════════════════════════════ */
 html body.pt101 .woocommerce-error,
@@ -636,15 +689,211 @@ html body.pt101 .woocommerce-error   { background:rgba(224,90,90,.1)!important; 
 html body.pt101 .woocommerce-message { background:rgba(45,196,124,.08)!important; border-left:3px solid #2dc47c!important; color:#a3f0cc!important; }
 html body.pt101 .woocommerce-info    { background:rgba(124,110,245,.08)!important; border-left:3px solid #7c6ef5!important; color:#f0f0f5!important; }
 
-/* ══ 11. ORDER RECEIVED ════════════════════════════════════════ */
-html body.pt101 .woocommerce-order-details,
-html body.pt101 .woocommerce-customer-details {
-  background:#13162a!important; border:1.5px solid rgba(255,255,255,0.07)!important;
-  border-radius:14px!important; padding:24px!important; margin-bottom:20px!important;
+/* ══ 11. ORDER RECEIVED — COMPLETE REDESIGN ═══════════════════ */
+/* Narrow the order-received layout for readability */
+html body.pt101.woocommerce-order-received .woocommerce { max-width:780px!important; padding-top:40px!important; }
+
+/* ── Success Banner ─────────────────────────────────────────── */
+html body.pt101 .woocommerce-thankyou-order-received {
+  display:block!important;
+  text-align:center!important;
+  padding:52px 32px 44px!important;
+  margin:0 0 32px!important;
+  background:linear-gradient(135deg,#191c35 0%,#13162a 55%,#191c35 100%)!important;
+  border:1.5px solid rgba(124,110,245,.22)!important;
+  border-radius:20px!important;
+  font-size:clamp(1.25rem,3vw,1.75rem)!important;
+  font-weight:800!important;
+  color:#f0f0f5!important;
+  letter-spacing:-.02em!important;
+  line-height:1.3!important;
+  position:relative!important;
+  overflow:hidden!important;
 }
-html body.pt101 .woocommerce-thankyou-order-details li,
-html body.pt101 .woocommerce-order-overview__order,
-html body.pt101 .woocommerce-order-received p,
+html body.pt101 .woocommerce-thankyou-order-received::before {
+  content:''!important;
+  position:absolute!important;
+  top:-80px!important; left:50%!important;
+  transform:translateX(-50%)!important;
+  width:320px!important; height:320px!important;
+  background:radial-gradient(circle,rgba(124,110,245,.14) 0%,transparent 70%)!important;
+  pointer-events:none!important;
+}
+/* Injected success icon (via JS) */
+html body.pt101 .pt101-success-icon {
+  display:flex!important;
+  align-items:center!important; justify-content:center!important;
+  width:72px!important; height:72px!important;
+  background:linear-gradient(135deg,#7c6ef5,#5b4fd4)!important;
+  border-radius:50%!important;
+  font-size:2rem!important;
+  margin:0 auto 20px!important;
+  box-shadow:0 8px 32px rgba(124,110,245,.45)!important;
+  position:relative!important; z-index:1!important;
+}
+html body.pt101 .pt101-success-sub {
+  display:block!important;
+  font-size:.95rem!important; font-weight:400!important;
+  color:rgba(240,240,245,.55)!important;
+  margin-top:8px!important; letter-spacing:0!important;
+}
+
+/* ── Order Meta Bar ─────────────────────────────────────────── */
+html body.pt101 .woocommerce-order-overview,
+html body.pt101 .woocommerce-thankyou-order-details {
+  display:grid!important;
+  grid-template-columns:repeat(4,1fr)!important;
+  gap:0!important;
+  list-style:none!important;
+  padding:0!important;
+  margin:0 0 28px!important;
+  background:#13162a!important;
+  border:1.5px solid rgba(255,255,255,0.07)!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+}
+html body.pt101 .woocommerce-order-overview li {
+  padding:20px 22px!important;
+  font-size:.72rem!important;
+  font-weight:500!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+  color:rgba(240,240,245,.4)!important;
+  border-right:1px solid rgba(255,255,255,0.06)!important;
+  border-bottom:none!important;
+  line-height:1!important;
+}
+html body.pt101 .woocommerce-order-overview li:last-child { border-right:none!important; }
+html body.pt101 .woocommerce-order-overview li strong {
+  display:block!important;
+  margin-top:8px!important;
+  font-size:1rem!important;
+  font-weight:700!important;
+  color:#f0f0f5!important;
+  letter-spacing:-.01em!important;
+  text-transform:none!important;
+}
+
+/* ── Order Details Card ─────────────────────────────────────── */
+html body.pt101 .woocommerce-order-details {
+  background:#13162a!important;
+  border:1.5px solid rgba(255,255,255,0.07)!important;
+  border-radius:16px!important;
+  padding:28px!important;
+  margin-bottom:20px!important;
+  overflow:hidden!important;
+}
+html body.pt101 .woocommerce-order-details__title,
+html body.pt101 .woocommerce-column__title {
+  color:#f0f0f5!important;
+  font-size:1rem!important;
+  font-weight:700!important;
+  letter-spacing:-.01em!important;
+  margin:0 0 20px!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid rgba(255,255,255,0.07)!important;
+}
+html body.pt101 .woocommerce-table--order-details {
+  width:100%!important; border-collapse:collapse!important; background:transparent!important;
+}
+html body.pt101 .woocommerce-table--order-details thead th {
+  padding:0 0 12px!important; font-size:.72rem!important; font-weight:600!important;
+  letter-spacing:.06em!important; text-transform:uppercase!important;
+  color:rgba(240,240,245,.38)!important; border-bottom:1px solid rgba(255,255,255,0.07)!important;
+  text-align:left!important; background:transparent!important;
+}
+html body.pt101 .woocommerce-table--order-details thead th.product-total { text-align:right!important; }
+html body.pt101 .woocommerce-table--order-details tbody td {
+  padding:16px 0!important; border-bottom:1px solid rgba(255,255,255,0.05)!important;
+  color:#f0f0f5!important; font-size:.93rem!important; vertical-align:middle!important; background:transparent!important;
+}
+html body.pt101 .woocommerce-table--order-details tbody td.product-total { text-align:right!important; font-weight:600!important; }
+html body.pt101 .woocommerce-table--order-details tfoot td,
+html body.pt101 .woocommerce-table--order-details tfoot th {
+  padding:12px 0!important; color:rgba(240,240,245,.65)!important;
+  font-size:.9rem!important; border-top:1px solid rgba(255,255,255,0.06)!important;
+  text-align:left!important; background:transparent!important;
+}
+html body.pt101 .woocommerce-table--order-details tfoot tr.order-total td,
+html body.pt101 .woocommerce-table--order-details tfoot tr.order-total th {
+  color:#f0f0f5!important; font-weight:700!important; font-size:1.02rem!important;
+  border-top:1.5px solid rgba(255,255,255,0.12)!important;
+  padding-top:16px!important;
+}
+
+/* ── Billing Address Card ───────────────────────────────────── */
+html body.pt101 .woocommerce-customer-details {
+  background:#13162a!important;
+  border:1.5px solid rgba(255,255,255,0.07)!important;
+  border-radius:16px!important; padding:28px!important; margin-bottom:28px!important;
+}
+html body.pt101 .woocommerce-customer-details address {
+  font-style:normal!important;
+  color:rgba(240,240,245,.62)!important;
+  font-size:.92rem!important; line-height:1.8!important;
+}
+html body.pt101 .woocommerce-customer-details address p { color:rgba(240,240,245,.62)!important; margin:0!important; }
+
+/* ── Next Steps Section (injected via JS) ───────────────────── */
+html body.pt101 .pt101-next-steps {
+  background:linear-gradient(135deg,#191c35 0%,#13162a 100%)!important;
+  border:1.5px solid rgba(124,110,245,.18)!important;
+  border-radius:18px!important; padding:32px 28px!important; margin-top:28px!important;
+}
+html body.pt101 .pt101-next-steps__heading {
+  color:#f0f0f5!important; font-size:1.08rem!important; font-weight:700!important;
+  margin:0 0 24px!important; letter-spacing:-.01em!important;
+}
+html body.pt101 .pt101-next-steps__grid {
+  display:grid!important; grid-template-columns:1fr 1fr!important; gap:16px!important; margin-bottom:28px!important;
+}
+html body.pt101 .pt101-step-item {
+  display:flex!important; gap:14px!important; align-items:flex-start!important;
+  background:rgba(255,255,255,.04)!important;
+  border:1px solid rgba(255,255,255,.06)!important;
+  border-radius:12px!important; padding:18px!important;
+}
+html body.pt101 .pt101-step-num {
+  flex-shrink:0!important;
+  width:32px!important; height:32px!important; border-radius:50%!important;
+  background:#7c6ef5!important; color:#fff!important;
+  display:flex!important; align-items:center!important; justify-content:center!important;
+  font-size:.78rem!important; font-weight:700!important;
+}
+html body.pt101 .pt101-step-item strong {
+  display:block!important; color:#f0f0f5!important;
+  font-size:.9rem!important; font-weight:600!important; margin-bottom:4px!important;
+}
+html body.pt101 .pt101-step-item p {
+  margin:0!important; color:rgba(240,240,245,.5)!important; font-size:.82rem!important; line-height:1.5!important;
+}
+html body.pt101 .pt101-next-steps__actions {
+  display:flex!important; gap:12px!important; flex-wrap:wrap!important;
+}
+html body.pt101 .pt101-btn-primary {
+  display:inline-flex!important; align-items:center!important; justify-content:center!important;
+  padding:14px 28px!important; background:linear-gradient(135deg,#7c6ef5,#5b4fd4)!important;
+  color:#fff!important; font-family:inherit!important; font-size:.93rem!important;
+  font-weight:700!important; letter-spacing:-.01em!important;
+  border-radius:12px!important; text-decoration:none!important;
+  box-shadow:0 6px 24px rgba(124,110,245,.35)!important;
+  transition:filter .18s,transform .14s!important;
+}
+html body.pt101 .pt101-btn-primary:hover { filter:brightness(1.1)!important; transform:translateY(-1px)!important; color:#fff!important; }
+html body.pt101 .pt101-btn-secondary {
+  display:inline-flex!important; align-items:center!important; justify-content:center!important;
+  padding:14px 28px!important;
+  background:rgba(255,255,255,.06)!important;
+  border:1.5px solid rgba(255,255,255,.12)!important;
+  color:rgba(240,240,245,.75)!important; font-family:inherit!important; font-size:.93rem!important;
+  font-weight:600!important; letter-spacing:-.01em!important;
+  border-radius:12px!important; text-decoration:none!important;
+  transition:background .18s,color .18s!important;
+}
+html body.pt101 .pt101-btn-secondary:hover { background:rgba(255,255,255,.1)!important; color:#f0f0f5!important; }
+
+/* Order received generic text */
+html body.pt101 .woocommerce-order-received p { color:rgba(240,240,245,.65)!important; }
 html body.pt101 .woocommerce-order-received h2 { color:#f0f0f5!important; }
 html body.pt101 .woocommerce-order-received h1 {
   font-size:clamp(1.6rem,4vw,2.4rem)!important; font-weight:800!important;
@@ -656,24 +905,108 @@ html body.pt101 .wc-block-components-spinner::after { border-color:#7c6ef5 trans
 
 /* ══ 13. MOBILE ════════════════════════════════════════════════ */
 @media(max-width:1024px){
-  html body.pt101 .wc-block-checkout__main { padding-right:20px!important; }
+  html body.pt101 .wc-block-checkout__main { padding-right:24px!important; }
 }
 @media(max-width:768px){
-  html body.pt101 .wp-block-woocommerce-checkout { padding:36px 16px 80px!important; }
+  html body.pt101 .wp-block-woocommerce-checkout { padding:32px 16px 72px!important; }
   html body.pt101 .wc-block-checkout__main { padding-right:0!important; }
-  html body.pt101 .wc-block-checkout__sidebar { margin-top:28px!important; }
+  html body.pt101 .wc-block-checkout__sidebar { margin-top:24px!important; position:static!important; }
+  html body.pt101 .wc-block-components-address-form { grid-template-columns:1fr!important; }
+  html body.pt101 .wc-block-components-address-form > * { grid-column:span 1!important; }
   html body.pt101 .woocommerce-checkout .col2-set { display:block!important; }
   html body.pt101 .woocommerce-checkout .col2-set .col-1,
-  html body.pt101 .woocommerce-checkout .col2-set .col-2 { width:100%!important; float:none!important; margin-bottom:28px!important; }
+  html body.pt101 .woocommerce-checkout .col2-set .col-2 { width:100%!important; float:none!important; margin-bottom:24px!important; }
+  /* Thank you meta: 2-col on mobile */
+  html body.pt101 .woocommerce-order-overview { grid-template-columns:repeat(2,1fr)!important; }
+  html body.pt101 .woocommerce-order-overview li:nth-child(2) { border-right:none!important; }
+  html body.pt101 .woocommerce-order-overview li:nth-child(n+3) { border-top:1px solid rgba(255,255,255,0.06)!important; }
+  html body.pt101 .pt101-next-steps__grid { grid-template-columns:1fr!important; }
 }
 @media(max-width:480px){
-  html body.pt101 .wp-block-woocommerce-checkout { padding:24px 12px 64px!important; }
+  html body.pt101 .wp-block-woocommerce-checkout { padding:20px 12px 60px!important; }
   html body.pt101 .wc-block-components-checkout-step__title,
   html body.pt101 .wc-block-checkout h2 { font-size:1rem!important; }
   html body.pt101 .wc-block-checkout__sidebar,
-  html body.pt101 .wp-block-woocommerce-checkout-order-summary-block { padding:18px 14px!important; border-radius:12px!important; }
-  html body.pt101 .wc-block-components-checkout-place-order-button { padding:14px 20px!important; font-size:.97rem!important; }
+  html body.pt101 .wp-block-woocommerce-checkout-order-summary-block { padding:18px 16px!important; border-radius:14px!important; }
+  html body.pt101 .wc-block-components-checkout-place-order-button { padding:16px 20px!important; font-size:1rem!important; }
+  html body.pt101 .woocommerce-order-overview { grid-template-columns:1fr 1fr!important; }
+  html body.pt101 .woocommerce-thankyou-order-received { padding:40px 20px 36px!important; }
+  html body.pt101 .pt101-next-steps { padding:24px 18px!important; }
+  html body.pt101 .pt101-next-steps__actions { flex-direction:column!important; }
+  html body.pt101 .pt101-btn-primary,
+  html body.pt101 .pt101-btn-secondary { width:100%!important; text-align:center!important; }
 }
 </style>
     <?php
 }, 999 );
+
+/* ── THANK YOU PAGE: JS ENHANCEMENT ────────────────────────────
+ * Injects success icon + "What's Next" section on order-received.
+ */
+add_action( 'wp_footer', function () {
+    if ( ! function_exists( 'is_wc_endpoint_url' ) ) return;
+    if ( ! is_wc_endpoint_url( 'order-received' ) ) return;
+    $dashboard_url = function_exists( 'wc_get_account_endpoint_url' )
+        ? wc_get_account_endpoint_url( 'dashboard' )
+        : home_url( '/my-account' );
+    $courses_url   = home_url( '/programs' );
+    ?>
+<script>
+(function(){
+  var thankyou = document.querySelector('.woocommerce-thankyou-order-received');
+  if (!thankyou) return;
+
+  /* ── 1. Success icon ── */
+  var icon = document.createElement('span');
+  icon.className = 'pt101-success-icon';
+  icon.innerHTML = '&#10003;';
+  thankyou.parentNode.insertBefore(icon, thankyou);
+
+  /* ── 2. Add sub-text inside banner ── */
+  var sub = document.createElement('span');
+  sub.className = 'pt101-success-sub';
+  sub.textContent = 'A confirmation has been sent to your email address.';
+  thankyou.appendChild(sub);
+
+  /* ── 3. What\'s Next section ── */
+  var billing = document.querySelector('.woocommerce-customer-details')
+             || document.querySelector('.woocommerce-order-details');
+  if (!billing) return;
+
+  var ns = document.createElement('div');
+  ns.className = 'pt101-next-steps';
+  ns.innerHTML = [
+    '<h3 class="pt101-next-steps__heading">What happens next?</h3>',
+    '<div class="pt101-next-steps__grid">',
+      '<div class="pt101-step-item">',
+        '<span class="pt101-step-num">1</span>',
+        '<div><strong>Check your email</strong>',
+        '<p>Your receipt and access instructions have been sent to your inbox.</p></div>',
+      '</div>',
+      '<div class="pt101-step-item">',
+        '<span class="pt101-step-num">2</span>',
+        '<div><strong>Access your course</strong>',
+        '<p>Head to your dashboard to start learning immediately.</p></div>',
+      '</div>',
+      '<div class="pt101-step-item">',
+        '<span class="pt101-step-num">3</span>',
+        '<div><strong>Join our community</strong>',
+        '<p>Connect with fellow traders in our private members group.</p></div>',
+      '</div>',
+      '<div class="pt101-step-item">',
+        '<span class="pt101-step-num">4</span>',
+        '<div><strong>Get funded</strong>',
+        '<p>Complete the program and move toward your prop firm challenge.</p></div>',
+      '</div>',
+    '</div>',
+    '<div class="pt101-next-steps__actions">',
+      '<a href="<?php echo esc_url( $dashboard_url ); ?>" class="pt101-btn-primary">Go to Dashboard &rarr;</a>',
+      '<a href="<?php echo esc_url( $courses_url ); ?>" class="pt101-btn-secondary">Browse More Courses</a>',
+    '</div>'
+  ].join('');
+
+  billing.parentNode.insertBefore(ns, billing.nextSibling);
+})();
+</script>
+    <?php
+}, 10 );
