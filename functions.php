@@ -390,11 +390,12 @@ add_action( 'wp_ajax_nopriv_pt101_store_checkout_pw', 'pt101_ajax_store_checkout
 add_action( 'wp_ajax_pt101_store_checkout_pw',        'pt101_ajax_store_checkout_pw' );
 function pt101_ajax_store_checkout_pw() {
     check_ajax_referer( 'pt101_checkout_pw', 'nonce' );
-    $pwd = isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : ''; // sanitised below
+    $pwd = isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : '';
     if ( strlen( $pwd ) < 8 ) {
         wp_send_json_error( array( 'msg' => __( 'Password must be at least 8 characters.', 'prop-trading-101' ) ) );
+        return; // wp_send_json_error calls wp_die but be explicit
     }
-    WC()->session->set( 'pt101_checkout_password', $pwd ); // kept raw so wp_set_password hashes it
+    WC()->session->set( 'pt101_checkout_password', $pwd ); // kept raw; wp_set_password hashes it
     wp_send_json_success();
 }
 
@@ -404,11 +405,18 @@ add_filter( 'woocommerce_new_customer_data', function ( $data ) {
     $pwd = WC()->session->get( 'pt101_checkout_password' );
     if ( $pwd ) {
         $data['user_pass'] = $pwd;
+        // Clear immediately so the fallback action below does NOT also call
+        // wp_set_password() — that would invalidate the user's auth cookies
+        // and log them out right after checkout completes.
+        WC()->session->set( 'pt101_checkout_password', null );
     }
     return $data;
 } );
 
-/* Fallback: Blocks checkout — set password after order is processed ----- */
+/* Fallback: Blocks checkout — only fires when woocommerce_new_customer_data
+   did not run (e.g. account already existed and password needs updating).
+   Session value is null if the filter already handled it, so this is a no-op
+   in the normal flow. */
 add_action( 'woocommerce_store_api_checkout_order_processed', function ( $order ) {
     if ( ! WC()->session ) return;
     $pwd = WC()->session->get( 'pt101_checkout_password' );
@@ -516,12 +524,17 @@ html body.pt101 .wc-block-components-state-input {
   isolation: isolate !important;
   margin: 0 !important;
 }
-/* Country input — NO isolation so its dropdown renders on top */
+/* Country input — no stacking isolation so its dropdown renders on top.
+   Elevate z-index only when actively open/focused to avoid overlapping siblings. */
 html body.pt101 .wc-block-components-country-input {
   position: relative !important;
-  z-index: 10 !important;
+  z-index: 1 !important;
   isolation: auto !important;
   margin: 0 !important;
+}
+html body.pt101 .wc-block-components-country-input:focus-within,
+html body.pt101 .wc-block-components-country-input.is-active {
+  z-index: 100 !important;
 }
 
 /* ── 5. FORM INPUTS ────────────────────────────────────────── */
@@ -580,13 +593,6 @@ html body.pt101 select {
   padding-right: 44px !important;
 }
 html body.pt101 option { background: var(--bg-card) !important; color: var(--text-hi) !important; }
-
-/* Hide the native <select> inside country/state comboboxes — they use a
-   custom combobox (<input> + listbox) and the native select must stay hidden */
-html body.pt101 .wc-block-components-country-input select,
-html body.pt101 .wc-block-components-state-input select {
-  display: none !important;
-}
 
 /* Country dropdown */
 html body.pt101 .wc-block-components-country-input .components-popover,
@@ -1585,7 +1591,7 @@ add_action( 'wp_footer', function () {
         consent.className = 'pt101-consent';
         consent.innerHTML = [
           '<label class="pt101-consent__item pt101-consent__item--required">',
-            '<input type="checkbox" id="pt101-terms-agree" required>',
+            '<input type="checkbox" id="pt101-terms-agree" name="pt101_terms_consent" value="1" required>',
             '<span>By signing up, you confirm that you have read and agree to Prop Trading 101\'s ',
               '<a href="' + TERMS_URL + '" target="_blank">Terms &amp; Conditions</a> and ',
               '<a href="' + PRIVACY_URL + '" target="_blank">Privacy Policy</a>. ',
@@ -1616,10 +1622,19 @@ add_action( 'wp_footer', function () {
   } else {
     setTimeout(cleanup, 600);
   }
-  var obs = new MutationObserver(function(){ setTimeout(cleanup, 200); });
+  var obs = new MutationObserver(function(){
+    setTimeout(function(){
+      cleanup();
+      // Disconnect once both injections are confirmed present
+      if(document.getElementById('pt101-password-wrap') && document.getElementById('pt101-consent')){
+        obs.disconnect();
+      }
+    }, 200);
+  });
   var main = document.querySelector('.wc-block-checkout__main');
   if(main) obs.observe(main, {childList:true, subtree:true});
-  setTimeout(function(){ obs.disconnect(); }, 8000);
+  // Hard cap: disconnect after 30s to avoid observing indefinitely
+  setTimeout(function(){ obs.disconnect(); }, 30000);
 })();
 </script>
     <?php
