@@ -372,8 +372,50 @@ add_action( 'template_redirect', function () {
 } );
 
 /* ── WOOCOMMERCE: ACCOUNT CREATION ON CHECKOUT ─ */
-add_filter( 'woocommerce_checkout_registration_required', '__return_false' );
+add_filter( 'woocommerce_checkout_registration_required', '__return_true' );  // every buyer needs an account
 add_filter( 'woocommerce_checkout_registration_enabled',  '__return_true' );
+
+/* ── CHECKOUT: CREATE-PASSWORD FIELD ────────────────────────────────────────
+ * Flow:
+ *  1. JS injects password + confirm-password fields inside the Contact Info step.
+ *  2. On "Place Order" click: JS validates, then POSTs the password via AJAX to
+ *     store it in the WC session before the Store API request fires.
+ *  3. woocommerce_new_customer_data  → injects the stored password at creation.
+ *  4. woocommerce_store_api_checkout_order_processed → fallback: sets password
+ *     after the order is processed (Blocks checkout safety net).
+ */
+
+/* AJAX: store password in WC session ------------------------------------ */
+add_action( 'wp_ajax_nopriv_pt101_store_checkout_pw', 'pt101_ajax_store_checkout_pw' );
+add_action( 'wp_ajax_pt101_store_checkout_pw',        'pt101_ajax_store_checkout_pw' );
+function pt101_ajax_store_checkout_pw() {
+    check_ajax_referer( 'pt101_checkout_pw', 'nonce' );
+    $pwd = isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : ''; // sanitised below
+    if ( strlen( $pwd ) < 8 ) {
+        wp_send_json_error( array( 'msg' => __( 'Password must be at least 8 characters.', 'prop-trading-101' ) ) );
+    }
+    WC()->session->set( 'pt101_checkout_password', $pwd ); // kept raw so wp_set_password hashes it
+    wp_send_json_success();
+}
+
+/* Filter: inject stored password into new-customer data ----------------- */
+add_filter( 'woocommerce_new_customer_data', function ( $data ) {
+    if ( ! WC()->session ) return $data;
+    $pwd = WC()->session->get( 'pt101_checkout_password' );
+    if ( $pwd ) {
+        $data['user_pass'] = $pwd;
+    }
+    return $data;
+} );
+
+/* Fallback: Blocks checkout — set password after order is processed ----- */
+add_action( 'woocommerce_store_api_checkout_order_processed', function ( $order ) {
+    if ( ! WC()->session ) return;
+    $pwd = WC()->session->get( 'pt101_checkout_password' );
+    if ( ! $pwd || ! $order->get_customer_id() ) return;
+    wp_set_password( $pwd, $order->get_customer_id() );
+    WC()->session->set( 'pt101_checkout_password', null );
+}, 20 );
 
 /* ── WOOCOMMERCE: REDIRECT /cart → checkout (or course if empty) ── */
 add_action( 'template_redirect', function () {
@@ -891,6 +933,43 @@ html body.pt101 .pt101-consent__item.pt101-consent__error {
 html body.pt101 .pt101-consent__item.pt101-consent__error input[type="checkbox"] {
   outline: 2px solid #e05a5a !important;
 }
+/* ── 11b. CREATE PASSWORD SECTION ─────────────────────────── */
+html body.pt101 .pt101-password-section {
+  margin-top: 20px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid var(--border-dark) !important;
+}
+html body.pt101 .pt101-password-section__heading {
+  color: var(--text-mid) !important;
+  font-size: .72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 14px !important;
+}
+html body.pt101 .pt101-password-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+}
+html body.pt101 .pt101-pw-hint {
+  color: var(--text-low) !important;
+  font-size: .73rem !important;
+  margin: 10px 0 0 !important;
+  line-height: 1.5 !important;
+}
+html body.pt101 .pt101-pw-error {
+  color: #e05a5a !important;
+  font-size: .8rem !important;
+  margin: 8px 0 0 !important;
+  line-height: 1.4 !important;
+}
+@media (max-width: 480px) {
+  html body.pt101 .pt101-password-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Remove red border from consent container itself */
 html body.pt101 .pt101-consent {
   outline: none !important;
@@ -1330,7 +1409,7 @@ html body.pt101 .woocommerce-order-received h1 {
 }, 999 );
 
 /* ── CHECKOUT PAGE: JS ENHANCEMENT ─────────────────────────────
- * Hides empty checkout steps, injects consent checkboxes.
+ * Hides empty checkout steps, injects password field + consent checkboxes.
  */
 add_action( 'wp_footer', function () {
     if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) return;
@@ -1340,9 +1419,139 @@ add_action( 'wp_footer', function () {
     ?>
 <script>
 (function(){
-  var TERMS_URL   = <?php echo wp_json_encode( esc_url( $terms_url ) ); ?>;
-  var PRIVACY_URL = <?php echo wp_json_encode( esc_url( $privacy_url ) ); ?>;
+  var TERMS_URL    = <?php echo wp_json_encode( esc_url( $terms_url ) ); ?>;
+  var PRIVACY_URL  = <?php echo wp_json_encode( esc_url( $privacy_url ) ); ?>;
+  var PT101_AJAX   = <?php echo wp_json_encode( esc_url( admin_url( 'admin-ajax.php' ) ) ); ?>;
+  var PT101_NONCE  = <?php echo wp_json_encode( wp_create_nonce( 'pt101_checkout_pw' ) ); ?>;
+  var PT101_GUEST  = <?php echo is_user_logged_in() ? 'false' : 'true'; ?>; // show pw field only for guests
 
+  /* ── Password field injection ──────────────────────────── */
+  function injectPasswordField(){
+    if(!PT101_GUEST) return;
+    if(document.getElementById('pt101-password-wrap')) return;
+
+    var emailInput = document.querySelector(
+      '.wc-block-checkout__main input[autocomplete="email"],' +
+      '.wc-block-checkout__main input[type="email"]'
+    );
+    if(!emailInput) return;
+
+    var stepContent = emailInput.closest('.wc-block-components-checkout-step__content');
+    if(!stepContent) return;
+
+    var wrap = document.createElement('div');
+    wrap.id = 'pt101-password-wrap';
+    wrap.className = 'pt101-password-section';
+    wrap.innerHTML = [
+      '<p class="pt101-password-section__heading">Create your account password</p>',
+      '<div class="pt101-password-row">',
+        '<div class="wc-block-components-text-input pt101-pw-field" id="pt101-pw-field-1">',
+          '<input type="password" id="pt101-password" autocomplete="new-password" placeholder=" " />',
+          '<label for="pt101-password">Password</label>',
+        '</div>',
+        '<div class="wc-block-components-text-input pt101-pw-field" id="pt101-pw-field-2">',
+          '<input type="password" id="pt101-password-confirm" autocomplete="new-password" placeholder=" " />',
+          '<label for="pt101-password-confirm">Confirm Password</label>',
+        '</div>',
+      '</div>',
+      '<p class="pt101-pw-hint">Minimum 8 characters — you\'ll use this to log in to your learning dashboard.</p>',
+      '<p class="pt101-pw-error" id="pt101-pw-error" style="display:none;"></p>'
+    ].join('');
+
+    /* Floating label toggle */
+    wrap.querySelectorAll('input').forEach(function(inp){
+      function upd(){
+        inp.closest('.wc-block-components-text-input')
+           .classList.toggle('is-active', inp.value.length > 0 || document.activeElement === inp);
+      }
+      inp.addEventListener('input', upd);
+      inp.addEventListener('focus', upd);
+      inp.addEventListener('blur',  upd);
+    });
+
+    stepContent.appendChild(wrap);
+  }
+
+  /* ── Consent + password click handler ─────────────────── */
+  var _pwStored = false;
+
+  function bindSubmitHandler(){
+    var submitBtn = document.querySelector('.wc-block-components-checkout-place-order-button')
+                 || document.querySelector('#place_order');
+    if(!submitBtn || submitBtn._pt101bound) return;
+    submitBtn._pt101bound = true;
+
+    submitBtn.addEventListener('click', function(e){
+
+      /* 1. Terms consent gate */
+      var cb = document.getElementById('pt101-terms-agree');
+      if(cb && !cb.checked){
+        e.preventDefault(); e.stopImmediatePropagation();
+        cb.closest('.pt101-consent__item').classList.add('pt101-consent__error');
+        cb.focus();
+        return false;
+      }
+
+      /* 2. Password gate (guests only) */
+      var pwField = document.getElementById('pt101-password');
+      if(pwField){
+        /* Second click after AJAX — let checkout through */
+        if(_pwStored){ _pwStored = false; return; }
+
+        var pw  = pwField.value;
+        var pw2 = (document.getElementById('pt101-password-confirm') || {}).value || '';
+        var errEl = document.getElementById('pt101-pw-error');
+
+        function showPwErr(msg){
+          if(errEl){ errEl.textContent = msg; errEl.style.display = 'block';
+            errEl.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+        }
+
+        if(!pw || pw.length < 8){
+          e.preventDefault(); e.stopImmediatePropagation();
+          showPwErr('Password must be at least 8 characters.');
+          pwField.focus(); return false;
+        }
+        if(pw !== pw2){
+          e.preventDefault(); e.stopImmediatePropagation();
+          showPwErr('Passwords do not match.');
+          document.getElementById('pt101-password-confirm').focus(); return false;
+        }
+
+        /* Valid — store in session then re-trigger */
+        e.preventDefault(); e.stopImmediatePropagation();
+        if(errEl) errEl.style.display = 'none';
+        var _btn = this;
+        _btn.disabled = true;
+
+        fetch(PT101_AJAX, {
+          method: 'POST',
+          headers: {'Content-Type':'application/x-www-form-urlencoded'},
+          body: 'action=pt101_store_checkout_pw'
+              + '&nonce='    + encodeURIComponent(PT101_NONCE)
+              + '&password=' + encodeURIComponent(pw)
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          _btn.disabled = false;
+          if(data.success){
+            _pwStored = true;
+            _btn.click(); // re-fire; this time _pwStored=true so we skip the gate
+          } else {
+            showPwErr((data.data && data.data.msg) || 'Password error. Please try again.');
+          }
+        })
+        .catch(function(){
+          _btn.disabled = false;
+          showPwErr('Connection error. Please try again.');
+        });
+        return false;
+      }
+
+    }, true); // capture phase — fires before React's onClick
+  }
+
+  /* ── Main cleanup / injection ──────────────────────────── */
   function cleanup(){
     /* Hide empty checkout steps */
     document.querySelectorAll('.wc-block-components-checkout-step').forEach(function(step){
@@ -1355,64 +1564,51 @@ add_action( 'wp_footer', function () {
       if(visible.length === 0) step.style.display = 'none';
     });
 
+    /* Inject password field */
+    injectPasswordField();
+
     /* Inject consent checkboxes — replace the default terms text */
-    if(document.getElementById('pt101-consent')) return;
+    if(!document.getElementById('pt101-consent')){
+      var termsBlock   = document.querySelector('.wc-block-checkout__terms');
+      var privacyBlock = document.querySelector('.wc-block-checkout__privacy-policy');
+      var target = termsBlock || privacyBlock;
+      if(!target){
+        target = document.querySelector('.wc-block-checkout__actions_row')
+              || document.querySelector('.wc-block-checkout__actions');
+      }
+      if(target){
+        if(termsBlock)   termsBlock.style.display   = 'none';
+        if(privacyBlock) privacyBlock.style.display = 'none';
 
-    var termsBlock = document.querySelector('.wc-block-checkout__terms');
-    var privacyBlock = document.querySelector('.wc-block-checkout__privacy-policy');
-    var target = termsBlock || privacyBlock;
-    if(!target) {
-      /* fallback: insert before the actions row */
-      target = document.querySelector('.wc-block-checkout__actions_row')
-            || document.querySelector('.wc-block-checkout__actions');
+        var consent = document.createElement('div');
+        consent.id = 'pt101-consent';
+        consent.className = 'pt101-consent';
+        consent.innerHTML = [
+          '<label class="pt101-consent__item pt101-consent__item--required">',
+            '<input type="checkbox" id="pt101-terms-agree" required>',
+            '<span>By signing up, you confirm that you have read and agree to Prop Trading 101\'s ',
+              '<a href="' + TERMS_URL + '" target="_blank">Terms &amp; Conditions</a> and ',
+              '<a href="' + PRIVACY_URL + '" target="_blank">Privacy Policy</a>. ',
+              'These explain how we operate and how your personal data is processed and handled. ',
+              '<strong>(Required)</strong>',
+            '</span>',
+          '</label>',
+          '<label class="pt101-consent__item">',
+            '<input type="checkbox" id="pt101-marketing-agree" name="pt101_marketing_consent" value="1">',
+            '<span>I provide my consent to receive marketing communications such as ',
+              'coupons, news, promotions and product updates via electronic channels ',
+              '(e.g. email, Whatsapp, or SMS messages). I understand I can withdraw ',
+              'my consent at any time by unsubscribing from any such communication ',
+              'or by updating my profile page preferences.</span>',
+          '</label>'
+        ].join('');
+
+        target.parentNode.insertBefore(consent, target);
+      }
     }
-    if(!target) return;
 
-    /* Hide the default WooCommerce terms/privacy text */
-    if(termsBlock) termsBlock.style.display = 'none';
-    if(privacyBlock) privacyBlock.style.display = 'none';
-
-    var consent = document.createElement('div');
-    consent.id = 'pt101-consent';
-    consent.className = 'pt101-consent';
-    consent.innerHTML = [
-      '<label class="pt101-consent__item pt101-consent__item--required">',
-        '<input type="checkbox" id="pt101-terms-agree" required>',
-        '<span>By signing up, you confirm that you have read and agree to Prop Trading 101\'s ',
-          '<a href="' + TERMS_URL + '" target="_blank">Terms &amp; Conditions</a> and ',
-          '<a href="' + PRIVACY_URL + '" target="_blank">Privacy Policy</a>. ',
-          'These explain how we operate and how your personal data is processed and handled. ',
-          '<strong>(Required)</strong>',
-        '</span>',
-      '</label>',
-      '<label class="pt101-consent__item">',
-        '<input type="checkbox" id="pt101-marketing-agree" name="pt101_marketing_consent" value="1">',
-        '<span>I provide my consent to receive marketing communications such as ',
-          'coupons, news, promotions and product updates via electronic channels ',
-          '(e.g. email, Whatsapp, or SMS messages). I understand I can withdraw ',
-          'my consent at any time by unsubscribing from any such communication ',
-          'or by updating my profile page preferences.</span>',
-      '</label>'
-    ].join('');
-
-    target.parentNode.insertBefore(consent, target);
-
-    /* Prevent form submission if required checkbox is unchecked */
-    var submitBtn = document.querySelector('.wc-block-components-checkout-place-order-button')
-                 || document.querySelector('#place_order');
-    if(submitBtn && !submitBtn._pt101bound){
-      submitBtn._pt101bound = true;
-      submitBtn.addEventListener('click', function(e){
-        var cb = document.getElementById('pt101-terms-agree');
-        if(cb && !cb.checked){
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          cb.closest('.pt101-consent__item').classList.add('pt101-consent__error');
-          cb.focus();
-          return false;
-        }
-      }, true);
-    }
+    /* Bind submit handler (consent + password) */
+    bindSubmitHandler();
   }
 
   if(document.readyState === 'loading'){
