@@ -375,6 +375,23 @@ add_action( 'template_redirect', function () {
 add_filter( 'woocommerce_checkout_registration_required', '__return_true' );  // every buyer needs an account
 add_filter( 'woocommerce_checkout_registration_enabled',  '__return_true' );
 
+/* ── POSTAL CODE OPTIONAL ─ */
+add_filter( 'woocommerce_default_address_fields', function ( $fields ) {
+    if ( isset( $fields['postcode'] ) ) {
+        $fields['postcode']['required'] = false;
+    }
+    return $fields;
+} );
+// Per-country locale overrides also need this
+add_filter( 'woocommerce_get_country_locale', function ( $locale ) {
+    foreach ( $locale as $country => $data ) {
+        if ( isset( $locale[ $country ]['postcode'] ) ) {
+            $locale[ $country ]['postcode']['required'] = false;
+        }
+    }
+    return $locale;
+} );
+
 /* ── CHECKOUT: CREATE-PASSWORD FIELD ────────────────────────────────────────
  * Flow:
  *  1. JS injects password + confirm-password fields inside the Contact Info step.
@@ -693,12 +710,34 @@ html body.pt101 .wc-block-components-checkout-step {
   border-radius: var(--r-lg) !important;
   padding: 24px 28px !important;
   margin-bottom: 20px !important;
-  border-bottom: none !important;
   overflow: visible !important;
 }
 html body.pt101 .wc-block-components-checkout-step:last-child {
   margin-bottom: 0 !important;
 }
+
+/* ── Merge Contact Information + Billing Address into one unified card ── */
+html body.pt101 .wp-block-woocommerce-checkout-contact-information-block .wc-block-components-checkout-step {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+}
+html body.pt101 .wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-top: 1px solid var(--border-dark) !important;
+}
+/* Hide the redundant "Billing address" heading when merged */
+html body.pt101 .wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step__title {
+  display: none !important;
+}
+
+/* ── Remove WooCommerce "Secure checkout · SSL encrypted" trust line ─────── */
+html body.pt101 .wc-block-components-checkout-place-order__description,
+html body.pt101 .wc-block-checkout__sidebar-compatibility-notice,
+html body.pt101 .wc-block-checkout__sidebar > p,
+html body.pt101 .wc-block-components-payment-methods__save-card-info ~ p { display: none !important; }
 /* Allow country dropdown to escape all parent containers */
 html body.pt101 .wc-block-components-checkout-step__content,
 html body.pt101 .wc-block-components-address-form {
@@ -1312,7 +1351,7 @@ html body.pt101 .pt101-success-sub {
 html body.pt101 .woocommerce-order-overview,
 html body.pt101 .woocommerce-thankyou-order-details {
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
   gap: 0 !important;
   list-style: none !important;
   padding: 0 !important;
@@ -1483,7 +1522,15 @@ add_action( 'wp_footer', function () {
     if(!PT101_GUEST) return;
     if(document.getElementById('pt101-password-wrap')) return;
 
-    /* Strategy 1: insert after the Contact Information step (contains email) */
+    /* Strategy 1: insert AFTER the billing address block so the merged
+       Contact Info + Billing card remains unbroken */
+    var billingBlock = document.querySelector('.wp-block-woocommerce-checkout-billing-address-block');
+    if(billingBlock && billingBlock.parentNode){
+      billingBlock.parentNode.insertBefore(buildPasswordCard(), billingBlock.nextSibling);
+      return;
+    }
+
+    /* Strategy 2: insert after the step that contains the email field */
     var emailInput = document.querySelector('input[autocomplete="email"], input[type="email"]');
     if(emailInput){
       var contactStep = emailInput.closest('.wc-block-components-checkout-step');
@@ -1491,28 +1538,9 @@ add_action( 'wp_footer', function () {
         contactStep.parentNode.insertBefore(buildPasswordCard(), contactStep.nextSibling);
         return;
       }
-      /* Strategy 2: append to the step content */
-      var stepContent = emailInput.closest('.wc-block-components-checkout-step__content');
-      if(stepContent){
-        var inner = document.createElement('div');
-        inner.id = 'pt101-password-wrap';
-        inner.className = 'pt101-password-section';
-        inner.innerHTML = buildPasswordCard().querySelector('.wc-block-components-checkout-step__content').innerHTML;
-        stepContent.appendChild(inner);
-        return;
-      }
     }
 
-    /* Strategy 3: insert before the billing address step */
-    var billingStep = document.querySelector(
-      '.wc-block-checkout__billing-fields, [data-block-name="woocommerce/checkout-billing-address-block"]'
-    );
-    if(billingStep && billingStep.parentNode){
-      billingStep.parentNode.insertBefore(buildPasswordCard(), billingStep);
-      return;
-    }
-
-    /* Strategy 4: insert before the actions row (last resort) */
+    /* Strategy 3: insert before the actions row (last resort) */
     var actionsRow = document.querySelector('.wc-block-checkout__actions_row, .wc-block-checkout__actions');
     if(actionsRow && actionsRow.parentNode){
       actionsRow.parentNode.insertBefore(buildPasswordCard(), actionsRow);
@@ -1598,6 +1626,18 @@ add_action( 'wp_footer', function () {
     }, true); // capture phase — fires before React's onClick
   }
 
+  /* ── Remove "Secure checkout · SSL encrypted" trust line ── */
+  function removeSecureText(){
+    var phrases = ['Secure checkout','SSL encrypted','30-day guarantee','30 day guarantee'];
+    document.querySelectorAll('p, span, div').forEach(function(el){
+      if(el.children.length > 0) return; // skip containers
+      var t = el.textContent || '';
+      if(phrases.some(function(p){ return t.indexOf(p) !== -1; })){
+        el.style.display = 'none';
+      }
+    });
+  }
+
   /* ── Main cleanup / injection ──────────────────────────── */
   function cleanup(){
     /* Hide empty checkout steps */
@@ -1610,6 +1650,9 @@ add_action( 'wp_footer', function () {
       });
       if(visible.length === 0) step.style.display = 'none';
     });
+
+    /* Remove trust/secure text */
+    removeSecureText();
 
     /* Inject password field */
     injectPasswordField();
@@ -1710,6 +1753,13 @@ add_action( 'wp_footer', function () {
     ?>
 <script>
 (function(){
+  /* ── Remove empty order overview cells (e.g. blank payment method item) ── */
+  document.querySelectorAll(
+    '.woocommerce-order-overview li, .woocommerce-thankyou-order-details li'
+  ).forEach(function(li){
+    if(!li.textContent.trim()) li.parentNode.removeChild(li);
+  });
+
   var thankyou = document.querySelector('.woocommerce-thankyou-order-received');
   if (!thankyou) return;
 
