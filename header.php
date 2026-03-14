@@ -84,6 +84,27 @@
               </div>
             </div>
           </li>
+          <!-- About with dropdown -->
+          <li class="nav-item-dropdown" id="nav-about">
+            <button class="nav-dropdown-trigger" aria-expanded="false" aria-controls="about-dropdown" type="button">
+              About
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:4px;transition:transform 0.2s;"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="nav-dropdown" id="about-dropdown" role="region" aria-label="About menu">
+              <a href="<?php echo esc_url( home_url( '/about' ) ); ?>" class="about-dd-item">
+                <span class="about-dd-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                </span>
+                About us
+              </a>
+              <a href="<?php echo esc_url( home_url( '/contact' ) ); ?>" class="about-dd-item">
+                <span class="about-dd-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.4"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                </span>
+                Contact us
+              </a>
+            </div>
+          </li>
           <?php
           wp_nav_menu([
             'theme_location' => 'primary',
@@ -92,7 +113,6 @@
             'walker'         => new PT101_Walker(),
             'fallback_cb'    => function () {
               $links = [
-                'About'          => '/about',
                 'Resources'      => '/resources',
                 'Getting funded' => '/getting-funded',
                 'Mentors'        => '/mentors',
@@ -128,6 +148,10 @@
   <a href="<?php echo esc_url( home_url( '/programs/mastering-professional-trading' ) ); ?>">Mastering professional trading</a>
   <a href="<?php echo esc_url( home_url( '/programs/intro' ) ); ?>">Intro to trading</a>
   <div class="mobile-drawer-divider"></div>
+  <div class="mobile-drawer-section-label">About</div>
+  <a href="<?php echo esc_url( home_url( '/about' ) ); ?>">About us</a>
+  <a href="<?php echo esc_url( home_url( '/contact' ) ); ?>">Contact us</a>
+  <div class="mobile-drawer-divider"></div>
   <ul class="mobile-drawer-links" aria-label="Site links">
     <?php
     wp_nav_menu([
@@ -137,7 +161,6 @@
       'depth'          => 1,
       'fallback_cb'    => function () {
         $links = [
-          'About'          => '/about',
           'Resources'      => '/resources',
           'Getting funded' => '/getting-funded',
           'Mentors'        => '/mentors',

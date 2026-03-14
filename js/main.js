@@ -5,30 +5,42 @@
 (function () {
   'use strict';
 
-  /* ── PROGRAMS DROPDOWN ─────────────────────── */
-  var ddItem    = document.getElementById('nav-programs');
-  var ddTrigger = ddItem ? ddItem.querySelector('.nav-dropdown-trigger') : null;
+  /* ── NAV DROPDOWNS (Programs + About) ──────── */
+  function initDropdown(itemId) {
+    var item    = document.getElementById(itemId);
+    var trigger = item ? item.querySelector('.nav-dropdown-trigger') : null;
+    if (!trigger) return;
 
-  if (ddTrigger) {
-    ddTrigger.addEventListener('click', function (e) {
+    trigger.addEventListener('click', function (e) {
       e.stopPropagation();
-      var open = ddItem.classList.toggle('open');
-      ddTrigger.setAttribute('aria-expanded', String(open));
+      var open = item.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', String(open));
+      // close other dropdowns
+      document.querySelectorAll('.nav-item-dropdown').forEach(function (other) {
+        if (other !== item && other.classList.contains('open')) {
+          other.classList.remove('open');
+          var t = other.querySelector('.nav-dropdown-trigger');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        }
+      });
     });
     document.addEventListener('click', function (e) {
-      if (ddItem && !ddItem.contains(e.target)) {
-        ddItem.classList.remove('open');
-        ddTrigger.setAttribute('aria-expanded', 'false');
+      if (!item.contains(e.target)) {
+        item.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
       }
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && ddItem.classList.contains('open')) {
-        ddItem.classList.remove('open');
-        ddTrigger.setAttribute('aria-expanded', 'false');
-        ddTrigger.focus();
+      if (e.key === 'Escape' && item.classList.contains('open')) {
+        item.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus();
       }
     });
   }
+
+  initDropdown('nav-programs');
+  initDropdown('nav-about');
 
   /* ── HEADER SCROLL (rAF-debounced for INP) ─── */
   var header      = document.getElementById('site-header');

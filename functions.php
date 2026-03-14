@@ -247,7 +247,7 @@ function pt101_footer_handbooks() {
 function pt101_footer_about() {
     foreach ( [
         'About us'     => '/about',
-        'Mention team' => '/team',
+        'Contact us'   => '/contact',
         'How it works' => '/how-it-works',
         'FAQ'          => '/faq',
         'Blog'         => '/blog',
@@ -308,6 +308,11 @@ function pt101_ensure_course_pages() {
             'title'    => 'About Us',
             'slug'     => 'about',
             'template' => 'template-about.php',
+        ],
+        [
+            'title'    => 'Contact Us',
+            'slug'     => 'contact',
+            'template' => 'template-contact.php',
         ],
     ];
 
