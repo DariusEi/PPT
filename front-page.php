@@ -341,13 +341,13 @@ get_header();
       <?php endwhile; wp_reset_postdata();
       else:
         foreach ( [
-          [ 'Trading foundations (terminology and basics)', 'Intro program', '4 weeks',  'Build a solid understanding of trading terminology, order types, chart reading and how markets move.' ],
-          [ 'Market mechanics &amp; analysis',              '',              '6 weeks',  'Dive deep into technical and fundamental analysis, price action, indicators and market psychology.' ],
-          [ 'Strategy development &amp; advanced technicals', '',            '8 weeks',  'Develop and backtest your own edge. Risk management, entries, exits and trade journaling.' ],
-          [ 'Mastering professional trading',               '',              '10 weeks', 'Simulate a real prop firm environment. Live markets, peer review, senior mentor sessions and final assessment.' ],
-        ] as [ $name, $badge, $duration, $desc ] ):
+          [ 'Trading foundations (terminology and basics)', 'Intro program', '4 weeks',  'Build a solid understanding of trading terminology, order types, chart reading and how markets move.',         '/intro-to-trading' ],
+          [ 'Market mechanics &amp; analysis',              '',              '6 weeks',  'Dive deep into technical and fundamental analysis, price action, indicators and market psychology.',            '/market-mechanics-analysis' ],
+          [ 'Strategy development &amp; advanced technicals', '',            '8 weeks',  'Develop and backtest your own edge. Risk management, entries, exits and trade journaling.',                    '/strategy-development-advanced-technicals' ],
+          [ 'Mastering professional trading',               '',              '10 weeks', 'Simulate a real prop firm environment. Live markets, peer review, senior mentor sessions and final assessment.', '/mastering-professional-trading' ],
+        ] as [ $name, $badge, $duration, $desc, $slug ] ):
       ?>
-          <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="prog-row">
+          <a href="<?php echo esc_url( home_url( $slug ) ); ?>" class="prog-row">
             <div class="prog-copy">
               <div class="prog-top">
                 <span class="prog-title"><?php echo $name; ?></span>
