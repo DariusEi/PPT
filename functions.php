@@ -629,9 +629,15 @@ html body.pt101 .wc-block-components-checkout-step {
   padding: 24px 28px !important;
   margin-bottom: 20px !important;
   border-bottom: none !important;
+  overflow: visible !important;
 }
 html body.pt101 .wc-block-components-checkout-step:last-child {
   margin-bottom: 0 !important;
+}
+/* Allow country dropdown to escape all parent containers */
+html body.pt101 .wc-block-components-checkout-step__content,
+html body.pt101 .wc-block-components-address-form {
+  overflow: visible !important;
 }
 
 /* ── Address card (saved address summary view) ─────────────── */
