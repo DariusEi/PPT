@@ -3762,3 +3762,12 @@ body.woocommerce-order-received {
   .woocommerce-checkout #order_review,
   .wc-block-checkout__sidebar { padding: 18px 14px !important; }
 }
+
+
+/* ── Hide search block/widget from header ── */
+.site-header .wp-block-search,
+.site-header .search-form,
+.site-header #searchform,
+.site-header .wp-block-search__inside-wrapper,
+.header-inner .wp-block-search,
+.header-inner .search-form { display: none !important; }
