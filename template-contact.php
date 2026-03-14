@@ -33,7 +33,7 @@ get_header();
           </div>
           <div>
             <p class="ct-info-label">Email us</p>
-            <p class="ct-info-val">support@proptrading101.com</p>
+            <p class="ct-info-val">info@proptrading101.com</p>
           </div>
         </div>
 
