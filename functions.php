@@ -443,16 +443,26 @@ add_action( 'woocommerce_store_api_checkout_order_processed', function ( $order 
 }, 20 );
 
 /* ── AUTO-LOGIN on thank-you page ──────────────────────────────────────
-   After a new-account checkout the user's session may not persist to the
-   order-received page, causing WooCommerce to demand a login.  We log the
-   customer in silently the moment the thank-you page loads so the order
-   details show correctly and the login form never appears. */
-add_action( 'woocommerce_thankyou', function ( $order_id ) {
+   Runs on 'wp' (before any template rendering) so WooCommerce never
+   reaches the "please log in" gate.  We verify the order key from the
+   URL so only the person with the real thank-you link can trigger this.
+   wp_set_current_user() makes the rest of the current request think the
+   user is logged in; wp_set_auth_cookie() persists it for future visits. */
+add_action( 'wp', function () {
     if ( is_user_logged_in() ) return;
+    if ( ! function_exists( 'is_wc_endpoint_url' ) ) return;
+    if ( ! is_wc_endpoint_url( 'order-received' ) ) return;
+
+    $order_id  = absint( get_query_var( 'order-received' ) );
+    $order_key = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : '';
+    if ( ! $order_id || ! $order_key ) return;
+
     $order = wc_get_order( $order_id );
-    if ( ! $order ) return;
+    if ( ! $order || ! hash_equals( $order->get_order_key(), $order_key ) ) return;
+
     $customer_id = $order->get_customer_id();
     if ( ! $customer_id ) return;
+
     wp_set_current_user( $customer_id );
     wp_set_auth_cookie( $customer_id );
 }, 1 );
@@ -1177,17 +1187,20 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
   }
   html body.pt101 .wc-block-components-address-form > *,
   html body.pt101 .wc-block-components-address-form > .wc-block-components-country-input,
+  html body.pt101 .wc-block-components-address-form > .wc-block-components-state-input,
   html body.pt101 .wc-block-components-address-form > .wc-block-components-address-form__address2-toggle,
   html body.pt101 .wc-block-components-address-form > *:has(input[id$="address_1"]),
   html body.pt101 .wc-block-components-address-form > *:has(input[id$="address_2"]),
   html body.pt101 .wc-block-components-address-form > *:has(input[id$="company"]),
   html body.pt101 .wc-block-components-address-form > *:has(input[id$="city"]),
   html body.pt101 .wc-block-components-address-form > *:has(input[id$="postcode"]),
+  html body.pt101 .wc-block-components-address-form > *:has(input[id$="phone"]),
   html body.pt101 .wc-block-components-address-form > *[class*="address_1"],
   html body.pt101 .wc-block-components-address-form > *[class*="address_2"],
   html body.pt101 .wc-block-components-address-form > *[class*="company"],
   html body.pt101 .wc-block-components-address-form > *[class*="city"],
-  html body.pt101 .wc-block-components-address-form > *[class*="postcode"] {
+  html body.pt101 .wc-block-components-address-form > *[class*="postcode"],
+  html body.pt101 .wc-block-components-address-form > *[class*="phone"] {
     grid-column: span 1 !important;
   }
 
