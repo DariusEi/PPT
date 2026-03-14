@@ -35,25 +35,25 @@
                 <div class="nav-dd-section">
                   <div class="nav-dd-heading">Trading courses</div>
                   <div class="nav-dd-grid">
-                    <a href="<?php echo esc_url( home_url( '/programs/trading-foundations' ) ); ?>" class="nav-dd-item">
+                    <a href="<?php echo esc_url( home_url( '/trading-foundations' ) ); ?>" class="nav-dd-item">
                       <span class="nav-dd-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="#111320"><path d="M3 5a2 2 0 012-2h10a2 2 0 012 2v2H3V5zm0 4h14v6a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
                       </span>
                       <span>Trading foundations</span>
                     </a>
-                    <a href="<?php echo esc_url( home_url( '/programs/mastering-professional-trading' ) ); ?>" class="nav-dd-item">
+                    <a href="<?php echo esc_url( home_url( '/mastering-professional-trading' ) ); ?>" class="nav-dd-item">
                       <span class="nav-dd-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="#111320"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5 8.12V12a1 1 0 00.553.894l4 2a1 1 0 00.894 0l4-2A1 1 0 0015 12V8.12l2.394-1.2a1 1 0 000-1.84l-7-3z"/></svg>
                       </span>
                       <span>Mastering professional trading</span>
                     </a>
-                    <a href="<?php echo esc_url( home_url( '/programs/market-mechanics-analysis' ) ); ?>" class="nav-dd-item">
+                    <a href="<?php echo esc_url( home_url( '/market-mechanics-analysis' ) ); ?>" class="nav-dd-item">
                       <span class="nav-dd-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="#111320"><path d="M2 11a1 1 0 011-1h3a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h3a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1h-3a1 1 0 01-1-1V4z"/></svg>
                       </span>
                       <span>Market mechanics &amp; analysis</span>
                     </a>
-                    <a href="<?php echo esc_url( home_url( '/programs/strategy-development' ) ); ?>" class="nav-dd-item">
+                    <a href="<?php echo esc_url( home_url( '/strategy-development-advanced-technicals' ) ); ?>" class="nav-dd-item">
                       <span class="nav-dd-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="#111320"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a2 2 0 002 2h4a2 2 0 002-2V3a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
                       </span>
@@ -65,7 +65,7 @@
                 <div class="nav-dd-section">
                   <div class="nav-dd-heading">Intro to trading</div>
                   <div class="nav-dd-grid nav-dd-grid--single">
-                    <a href="<?php echo esc_url( home_url( '/programs/intro' ) ); ?>" class="nav-dd-item">
+                    <a href="<?php echo esc_url( home_url( '/intro-to-trading' ) ); ?>" class="nav-dd-item">
                       <span class="nav-dd-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="#111320"><path d="M3 5a2 2 0 012-2h10a2 2 0 012 2v2H3V5zm0 4h14v6a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
                       </span>
@@ -142,11 +142,11 @@
 <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile menu" aria-hidden="true">
   <div class="mobile-drawer-section-label">Programs</div>
   <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>">Review all programs →</a>
-  <a href="<?php echo esc_url( home_url( '/programs/trading-foundations' ) ); ?>">Trading foundations</a>
-  <a href="<?php echo esc_url( home_url( '/programs/market-mechanics-analysis' ) ); ?>">Market mechanics &amp; analysis</a>
-  <a href="<?php echo esc_url( home_url( '/programs/strategy-development' ) ); ?>">Strategy development &amp; advanced technicals</a>
-  <a href="<?php echo esc_url( home_url( '/programs/mastering-professional-trading' ) ); ?>">Mastering professional trading</a>
-  <a href="<?php echo esc_url( home_url( '/programs/intro' ) ); ?>">Intro to trading</a>
+  <a href="<?php echo esc_url( home_url( '/trading-foundations' ) ); ?>">Trading foundations</a>
+  <a href="<?php echo esc_url( home_url( '/market-mechanics-analysis' ) ); ?>">Market mechanics &amp; analysis</a>
+  <a href="<?php echo esc_url( home_url( '/strategy-development-advanced-technicals' ) ); ?>">Strategy development &amp; advanced technicals</a>
+  <a href="<?php echo esc_url( home_url( '/mastering-professional-trading' ) ); ?>">Mastering professional trading</a>
+  <a href="<?php echo esc_url( home_url( '/intro-to-trading' ) ); ?>">Intro to trading</a>
   <div class="mobile-drawer-divider"></div>
   <div class="mobile-drawer-section-label">About</div>
   <a href="<?php echo esc_url( home_url( '/about' ) ); ?>">About us</a>

@@ -257,10 +257,10 @@ function pt101_footer_about() {
 }
 function pt101_footer_programs() {
     foreach ( [
-        'Trading foundations'                        => '#programs',
-        'Market mechanics & analysis'                => '#programs',
-        'Strategy development & advanced technicals' => '#programs',
-        'Mastering professional trading'             => '#programs',
+        'Trading foundations'                        => '/trading-foundations',
+        'Market mechanics & analysis'                => '/market-mechanics-analysis',
+        'Strategy development & advanced technicals' => '/strategy-development-advanced-technicals',
+        'Mastering professional trading'             => '/mastering-professional-trading',
     ] as $label => $url ) {
         echo '<li><a href="' . esc_url( home_url( $url ) ) . '">' . esc_html( $label ) . '</a></li>';
     }

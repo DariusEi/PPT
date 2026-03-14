@@ -3356,5 +3356,12 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
   .ct-form-card     { padding: 28px 20px; }
 }
 @media (max-width: 480px) {
+  .ct-hero          { padding-top: calc(var(--nav-h) + 36px); padding-bottom: 48px; }
+  .ct-hero h1       { font-size: clamp(1.8rem, 10vw, 2.4rem); }
+  .ct-hero-sub      { font-size: .92rem; }
+  .ct-body-section  { padding: 48px 0 64px; }
+  .ct-info-item     { gap: 12px; }
+  .ct-info-icon     { width: 36px; height: 36px; flex-shrink: 0; }
   .ct-form-card     { padding: 24px 16px; border-radius: var(--r-lg); }
+  .wpcf7 textarea   { min-height: 120px; }
 }
