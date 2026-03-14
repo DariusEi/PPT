@@ -590,6 +590,16 @@ html body.pt101 .wc-block-components-state-input.is-active label {
   letter-spacing: .06em !important;
   text-transform: uppercase !important;
 }
+/* Country/state combobox always has a value — force label up */
+html body.pt101 .wc-block-components-country-input label,
+html body.pt101 .wc-block-components-state-input label {
+  top: 9px !important;
+  transform: none !important;
+  font-size: .65rem !important;
+  color: var(--text-low) !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+}
 
 /* Checkboxes */
 html body.pt101 .wc-block-components-checkbox .wc-block-components-checkbox__label,
@@ -846,6 +856,13 @@ html body.pt101 .pt101-consent__item span {
   color: var(--text-mid) !important;
   font-size: .85rem !important;
   line-height: 1.6 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+html body.pt101 .pt101-consent,
+html body.pt101 .pt101-consent * {
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }
 html body.pt101 .pt101-consent__item strong {
   color: var(--text-hi) !important;
@@ -858,14 +875,18 @@ html body.pt101 .pt101-consent__item a {
 html body.pt101 .pt101-consent__item a:hover {
   color: #fff !important;
 }
-/* Error state when required checkbox not checked */
-html body.pt101 .pt101-consent__error {
+/* Error state — only when JS adds this class after failed submit */
+html body.pt101 .pt101-consent__item.pt101-consent__error {
   outline: 2px solid #e05a5a !important;
-  outline-offset: 8px !important;
+  outline-offset: 4px !important;
   border-radius: 4px !important;
 }
-html body.pt101 .pt101-consent__error input[type="checkbox"] {
+html body.pt101 .pt101-consent__item.pt101-consent__error input[type="checkbox"] {
   outline: 2px solid #e05a5a !important;
+}
+/* Remove red border from consent container itself */
+html body.pt101 .pt101-consent {
+  outline: none !important;
 }
 
 /* ── 12. PLACE ORDER ───────────────────────────────────────── */
