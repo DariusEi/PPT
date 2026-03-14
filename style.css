@@ -165,11 +165,6 @@ body.pt101 h3,
 body.pt101 h4,
 body.pt101 h5,
 body.pt101 h6 { font-family: var(--font); color: var(--white); line-height: 1.1; letter-spacing: -0.025em; }
-/* Override: force black on specific light-background sections */
-body.pt101 .work-section h1, body.pt101 .work-section h2, body.pt101 .work-section h3, body.pt101 .work-section h4,
-body.pt101 .programs-section h1, body.pt101 .programs-section h2, body.pt101 .programs-section h3, body.pt101 .programs-section h4,
-body.pt101 .cta-section h1, body.pt101 .cta-section h2, body.pt101 .cta-section h3, body.pt101 .cta-section h4,
-body.pt101 .site-footer h1, body.pt101 .site-footer h2, body.pt101 .site-footer h3, body.pt101 .site-footer h4 { color: #000000 !important; }
 h1 { font-weight: 800; } /* NO font-size here — set per-section below */
 h2 { font-size: clamp(1.7rem,3vw,2.5rem); font-weight: 700; }
 p  { color: var(--text-mid); line-height: 1.75; }
@@ -1060,14 +1055,6 @@ body.pt101 .footer-col h4,
   .testi-section { padding: 48px 16px 56px !important; }
   .testi-avatar-wrap { height: 220px !important; }
   .testi-quote { font-size: 0.92rem !important; }
-  .testi-metrics { grid-template-columns: 1fr !important; gap: 20px !important; padding-top: 20px !important; }
-  .testi-metric,
-  [class*="testi"] [style*="border-left:3px"] {
-    border-left: 3px solid #111320 !important;
-    padding-left: 16px !important;
-  }
-  /* First metric — re-add border since all stack vertically */
-  .testi-metrics > div:first-child { border-left: none !important; padding-left: 0 !important; }
   .tm-num { font-size: 1.8rem !important; }
   .testi-nav { padding-top: 16px !important; margin-bottom: 20px !important; }
 
@@ -1105,13 +1092,6 @@ body.pt101 .footer-col h4,
   /* CTA */
   .cta-section { padding: 48px 16px 64px !important; }
   .cta-section .btn { width: 100%; max-width: 320px; justify-content: center; }
-  /* Trust signals — stack vertically */
-  .cta-section [style*="display:flex"][style*="flex-wrap:wrap"] {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 12px !important;
-  }
-  .cta-section [style*="|"] { display: none !important; } /* hide pipe dividers */
 
   /* Footer */
   .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
@@ -3393,8 +3373,7 @@ body.woocommerce-order-received {
 
 /* Hide WP page title on checkout */
 .woocommerce-page .entry-header,
-.woocommerce-checkout .entry-header,
-.wp-block-woocommerce-checkout .wc-block-checkout__sidebar-sticky-position { ; }
+.woocommerce-checkout .entry-header { display: none; }
 
 /* ── Main layout ── */
 .woocommerce {

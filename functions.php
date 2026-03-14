@@ -79,8 +79,7 @@ add_action( 'wp_head', function () {
     echo '<link rel="dns-prefetch" href="//images.unsplash.com">' . "\n";
 
     // Preload the heaviest font weight (800 = all major headings) to reduce FOUT
-    $uri = get_template_directory_uri();
-    echo '<link rel="preload" href="' . esc_url( $uri . '/fonts/polysanstrial-bulkywide.otf' ) . '" as="font" type="font/otf" crossorigin>' . "\n";
+    echo '<link rel="preload" href="' . esc_url( PT101_URI . '/fonts/polysanstrial-bulkywide.otf' ) . '" as="font" type="font/otf" crossorigin>' . "\n";
 
     // Preload course hero image when we can determine it early
     $hero_imgs = [
@@ -410,7 +409,6 @@ function pt101_ajax_store_checkout_pw() {
     $pwd = isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : '';
     if ( strlen( $pwd ) < 8 ) {
         wp_send_json_error( array( 'msg' => __( 'Password must be at least 8 characters.', 'prop-trading-101' ) ) );
-        return; // wp_send_json_error calls wp_die but be explicit
     }
     WC()->session->set( 'pt101_checkout_password', $pwd ); // kept raw; wp_set_password hashes it
     wp_send_json_success();
@@ -1679,14 +1677,18 @@ add_action( 'wp_footer', function () {
     _merged = true;
   }
 
-  /* ── Remove "Secure checkout · SSL encrypted" trust line ── */
+  /* ── Remove "Secure checkout · SSL encrypted" trust line (run once) ── */
+  var _secureHidden = false;
   function removeSecureText(){
+    if(_secureHidden) return;
     var phrases = ['Secure checkout','SSL encrypted','30-day guarantee','30 day guarantee'];
-    document.querySelectorAll('p, span, div').forEach(function(el){
-      if(el.children.length > 0) return; // skip containers
+    var main = document.querySelector('.wc-block-checkout__main') || document.body;
+    main.querySelectorAll('p, span, div').forEach(function(el){
+      if(el.children.length > 0) return;
       var t = el.textContent || '';
       if(phrases.some(function(p){ return t.indexOf(p) !== -1; })){
         el.style.display = 'none';
+        _secureHidden = true;
       }
     });
   }
@@ -1809,13 +1811,6 @@ add_action( 'wp_footer', function () {
     ?>
 <script>
 (function(){
-  /* ── Remove empty order overview cells (e.g. blank payment method item) ── */
-  document.querySelectorAll(
-    '.woocommerce-order-overview li, .woocommerce-thankyou-order-details li'
-  ).forEach(function(li){
-    if(!li.textContent.trim()) li.parentNode.removeChild(li);
-  });
-
   var thankyou = document.querySelector('.woocommerce-thankyou-order-received');
   if (!thankyou) return;
 
