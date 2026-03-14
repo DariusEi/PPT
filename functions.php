@@ -1045,15 +1045,15 @@ html body.pt101 .woocommerce-thankyou-order-details {
   gap: 0 !important;
   list-style: none !important;
   padding: 0 !important;
-  margin: 0 0 24px !important;
+  margin: 0 0 28px !important;
   background: var(--bg-card) !important;
   border: 1px solid var(--border-dark) !important;
   border-radius: var(--r-lg) !important;
   overflow: hidden !important;
 }
 html body.pt101 .woocommerce-order-overview li {
-  padding: 18px 20px !important;
-  font-size: .7rem !important;
+  padding: 20px !important;
+  font-size: .68rem !important;
   font-weight: 600 !important;
   letter-spacing: .06em !important;
   text-transform: uppercase !important;
@@ -1061,77 +1061,27 @@ html body.pt101 .woocommerce-order-overview li {
   border-right: 1px solid var(--border-dark) !important;
   border-bottom: none !important;
   line-height: 1 !important;
+  /* Ensure each item stays in its grid cell */
+  min-width: 0 !important;
+  overflow: hidden !important;
+  word-break: break-word !important;
 }
 html body.pt101 .woocommerce-order-overview li:last-child { border-right: none !important; }
 html body.pt101 .woocommerce-order-overview li strong {
   display: block !important;
   margin-top: 8px !important;
-  font-size: .95rem !important;
+  font-size: .92rem !important;
   font-weight: 700 !important;
   color: var(--text-hi) !important;
   letter-spacing: -.01em !important;
   text-transform: none !important;
 }
 
-/* Order Details Card */
-html body.pt101 .woocommerce-order-details {
-  background: var(--bg-card) !important;
-  border: 1px solid var(--border-dark) !important;
-  border-radius: var(--r-lg) !important;
-  padding: 24px !important;
-  margin-bottom: 20px !important;
-  overflow: hidden !important;
-}
-html body.pt101 .woocommerce-order-details__title,
-html body.pt101 .woocommerce-column__title {
-  color: var(--text-hi) !important;
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-  letter-spacing: -.025em !important;
-  margin: 0 0 18px !important;
-  padding-bottom: 12px !important;
-  border-bottom: 1px solid var(--border-dark) !important;
-}
-html body.pt101 .woocommerce-table--order-details { width: 100% !important; border-collapse: collapse !important; background: transparent !important; }
-html body.pt101 .woocommerce-table--order-details thead th {
-  padding: 0 0 10px !important; font-size: .7rem !important; font-weight: 600 !important;
-  letter-spacing: .06em !important; text-transform: uppercase !important;
-  color: var(--text-low) !important; border-bottom: 1px solid var(--border-dark) !important;
-  text-align: left !important; background: transparent !important;
-}
-html body.pt101 .woocommerce-table--order-details thead th.product-total { text-align: right !important; }
-html body.pt101 .woocommerce-table--order-details tbody td {
-  padding: 14px 0 !important; border-bottom: 1px solid var(--border-dark) !important;
-  color: var(--text-hi) !important; font-size: .9rem !important; vertical-align: middle !important; background: transparent !important;
-}
-html body.pt101 .woocommerce-table--order-details tbody td.product-total { text-align: right !important; font-weight: 600 !important; }
-html body.pt101 .woocommerce-table--order-details tfoot td,
-html body.pt101 .woocommerce-table--order-details tfoot th {
-  padding: 10px 0 !important; color: var(--text-mid) !important;
-  font-size: .88rem !important; border-top: 1px solid var(--border-dark) !important;
-  text-align: left !important; background: transparent !important;
-}
-html body.pt101 .woocommerce-table--order-details tfoot tr.order-total td,
-html body.pt101 .woocommerce-table--order-details tfoot tr.order-total th {
-  color: var(--text-hi) !important; font-weight: 700 !important; font-size: 1rem !important;
-  border-top: 1.5px solid var(--border-mid) !important; padding-top: 14px !important;
-}
-
-/* Billing Address Card */
+/* Order Details & Billing Address — hidden on thank you page */
+html body.pt101 .woocommerce-order-details,
 html body.pt101 .woocommerce-customer-details {
-  background: var(--bg-card) !important;
-  border: 1px solid var(--border-dark) !important;
-  border-radius: var(--r-lg) !important;
-  padding: 24px !important;
-  margin-bottom: 24px !important;
+  display: none !important;
 }
-html body.pt101 .woocommerce-customer-details address {
-  font-style: normal !important;
-  color: var(--text-mid) !important;
-  font-size: .9rem !important;
-  line-height: 1.8 !important;
-}
-html body.pt101 .woocommerce-customer-details address p { color: var(--text-mid) !important; margin: 0 !important; }
 
 /* Next Steps (JS-injected) */
 html body.pt101 .pt101-next-steps {
@@ -1174,10 +1124,11 @@ html body.pt101 .pt101-next-steps__actions {
 html body.pt101 .pt101-btn-primary {
   display: inline-flex !important; align-items: center !important; justify-content: center !important;
   padding: 12px 26px !important; background: var(--accent) !important;
-  color: #fff !important; font-family: var(--font) !important; font-size: .9rem !important;
+  color: #fff !important; font-family: var(--font) !important; font-size: .88rem !important;
   font-weight: 600 !important; border-radius: 100px !important; text-decoration: none !important;
   box-shadow: 0 8px 28px var(--accent-glow) !important;
   transition: background var(--t), transform .14s !important;
+  white-space: nowrap !important;
 }
 html body.pt101 .pt101-btn-primary:hover { background: var(--accent-dim) !important; transform: translateY(-2px) !important; color: #fff !important; }
 html body.pt101 .pt101-btn-secondary {
@@ -1185,9 +1136,10 @@ html body.pt101 .pt101-btn-secondary {
   padding: 12px 26px !important;
   background: rgba(255,255,255,.07) !important;
   border: 1px solid var(--border-dark) !important;
-  color: var(--text-hi) !important; font-family: var(--font) !important; font-size: .9rem !important;
+  color: var(--text-hi) !important; font-family: var(--font) !important; font-size: .88rem !important;
   font-weight: 600 !important; border-radius: 100px !important; text-decoration: none !important;
   transition: background var(--t), color var(--t) !important;
+  white-space: nowrap !important;
 }
 html body.pt101 .pt101-btn-secondary:hover { background: rgba(255,255,255,.12) !important; color: #fff !important; }
 
