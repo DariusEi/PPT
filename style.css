@@ -2609,7 +2609,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 .au-hero {
   background: var(--bg);
   padding-top: calc(var(--nav-h) + 80px);
-  padding-bottom: 72px;
+  padding-bottom: 88px;
   overflow: hidden;
   text-align: center;
 }
@@ -2667,12 +2667,12 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 /* ── OUR STORY ─────────────────────────────────────────────── */
 .au-story-section {
   background: var(--light);
-  padding: 88px 0;
+  padding: 96px 0;
 }
 .au-story-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 80px;
+  gap: 64px;
   align-items: center;
 }
 .au-story-text h2 {
@@ -2680,7 +2680,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--text-dark);
+  color: var(--text-dark) !important;
   margin: 0 0 24px;
 }
 .au-story-text p {
@@ -2704,7 +2704,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 /* ── WHY WE'RE DIFFERENT  (borderless icon grid on dark bg) ── */
 .au-why-section {
   background: var(--bg-2);
-  padding: 88px 0;
+  padding: 96px 0;
 }
 .au-why-intro {
   text-align: center;
@@ -2758,14 +2758,14 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 /* ── OUR PROCESS ───────────────────────────────────────────── */
 .au-process-section {
   background: var(--light);
-  padding: 88px 0;
+  padding: 96px 0;
 }
 .au-process-heading {
   font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--text-dark);
+  color: var(--text-dark) !important;
   text-align: center;
   margin: 0 0 56px;
 }
@@ -2787,7 +2787,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 .au-step h3 {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-dark) !important;
   margin: 0 0 10px;
   line-height: 1.3;
 }
@@ -2805,7 +2805,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 /* ── TEAM / MENTOR CTA ─────────────────────────────────────── */
 .au-team-section {
   background: var(--bg);
-  padding: 88px 0;
+  padding: 96px 0;
 }
 .au-team-inner {
   display: grid;
@@ -2861,7 +2861,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 /* ── CTA ───────────────────────────────────────────────────── */
 .au-cta-section {
   background: var(--light);
-  padding: 88px 0 80px;
+  padding: 96px 0;
   text-align: center;
 }
 .au-cta-section h2 {
@@ -2869,7 +2869,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--text-dark);
+  color: var(--text-dark) !important;
   margin: 0 0 32px;
 }
 .au-cta-btn {
@@ -2885,24 +2885,24 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
   .au-why-grid { gap: 40px 32px; }
 }
 @media (max-width: 768px) {
-  .au-hero { padding-top: calc(var(--nav-h) + 48px); padding-bottom: 56px; }
+  .au-hero { padding-top: calc(var(--nav-h) + 48px); padding-bottom: 72px; }
   .au-hero-center h1 { font-size: clamp(2.2rem, 9vw, 3rem); }
   .au-hero-sub { max-width: 100%; font-size: 1rem; }
   .au-hero-footnote { margin-bottom: 36px; }
   .au-hero-stats { padding-top: 32px; }
-  .au-story-section { padding: 72px 0; }
-  .au-story-grid { grid-template-columns: 1fr; gap: 36px; }
-  .au-why-section { padding: 72px 0; }
+  .au-story-section { padding: 80px 0; }
+  .au-story-grid { grid-template-columns: 1fr; gap: 40px; }
+  .au-why-section { padding: 80px 0; }
   .au-why-intro { margin-bottom: 48px; }
-  .au-why-grid { grid-template-columns: 1fr; gap: 36px; }
-  .au-process-section { padding: 72px 0; }
+  .au-why-grid { grid-template-columns: 1fr; gap: 40px; }
+  .au-process-section { padding: 80px 0; }
   .au-process-heading { margin: 0 0 40px; }
   .au-process-steps { grid-template-columns: 1fr; gap: 28px; }
   .au-step-arrow { display: none; }
-  .au-team-section { padding: 72px 0; }
+  .au-team-section { padding: 80px 0; }
   .au-team-inner { grid-template-columns: 1fr; gap: 40px; }
   .au-team-stats { grid-template-columns: repeat(3, 1fr); }
-  .au-cta-section { padding: 72px 0 64px; }
+  .au-cta-section { padding: 80px 0; }
   .au-cta-section h2 { font-size: clamp(1.6rem, 6vw, 2.2rem); }
 }
 @media (max-width: 480px) {
