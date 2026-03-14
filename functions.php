@@ -1268,14 +1268,6 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     margin-bottom: 20px !important;
   }
 
-  /* Thank-you: order meta — 2 columns */
-  html body.pt101 .woocommerce-order-overview {
-    grid-template-columns: 1fr 1fr !important;
-  }
-  html body.pt101 .woocommerce-order-overview li:nth-child(2) { border-right: none !important; }
-  html body.pt101 .woocommerce-order-overview li:nth-child(n+3) { border-top: 1px solid var(--border-dark) !important; }
-  html body.pt101 .woocommerce-order-overview li:last-child { border-right: none !important; }
-
   /* Thank-you: next steps — single column */
   html body.pt101 .pt101-next-steps {
     padding: 20px 18px !important;
@@ -1337,14 +1329,6 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     border-radius: var(--r-sm) !important;
   }
 
-  /* Thank-you: order meta — tighter */
-  html body.pt101 .woocommerce-order-overview li {
-    padding: 14px 12px !important;
-    font-size: .6rem !important;
-  }
-  html body.pt101 .woocommerce-order-overview li strong {
-    font-size: .82rem !important;
-  }
   html body.pt101 .woocommerce-thankyou-order-received {
     padding: 32px 16px 28px !important;
     font-size: 1.15rem !important;
@@ -1411,46 +1395,9 @@ html body.pt101 .pt101-success-sub {
   letter-spacing: 0 !important;
 }
 
-/* Order Meta Bar */
+/* Order Meta Bar — hidden (layout too fragile at varying viewport widths) */
 html body.pt101 .woocommerce-order-overview,
-html body.pt101 .woocommerce-thankyou-order-details {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
-  gap: 0 !important;
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 0 28px !important;
-  background: var(--bg-card) !important;
-  border: 1px solid var(--border-dark) !important;
-  border-radius: var(--r-lg) !important;
-  overflow: hidden !important;
-}
-html body.pt101 .woocommerce-order-overview li {
-  padding: 18px 16px !important;
-  font-size: .65rem !important;
-  font-weight: 600 !important;
-  letter-spacing: .06em !important;
-  text-transform: uppercase !important;
-  color: var(--text-low) !important;
-  border-right: 1px solid var(--border-dark) !important;
-  border-bottom: none !important;
-  line-height: 1 !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-html body.pt101 .woocommerce-order-overview li:last-child { border-right: none !important; }
-html body.pt101 .woocommerce-order-overview li strong {
-  display: block !important;
-  margin-top: 8px !important;
-  font-size: .88rem !important;
-  font-weight: 700 !important;
-  color: var(--text-hi) !important;
-  letter-spacing: -.01em !important;
-  text-transform: none !important;
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-}
+html body.pt101 .woocommerce-thankyou-order-details { display: none !important; }
 
 /* Order Details & Billing Address — hidden on thank you page */
 html body.pt101 .woocommerce-order-details,

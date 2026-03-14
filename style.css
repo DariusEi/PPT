@@ -3764,10 +3764,8 @@ body.woocommerce-order-received {
 }
 
 
-/* ── Hide search block/widget from header ── */
-.site-header .wp-block-search,
-.site-header .search-form,
-.site-header #searchform,
-.site-header .wp-block-search__inside-wrapper,
-.header-inner .wp-block-search,
-.header-inner .search-form { display: none !important; }
+/* ── Hide search block/widget everywhere ── */
+.wp-block-search,
+.search-form,
+#searchform,
+.wp-block-search__inside-wrapper { display: none !important; }
