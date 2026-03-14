@@ -419,10 +419,23 @@ html body.pt101 .wc-block-components-address-form {
   align-items:start!important;
 }
 html body.pt101 .wc-block-components-address-form > * { grid-column:span 1!important; }
-html body.pt101 .wc-block-components-address-form .wc-block-components-country-input,
-html body.pt101 .wc-block-components-address-form [id$="address_1"],
-html body.pt101 .wc-block-components-address-form [id$="address_2"],
-html body.pt101 .wc-block-components-address-form [id$="company"] { grid-column:span 2!important; }
+/* Full-width fields: target the wrapper divs using :has() for modern browsers */
+html body.pt101 .wc-block-components-address-form > .wc-block-components-country-input,
+html body.pt101 .wc-block-components-address-form > .wc-block-components-address-form__address2-toggle,
+html body.pt101 .wc-block-components-address-form > *:has(input[id$="address_1"]),
+html body.pt101 .wc-block-components-address-form > *:has(input[id$="address_2"]),
+html body.pt101 .wc-block-components-address-form > *:has(input[id$="company"]) { grid-column:span 2!important; }
+/* Fallback for older browsers: target by data attributes WooCommerce adds */
+html body.pt101 .wc-block-components-address-form > *[class*="address_1"],
+html body.pt101 .wc-block-components-address-form > *[class*="address_2"],
+html body.pt101 .wc-block-components-address-form > *[class*="company"] { grid-column:span 2!important; }
+/* "+ Add apartment" toggle link */
+html body.pt101 .wc-block-components-address-form__address2-toggle {
+  grid-column:span 2!important;
+  background:none!important; border:none!important; padding:0!important;
+  color:#7c6ef5!important; font-size:.83rem!important; cursor:pointer; text-align:left!important;
+  text-decoration:none!important;
+}
 
 /* Each field wrapper: isolate stacking so floating labels don't bleed */
 html body.pt101 .wc-block-components-text-input,
@@ -611,18 +624,31 @@ html body.pt101 .wc-block-components-totals-coupon__button {
 html body.pt101 .wc-block-components-totals-coupon input { height:44px!important; padding:0 14px!important; }
 
 /* ══ 7. PAYMENT BLOCK ══════════════════════════════════════════ */
+html body.pt101 .wp-block-woocommerce-checkout-payment-block { display:block!important; visibility:visible!important; }
 html body.pt101 .wc-block-components-payment-methods,
 html body.pt101 .wc-block-checkout__payment-method {
   background:#13162a!important; border:1.5px solid rgba(255,255,255,0.07)!important;
   border-radius:12px!important; padding:20px!important;
+  color:#f0f0f5!important;
 }
+/* Force all text inside payment block to be visible */
+html body.pt101 .wc-block-components-payment-methods *,
+html body.pt101 .wc-block-checkout__payment-method * { color:rgba(240,240,245,.8)!important; }
 html body.pt101 .wc-block-components-payment-method-label__name,
-html body.pt101 .wc-block-components-radio-control__label { color:#f0f0f5!important; font-size:.93rem!important; }
+html body.pt101 .wc-block-components-radio-control__label,
+html body.pt101 .wc-block-components-payment-methods label { color:#f0f0f5!important; font-size:.93rem!important; }
 html body.pt101 .wc-block-components-radio-control__input { accent-color:#7c6ef5!important; }
 html body.pt101 .wc-block-components-radio-control-accordion-content {
   background:#0d0f1a!important; border-radius:8px!important;
   color:rgba(240,240,245,.55)!important; font-size:.85rem!important; padding:12px!important;
 }
+/* Payment method icons / descriptions */
+html body.pt101 .wc-block-components-payment-method-label__secondary-value,
+html body.pt101 .wc-block-components-payment-method-label { color:rgba(240,240,245,.65)!important; font-size:.82rem!important; }
+/* Saved payment methods */
+html body.pt101 .wc-block-components-payment-methods__saved-method,
+html body.pt101 .wc-block-components-state-input input,
+html body.pt101 .wc-block-gateway-container { color:#f0f0f5!important; }
 
 /* ══ 8. TERMS / PRIVACY ════════════════════════════════════════ */
 html body.pt101 .wc-block-checkout__terms p,
