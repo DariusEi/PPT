@@ -17,6 +17,10 @@ function pt101_setup() {
     add_theme_support( 'customize-selective-refresh-widgets' );
     add_theme_support( 'align-wide' );
     add_theme_support( 'responsive-embeds' );
+    add_theme_support( 'woocommerce' );
+    add_theme_support( 'wc-product-gallery-zoom' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+    add_theme_support( 'wc-product-gallery-slider' );
     register_nav_menus([
         'primary'  => __( 'Primary Menu',      'prop-trading-101' ),
         'footer-1' => __( 'Footer: Handbooks', 'prop-trading-101' ),
@@ -341,3 +345,32 @@ add_action( 'init', function () {
     pt101_ensure_course_pages();
     update_option( 'pt101_course_pages_v6', '1' );
 }, 20 );
+
+/* ── WOOCOMMERCE: DIRECT ENROLL URL ─────────── */
+/**
+ * Returns a URL that adds a product to cart and redirects straight to checkout.
+ * Usage: pt101_enroll_url( 158 )
+ */
+function pt101_enroll_url( $product_id ) {
+    return add_query_arg( [
+        'pt101_enroll' => absint( $product_id ),
+        'nonce'        => wp_create_nonce( 'pt101_enroll_' . $product_id ),
+    ], home_url( '/' ) );
+}
+
+add_action( 'template_redirect', function () {
+    if ( empty( $_GET['pt101_enroll'] ) ) return;
+    $product_id = absint( $_GET['pt101_enroll'] );
+    $nonce      = isset( $_GET['nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['nonce'] ) ) : '';
+    if ( ! wp_verify_nonce( $nonce, 'pt101_enroll_' . $product_id ) ) return;
+    if ( ! function_exists( 'WC' ) ) return;
+
+    WC()->cart->empty_cart();
+    WC()->cart->add_to_cart( $product_id, 1 );
+    wp_safe_redirect( wc_get_checkout_url() );
+    exit;
+} );
+
+/* ── WOOCOMMERCE: ACCOUNT CREATION ON CHECKOUT ─ */
+add_filter( 'woocommerce_checkout_registration_required', '__return_false' );
+add_filter( 'woocommerce_checkout_registration_enabled',  '__return_true' );

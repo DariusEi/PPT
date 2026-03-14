@@ -31,7 +31,7 @@ get_header();
           <li>Community access</li>
         </ul>
 
-        <a href="#enroll" class="btn btn-accent cdp-enroll-btn">Enroll for free &rarr;</a>
+        <a href="<?php echo esc_url( pt101_enroll_url( 158 ) ); ?>" class="btn btn-accent cdp-enroll-btn">Enroll for free &rarr;</a>
 
         <div class="cdp-rating">
           <span class="cdp-stars" aria-label="4.8 out of 5 stars" role="img">★★★★★</span>
@@ -255,7 +255,7 @@ get_header();
 <!-- ═══ CTA ════════════════════════════════════════════════════ -->
 <section class="cta-section" id="enroll">
   <h2>Your trading journey<br>starts today &mdash; for free!</h2>
-  <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="btn btn-accent">Start learning for free</a>
+  <a href="<?php echo esc_url( pt101_enroll_url( 158 ) ); ?>" class="btn btn-accent">Start learning for free</a>
   <div class="cta-trust-row">
     <span class="cta-trust-item">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 1l1.3 2.8 3 .4-2.2 2.1.5 3-2.6-1.4L4 9.3l.5-3L2.2 4.2l3-.4z" stroke="#888b9e" stroke-width="1.1" stroke-linejoin="round"/></svg>
