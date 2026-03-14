@@ -28,9 +28,9 @@ get_header();
       </div>
 
       <div class="au-hero-stats">
-        <img src="<?php echo esc_url( PT101_URI . '/images/Sellingpoint2.webp' ); ?>"
-             alt="10,000+ Students worldwide · 140+ Countries served · 4.9/5 Trustpilot · $9M+ Funded trading accounts"
-             width="1994" height="178"
+        <img src="<?php echo esc_url( PT101_URI . '/Selling_point_1.svg' ); ?>"
+             alt="10,000+ Students worldwide · 140+ Countries served · 4.9/5 Trustpilot · $1M+ Funded trading accounts"
+             width="1011" height="91"
              loading="lazy"
              class="au-hero-stats-img">
       </div>
