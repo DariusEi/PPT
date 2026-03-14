@@ -247,7 +247,7 @@ function pt101_footer_handbooks() {
 function pt101_footer_about() {
     foreach ( [
         'About us'     => '/about',
-        'Mention team' => '/team',
+        'Contact us'   => '/contact',
         'How it works' => '/how-it-works',
         'FAQ'          => '/faq',
         'Blog'         => '/blog',
@@ -257,10 +257,10 @@ function pt101_footer_about() {
 }
 function pt101_footer_programs() {
     foreach ( [
-        'Trading foundations'                        => '#programs',
-        'Market mechanics & analysis'                => '#programs',
-        'Strategy development & advanced technicals' => '#programs',
-        'Mastering professional trading'             => '#programs',
+        'Trading foundations'                        => '/trading-foundations',
+        'Market mechanics & analysis'                => '/market-mechanics-analysis',
+        'Strategy development & advanced technicals' => '/strategy-development-advanced-technicals',
+        'Mastering professional trading'             => '/mastering-professional-trading',
     ] as $label => $url ) {
         echo '<li><a href="' . esc_url( home_url( $url ) ) . '">' . esc_html( $label ) . '</a></li>';
     }
@@ -309,6 +309,11 @@ function pt101_ensure_course_pages() {
             'slug'     => 'about',
             'template' => 'template-about.php',
         ],
+        [
+            'title'    => 'Contact Us',
+            'slug'     => 'contact',
+            'template' => 'template-contact.php',
+        ],
     ];
 
     foreach ( $pages as $p ) {
@@ -332,7 +337,7 @@ function pt101_ensure_course_pages() {
 }
 add_action( 'after_switch_theme', 'pt101_ensure_course_pages' );
 add_action( 'init', function () {
-    if ( get_option( 'pt101_course_pages_v5' ) ) return;
+    if ( get_option( 'pt101_course_pages_v6' ) ) return;
     pt101_ensure_course_pages();
-    update_option( 'pt101_course_pages_v5', '1' );
+    update_option( 'pt101_course_pages_v6', '1' );
 }, 20 );
