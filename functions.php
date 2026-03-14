@@ -428,7 +428,11 @@ html body.pt101 .wp-block-woocommerce-checkout {
   margin: 0 auto;
   padding: 48px 48px 80px !important;
 }
-html body.pt101 .wc-block-checkout__main { padding-right: 40px !important; }
+html body.pt101 .wc-block-checkout__main {
+  padding-right: 40px !important;
+  /* Remove any inner background — cards handle their own bg */
+  background: transparent !important;
+}
 
 /* ── 3. ADDRESS FORM GRID ──────────────────────────────────── */
 html body.pt101 .wc-block-components-address-form {
@@ -490,7 +494,7 @@ html body.pt101 input[type="tel"],
 html body.pt101 input[type="password"],
 html body.pt101 select,
 html body.pt101 textarea {
-  background: var(--bg-card) !important;
+  background: var(--bg-2) !important;
   color: var(--text-hi) !important;
   border: 1.5px solid var(--border-mid) !important;
   border-radius: var(--r-sm) !important;
@@ -613,31 +617,35 @@ html body.pt101 .woocommerce h3 {
   letter-spacing: -.025em !important;
   margin-bottom: 18px !important;
 }
-/* Step numbers — purple pill */
+/* Hide step numbers — cleaner look without numbered circles */
 html body.pt101 .wc-block-components-checkout-step__number {
-  background: var(--accent) !important;
-  color: #fff !important;
-  border: none !important;
-  width: 24px !important;
-  height: 24px !important;
-  font-size: .72rem !important;
-  flex-shrink: 0 !important;
-  border-radius: 50% !important;
+  display: none !important;
 }
-/* Step dividers */
+/* Each checkout step — card-style container */
 html body.pt101 .wc-block-components-checkout-step {
-  background: transparent !important;
-  border-bottom: 1px solid var(--border-dark) !important;
-  padding-bottom: 28px !important;
-  margin-bottom: 28px !important;
-}
-html body.pt101 .wc-block-components-checkout-step:last-child {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: var(--r-lg) !important;
+  padding: 24px 28px !important;
+  margin-bottom: 20px !important;
   border-bottom: none !important;
 }
+html body.pt101 .wc-block-components-checkout-step:last-child {
+  margin-bottom: 0 !important;
+}
 
-/* ── 8. HIDE ADD NOTE ──────────────────────────────────────── */
+/* ── 8. HIDE EMPTY / UNNECESSARY SECTIONS ──────────────────── */
 html body.pt101 .wc-block-checkout__add-note,
 html body.pt101 .woocommerce-additional-fields { display: none !important; }
+/* Hide empty checkout steps (e.g. shipping/payment when product is free) */
+html body.pt101 .wc-block-components-checkout-step:empty,
+html body.pt101 .wc-block-checkout__payment-method:empty,
+html body.pt101 .wp-block-woocommerce-checkout-shipping-methods-block:empty,
+html body.pt101 .wp-block-woocommerce-checkout-shipping-method-block:empty { display: none !important; }
+/* Steps with no visible content — collapse them via :has() */
+html body.pt101 .wc-block-components-checkout-step:has(> .wc-block-components-checkout-step__content:empty) {
+  display: none !important;
+}
 
 /* ── 9. ORDER SUMMARY SIDEBAR ──────────────────────────────── */
 html body.pt101 .wc-block-checkout__sidebar {
@@ -787,9 +795,12 @@ html body.pt101 .wc-block-checkout__privacy-policy a {
 html body.pt101 .wc-block-components-checkout-return-to-cart-button { display: none !important; }
 html body.pt101 .wc-block-checkout__actions_row,
 html body.pt101 .wc-block-checkout__actions {
-  margin-top: 24px !important;
-  padding-top: 20px !important;
-  border-top: 1px solid var(--border-dark) !important;
+  margin-top: 20px !important;
+  padding: 24px 28px !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: var(--r-lg) !important;
+  border-top: none !important;
 }
 html body.pt101 .wc-block-components-checkout-place-order-button,
 html body.pt101 #place_order {
@@ -1105,6 +1116,56 @@ html body.pt101 .woocommerce-order-received h1 {
   color: var(--text-hi) !important; margin-bottom: 12px !important;
 }
 </style>
+    <?php
+}, 999 );
+
+/* ── CHECKOUT PAGE: JS ENHANCEMENT ─────────────────────────────
+ * Hides empty checkout steps and cleans up the layout.
+ */
+add_action( 'wp_footer', function () {
+    if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) return;
+    if ( is_wc_endpoint_url( 'order-received' ) ) return;
+    ?>
+<script>
+(function(){
+  function cleanup(){
+    /* Hide empty checkout steps (shipping/payment not needed for free products) */
+    document.querySelectorAll('.wc-block-components-checkout-step').forEach(function(step){
+      var content = step.querySelector('.wc-block-components-checkout-step__content');
+      if(content && content.children.length === 0){
+        step.style.display = 'none';
+      }
+      /* Also hide if content only has empty/hidden children */
+      if(content){
+        var visible = Array.from(content.children).filter(function(c){
+          var s = window.getComputedStyle(c);
+          return s.display !== 'none' && s.visibility !== 'hidden' && c.offsetHeight > 0;
+        });
+        if(visible.length === 0) step.style.display = 'none';
+      }
+    });
+
+    /* Hide the address card "saved address" view, force the edit form open */
+    var cards = document.querySelectorAll('.wc-block-components-address-card');
+    cards.forEach(function(card){
+      var editBtn = card.querySelector('button, a');
+      if(editBtn) editBtn.click();
+    });
+  }
+
+  /* Run on DOMContentLoaded and after WC blocks render (delayed) */
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(cleanup, 600); });
+  } else {
+    setTimeout(cleanup, 600);
+  }
+  /* Also observe for late-rendered blocks */
+  var obs = new MutationObserver(function(){ setTimeout(cleanup, 200); });
+  var main = document.querySelector('.wc-block-checkout__main');
+  if(main) obs.observe(main, {childList:true, subtree:true});
+  setTimeout(function(){ obs.disconnect(); }, 8000);
+})();
+</script>
     <?php
 }, 999 );
 
