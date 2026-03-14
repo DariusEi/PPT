@@ -442,6 +442,21 @@ add_action( 'woocommerce_store_api_checkout_order_processed', function ( $order 
     WC()->session->set( 'pt101_checkout_password', null );
 }, 20 );
 
+/* ── AUTO-LOGIN on thank-you page ──────────────────────────────────────
+   After a new-account checkout the user's session may not persist to the
+   order-received page, causing WooCommerce to demand a login.  We log the
+   customer in silently the moment the thank-you page loads so the order
+   details show correctly and the login form never appears. */
+add_action( 'woocommerce_thankyou', function ( $order_id ) {
+    if ( is_user_logged_in() ) return;
+    $order = wc_get_order( $order_id );
+    if ( ! $order ) return;
+    $customer_id = $order->get_customer_id();
+    if ( ! $customer_id ) return;
+    wp_set_current_user( $customer_id );
+    wp_set_auth_cookie( $customer_id );
+}, 1 );
+
 /* ── WOOCOMMERCE: REDIRECT /cart → checkout (or course if empty) ── */
 add_action( 'template_redirect', function () {
     if ( ! function_exists( 'is_cart' ) || ! is_cart() ) return;
@@ -1139,6 +1154,10 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     margin-top: 20px !important;
     position: static !important;
   }
+  /* Hide the WC Blocks mobile sidebar toggler — it creates a duplicate
+     order summary header at the top while the full one is below the form */
+  html body.pt101 .wc-block-checkout__sidebar-toggler,
+  html body.pt101 .wc-block-checkout__sidebar-toggler-open { display: none !important; }
 
   /* Card containers — reduce padding */
   html body.pt101 .wc-block-components-checkout-step {
@@ -1147,12 +1166,30 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     border-radius: var(--r-md) !important;
   }
 
-  /* Address form — single column */
+  /* Address form — true single column.
+     The desktop "span 2" rules for specific classes have higher specificity
+     than "> *", so they win even on mobile and force an implicit 2-column
+     grid (causing city/postcode/state to share a row). Override each one
+     explicitly inside this media query so they all become span 1. */
   html body.pt101 .wc-block-components-address-form {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
   }
-  html body.pt101 .wc-block-components-address-form > * { grid-column: span 1 !important; }
+  html body.pt101 .wc-block-components-address-form > *,
+  html body.pt101 .wc-block-components-address-form > .wc-block-components-country-input,
+  html body.pt101 .wc-block-components-address-form > .wc-block-components-address-form__address2-toggle,
+  html body.pt101 .wc-block-components-address-form > *:has(input[id$="address_1"]),
+  html body.pt101 .wc-block-components-address-form > *:has(input[id$="address_2"]),
+  html body.pt101 .wc-block-components-address-form > *:has(input[id$="company"]),
+  html body.pt101 .wc-block-components-address-form > *:has(input[id$="city"]),
+  html body.pt101 .wc-block-components-address-form > *:has(input[id$="postcode"]),
+  html body.pt101 .wc-block-components-address-form > *[class*="address_1"],
+  html body.pt101 .wc-block-components-address-form > *[class*="address_2"],
+  html body.pt101 .wc-block-components-address-form > *[class*="company"],
+  html body.pt101 .wc-block-components-address-form > *[class*="city"],
+  html body.pt101 .wc-block-components-address-form > *[class*="postcode"] {
+    grid-column: span 1 !important;
+  }
 
   /* Sidebar — reduce padding/radius */
   html body.pt101 .wc-block-checkout__sidebar,
@@ -1300,6 +1337,12 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     font-size: 1.15rem !important;
   }
 }
+
+/* ── Hide login notice + form on order-received (CSS fallback for auto-login) ── */
+html body.pt101.woocommerce-order-received .woocommerce-info,
+html body.pt101.woocommerce-order-received .woocommerce-form-login-toggle,
+html body.pt101.woocommerce-order-received .woocommerce-form.woocommerce-form-login,
+html body.pt101.woocommerce-order-received .u-column1.col-1 { display: none !important; }
 
 /* ══ ORDER RECEIVED ════════════════════════════════════════════ */
 html body.pt101.woocommerce-order-received .woocommerce { max-width: 860px !important; padding-top: 40px !important; }
