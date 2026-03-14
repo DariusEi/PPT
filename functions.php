@@ -539,6 +539,13 @@ html body.pt101 select {
 }
 html body.pt101 option { background: var(--bg-card) !important; color: var(--text-hi) !important; }
 
+/* Hide the native <select> inside country/state comboboxes — they use a
+   custom combobox (<input> + listbox) and the native select must stay hidden */
+html body.pt101 .wc-block-components-country-input select,
+html body.pt101 .wc-block-components-state-input select {
+  display: none !important;
+}
+
 /* Country dropdown */
 html body.pt101 .wc-block-components-country-input .components-popover,
 html body.pt101 .wc-block-components-country-input [role="listbox"],
@@ -854,8 +861,8 @@ html body.pt101 .pt101-consent__item input[type="checkbox"] {
 }
 html body.pt101 .pt101-consent__item span {
   color: var(--text-mid) !important;
-  font-size: .85rem !important;
-  line-height: 1.6 !important;
+  font-size: .76rem !important;
+  line-height: 1.55 !important;
   text-transform: none !important;
   letter-spacing: normal !important;
 }
@@ -1034,7 +1041,7 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     gap: 12px !important;
   }
   html body.pt101 .pt101-consent__item span {
-    font-size: .82rem !important;
+    font-size: .75rem !important;
   }
 
   /* Address card (saved address) */
@@ -1129,7 +1136,7 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     border-radius: var(--r-sm) !important;
   }
   html body.pt101 .pt101-consent__item span {
-    font-size: .8rem !important;
+    font-size: .73rem !important;
   }
   html body.pt101 .pt101-next-steps {
     padding: 16px 14px !important;
