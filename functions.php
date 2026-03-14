@@ -1005,7 +1005,7 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
 }
 
 /* ══ ORDER RECEIVED ════════════════════════════════════════════ */
-html body.pt101.woocommerce-order-received .woocommerce { max-width: 780px !important; padding-top: 40px !important; }
+html body.pt101.woocommerce-order-received .woocommerce { max-width: 860px !important; padding-top: 40px !important; }
 
 /* Success Banner */
 html body.pt101 .woocommerce-thankyou-order-received {
@@ -1073,8 +1073,8 @@ html body.pt101 .woocommerce-thankyou-order-details {
   overflow: hidden !important;
 }
 html body.pt101 .woocommerce-order-overview li {
-  padding: 20px !important;
-  font-size: .68rem !important;
+  padding: 18px 16px !important;
+  font-size: .65rem !important;
   font-weight: 600 !important;
   letter-spacing: .06em !important;
   text-transform: uppercase !important;
@@ -1082,20 +1082,21 @@ html body.pt101 .woocommerce-order-overview li {
   border-right: 1px solid var(--border-dark) !important;
   border-bottom: none !important;
   line-height: 1 !important;
-  /* Ensure each item stays in its grid cell */
   min-width: 0 !important;
   overflow: hidden !important;
-  word-break: break-word !important;
+  text-overflow: ellipsis !important;
 }
 html body.pt101 .woocommerce-order-overview li:last-child { border-right: none !important; }
 html body.pt101 .woocommerce-order-overview li strong {
   display: block !important;
   margin-top: 8px !important;
-  font-size: .92rem !important;
+  font-size: .88rem !important;
   font-weight: 700 !important;
   color: var(--text-hi) !important;
   letter-spacing: -.01em !important;
   text-transform: none !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
 /* Order Details & Billing Address — hidden on thank you page */
