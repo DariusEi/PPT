@@ -716,20 +716,28 @@ html body.pt101 .wc-block-components-checkout-step:last-child {
   margin-bottom: 0 !important;
 }
 
-/* ── Merge Contact Information + Billing Address into one unified card ── */
-html body.pt101 .wp-block-woocommerce-checkout-contact-information-block .wc-block-components-checkout-step {
+/* ── Merge Contact Information + Billing Address into one unified card ──
+   Two layers: :has() CSS (modern browsers) + JS (guaranteed for all).
+   The wp-block-* wrapper classes are only in the editor HTML; React strips
+   them on the frontend, so we target by field content instead. */
+
+/* Step that contains the email field → no bottom border/radius */
+html body.pt101 .wc-block-components-checkout-step:has(input[autocomplete="email"]),
+html body.pt101 .wc-block-components-checkout-step:has(input[type="email"]) {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   border-bottom: none !important;
   margin-bottom: 0 !important;
 }
-html body.pt101 .wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step {
+/* Step that contains the address form → no top border/radius */
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-address-form),
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-country-input) {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   border-top: 1px solid var(--border-dark) !important;
 }
-/* Hide the redundant "Billing address" heading when merged */
-html body.pt101 .wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step__title {
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-address-form) .wc-block-components-checkout-step__title,
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-country-input) .wc-block-components-checkout-step__title {
   display: none !important;
 }
 
@@ -1626,6 +1634,48 @@ add_action( 'wp_footer', function () {
     }, true); // capture phase — fires before React's onClick
   }
 
+  /* ── Merge Contact Info + Billing into one unified card (JS) ── */
+  var _merged = false;
+  function mergeContactAndBilling(){
+    if(_merged) return;
+
+    // Find the step that holds the email input (Contact Info)
+    var emailEl = document.querySelector(
+      '.wc-block-checkout__main input[autocomplete="email"],' +
+      '.wc-block-checkout__main input[type="email"]'
+    );
+    if(!emailEl) return;
+    var contactStep = emailEl.closest('.wc-block-components-checkout-step');
+    if(!contactStep) return;
+
+    // Find the step that holds the address form (Billing Address)
+    var addrEl = document.querySelector(
+      '.wc-block-checkout__main .wc-block-components-address-form,' +
+      '.wc-block-checkout__main .wc-block-components-country-input'
+    );
+    if(!addrEl) return;
+    var billingStep = addrEl.closest('.wc-block-components-checkout-step');
+    if(!billingStep || billingStep === contactStep) return;
+
+    // Apply merge — use setProperty with 'important' to beat specificity
+    var s = contactStep.style;
+    s.setProperty('border-bottom-left-radius',  '0',     'important');
+    s.setProperty('border-bottom-right-radius', '0',     'important');
+    s.setProperty('border-bottom',              'none',  'important');
+    s.setProperty('margin-bottom',              '0',     'important');
+
+    var b = billingStep.style;
+    b.setProperty('border-top-left-radius',  '0', 'important');
+    b.setProperty('border-top-right-radius', '0', 'important');
+    b.setProperty('border-top', '1px solid var(--border-dark)', 'important');
+
+    // Hide "Billing address" heading — redundant inside merged card
+    var title = billingStep.querySelector('.wc-block-components-checkout-step__title');
+    if(title) title.style.setProperty('display', 'none', 'important');
+
+    _merged = true;
+  }
+
   /* ── Remove "Secure checkout · SSL encrypted" trust line ── */
   function removeSecureText(){
     var phrases = ['Secure checkout','SSL encrypted','30-day guarantee','30 day guarantee'];
@@ -1650,6 +1700,9 @@ add_action( 'wp_footer', function () {
       });
       if(visible.length === 0) step.style.display = 'none';
     });
+
+    /* Merge Contact Info + Billing into one card (JS fallback for :has()) */
+    mergeContactAndBilling();
 
     /* Remove trust/secure text */
     removeSecureText();
