@@ -440,12 +440,34 @@ html body.pt101 .wc-block-components-address-form__address2-toggle {
 /* Each field wrapper: isolate stacking so floating labels don't bleed */
 html body.pt101 .wc-block-components-text-input,
 html body.pt101 .wc-block-components-select,
-html body.pt101 .wc-block-components-country-input,
 html body.pt101 .wc-block-components-state-input {
   position:relative!important;
   z-index:0!important;
   isolation:isolate!important;
   margin:0!important;
+}
+/* Country input must NOT be isolated — its dropdown listbox must render above siblings */
+html body.pt101 .wc-block-components-country-input {
+  position:relative!important;
+  z-index:10!important;
+  isolation:auto!important;
+  margin:0!important;
+}
+/* Country dropdown listbox / suggestions */
+html body.pt101 .wc-block-components-country-input .components-popover,
+html body.pt101 .wc-block-components-country-input [role="listbox"],
+html body.pt101 .wc-block-components-country-input [role="option"],
+html body.pt101 .wc-block-components-country-input ul {
+  z-index:9999!important;
+  background:#1a1d2e!important;
+  border:1.5px solid rgba(124,110,245,.35)!important;
+  border-radius:10px!important;
+  color:#f0f0f5!important;
+}
+html body.pt101 .wc-block-components-country-input [role="option"]:hover,
+html body.pt101 .wc-block-components-country-input [role="option"][aria-selected="true"] {
+  background:rgba(124,110,245,.18)!important;
+  color:#fff!important;
 }
 
 /* ══ 3. FORM FIELDS ════════════════════════════════════════════ */
