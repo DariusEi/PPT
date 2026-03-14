@@ -940,6 +940,18 @@ html body.pt101 .pt101-consent__item.pt101-consent__error input[type="checkbox"]
   outline: 2px solid #e05a5a !important;
 }
 /* ── 11b. CREATE PASSWORD SECTION ─────────────────────────── */
+/* Standalone card (strategy 1: after contact step) */
+html body.pt101 .pt101-password-card.wc-block-components-checkout-step {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: var(--r-lg) !important;
+  padding: 24px 28px !important;
+  margin-bottom: 16px !important;
+}
+html body.pt101 .pt101-password-card .wc-block-components-checkout-step__title {
+  margin-bottom: 18px !important;
+}
+/* Inline section (strategy 2: inside contact step content) */
 html body.pt101 .pt101-password-section {
   margin-top: 20px !important;
   padding-top: 20px !important;
@@ -1432,40 +1444,30 @@ add_action( 'wp_footer', function () {
   var PT101_GUEST  = <?php echo is_user_logged_in() ? 'false' : 'true'; ?>; // show pw field only for guests
 
   /* ── Password field injection ──────────────────────────── */
-  function injectPasswordField(){
-    if(!PT101_GUEST) return;
-    if(document.getElementById('pt101-password-wrap')) return;
-
-    var emailInput = document.querySelector(
-      '.wc-block-checkout__main input[autocomplete="email"],' +
-      '.wc-block-checkout__main input[type="email"]'
-    );
-    if(!emailInput) return;
-
-    var stepContent = emailInput.closest('.wc-block-components-checkout-step__content');
-    if(!stepContent) return;
-
-    var wrap = document.createElement('div');
-    wrap.id = 'pt101-password-wrap';
-    wrap.className = 'pt101-password-section';
-    wrap.innerHTML = [
-      '<p class="pt101-password-section__heading">Create your account password</p>',
-      '<div class="pt101-password-row">',
-        '<div class="wc-block-components-text-input pt101-pw-field" id="pt101-pw-field-1">',
-          '<input type="password" id="pt101-password" autocomplete="new-password" placeholder=" " />',
-          '<label for="pt101-password">Password</label>',
+  function buildPasswordCard(){
+    var card = document.createElement('div');
+    card.id = 'pt101-password-wrap';
+    card.className = 'wc-block-components-checkout-step pt101-password-card';
+    card.innerHTML = [
+      '<h2 class="wc-block-components-checkout-step__title">Create your password</h2>',
+      '<div class="wc-block-components-checkout-step__content">',
+        '<div class="pt101-password-row">',
+          '<div class="wc-block-components-text-input pt101-pw-field">',
+            '<input type="password" id="pt101-password" autocomplete="new-password" placeholder=" " />',
+            '<label for="pt101-password">Password</label>',
+          '</div>',
+          '<div class="wc-block-components-text-input pt101-pw-field">',
+            '<input type="password" id="pt101-password-confirm" autocomplete="new-password" placeholder=" " />',
+            '<label for="pt101-password-confirm">Confirm Password</label>',
+          '</div>',
         '</div>',
-        '<div class="wc-block-components-text-input pt101-pw-field" id="pt101-pw-field-2">',
-          '<input type="password" id="pt101-password-confirm" autocomplete="new-password" placeholder=" " />',
-          '<label for="pt101-password-confirm">Confirm Password</label>',
-        '</div>',
-      '</div>',
-      '<p class="pt101-pw-hint">Minimum 8 characters — you\'ll use this to log in to your learning dashboard.</p>',
-      '<p class="pt101-pw-error" id="pt101-pw-error" style="display:none;"></p>'
+        '<p class="pt101-pw-hint">Minimum 8 characters — you\'ll use this to log in to your learning dashboard.</p>',
+        '<p class="pt101-pw-error" id="pt101-pw-error" style="display:none;"></p>',
+      '</div>'
     ].join('');
 
     /* Floating label toggle */
-    wrap.querySelectorAll('input').forEach(function(inp){
+    card.querySelectorAll('input').forEach(function(inp){
       function upd(){
         inp.closest('.wc-block-components-text-input')
            .classList.toggle('is-active', inp.value.length > 0 || document.activeElement === inp);
@@ -1474,8 +1476,47 @@ add_action( 'wp_footer', function () {
       inp.addEventListener('focus', upd);
       inp.addEventListener('blur',  upd);
     });
+    return card;
+  }
 
-    stepContent.appendChild(wrap);
+  function injectPasswordField(){
+    if(!PT101_GUEST) return;
+    if(document.getElementById('pt101-password-wrap')) return;
+
+    /* Strategy 1: insert after the Contact Information step (contains email) */
+    var emailInput = document.querySelector('input[autocomplete="email"], input[type="email"]');
+    if(emailInput){
+      var contactStep = emailInput.closest('.wc-block-components-checkout-step');
+      if(contactStep && contactStep.parentNode){
+        contactStep.parentNode.insertBefore(buildPasswordCard(), contactStep.nextSibling);
+        return;
+      }
+      /* Strategy 2: append to the step content */
+      var stepContent = emailInput.closest('.wc-block-components-checkout-step__content');
+      if(stepContent){
+        var inner = document.createElement('div');
+        inner.id = 'pt101-password-wrap';
+        inner.className = 'pt101-password-section';
+        inner.innerHTML = buildPasswordCard().querySelector('.wc-block-components-checkout-step__content').innerHTML;
+        stepContent.appendChild(inner);
+        return;
+      }
+    }
+
+    /* Strategy 3: insert before the billing address step */
+    var billingStep = document.querySelector(
+      '.wc-block-checkout__billing-fields, [data-block-name="woocommerce/checkout-billing-address-block"]'
+    );
+    if(billingStep && billingStep.parentNode){
+      billingStep.parentNode.insertBefore(buildPasswordCard(), billingStep);
+      return;
+    }
+
+    /* Strategy 4: insert before the actions row (last resort) */
+    var actionsRow = document.querySelector('.wc-block-checkout__actions_row, .wc-block-checkout__actions');
+    if(actionsRow && actionsRow.parentNode){
+      actionsRow.parentNode.insertBefore(buildPasswordCard(), actionsRow);
+    }
   }
 
   /* ── Consent + password click handler ─────────────────── */
@@ -1617,23 +1658,22 @@ add_action( 'wp_footer', function () {
     bindSubmitHandler();
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(cleanup, 600); });
-  } else {
-    setTimeout(cleanup, 600);
+  function tryCleanup(){
+    cleanup();
+    if(document.getElementById('pt101-password-wrap') && document.getElementById('pt101-consent')){
+      obs.disconnect();
+    }
   }
-  var obs = new MutationObserver(function(){
-    setTimeout(function(){
-      cleanup();
-      // Disconnect once both injections are confirmed present
-      if(document.getElementById('pt101-password-wrap') && document.getElementById('pt101-consent')){
-        obs.disconnect();
-      }
-    }, 200);
-  });
-  var main = document.querySelector('.wc-block-checkout__main');
-  if(main) obs.observe(main, {childList:true, subtree:true});
-  // Hard cap: disconnect after 30s to avoid observing indefinitely
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(tryCleanup, 400); });
+  } else {
+    setTimeout(tryCleanup, 400);
+  }
+  /* Observe document.body so we never miss the checkout rendering regardless
+     of whether .wc-block-checkout__main exists at script load time */
+  var obs = new MutationObserver(function(){ setTimeout(tryCleanup, 150); });
+  obs.observe(document.body, {childList:true, subtree:true});
   setTimeout(function(){ obs.disconnect(); }, 30000);
 })();
 </script>
