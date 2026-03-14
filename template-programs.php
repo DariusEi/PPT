@@ -202,8 +202,11 @@ $tabs = [
         $accent     = esc_attr( $prog['accent'] ?: '#7c6ef5' );
         $has_badge  = ! empty( $prog['badge'] );
         $is_free    = strtolower( trim( $prog['price'] ) ) === 'free';
-        $enroll_url = $prog['url'] ?? home_url('/programs');
         $view_url   = $prog['url'] ?? home_url('/programs');
+        // Free courses go straight to checkout (product ID 158); paid courses go to their course page.
+        $enroll_url = ( $is_free && function_exists( 'pt101_enroll_url' ) )
+                      ? pt101_enroll_url( 158 )
+                      : $view_url;
       ?>
 
       <div class="pg-card<?php echo $has_badge ? ' pg-card--has-badge' : ''; ?>"
