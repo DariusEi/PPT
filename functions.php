@@ -2459,12 +2459,34 @@ body.tutor-dashboard-page {
 .tutor-dashboard-content a.tutor-color-secondary:hover {
   color: var(--tutor-accent) !important;
 }
-/* "In Progress Courses", "My Courses" section headings */
+/* "In Progress Courses", "My Courses" section headings — all Tutor v1/v2 variants */
 .tutor-segment-title,
 .tutor-dashboard-title,
-.tutor-section-title {
+.tutor-section-title,
+.tutor-dashboard-content h2,
+.tutor-dashboard-content h3,
+.tutor-dashboard-content h4,
+.tutor-dashboard-content h5,
+.tutor-dashboard-content-inner h2,
+.tutor-dashboard-content-inner h3,
+.tutor-dashboard-content-inner h4,
+.tutor-dashboard-content-inner h5 {
   color: var(--tutor-text) !important;
   font-weight: 700 !important;
+}
+/* Tutor LMS v2 utility color — overriding dark on dark */
+.tutor-color-black,
+.tutor-wrap .tutor-color-black {
+  color: var(--tutor-text) !important;
+}
+.tutor-color-secondary,
+.tutor-wrap .tutor-color-secondary {
+  color: rgba(240,239,234,.65) !important;
+}
+.tutor-color-muted,
+.tutor-wrap .tutor-color-muted,
+.tutor-color-subdued {
+  color: var(--tutor-muted) !important;
 }
 /* Profile name & rating area */
 .tutor-dashboard-profile-name,
@@ -2522,8 +2544,13 @@ body.tutor-dashboard-page {
 .tutor-wrap input[type="text"],
 .tutor-wrap input[type="email"],
 .tutor-wrap input[type="password"],
+.tutor-wrap input[type="date"],
+.tutor-wrap input[type="search"],
 .tutor-wrap textarea,
-.tutor-wrap select {
+.tutor-wrap select,
+.tutor-wrap .tutor-select select,
+.tutor-wrap .flatpickr-input,
+.tutor-wrap .tutor-date-range-picker input {
   background: rgba(255,255,255,.06) !important;
   border: 1px solid var(--tutor-border) !important;
   color: var(--tutor-text) !important;
@@ -2532,6 +2559,91 @@ body.tutor-dashboard-page {
 .tutor-wrap input::placeholder,
 .tutor-wrap textarea::placeholder {
   color: var(--tutor-muted) !important;
+}
+/* Native select arrow color on dark bg */
+.tutor-wrap select {
+  color-scheme: dark !important;
+}
+
+/* ── Empty-state boxes ("No Data Found") — dark, not white ── */
+.tutor-empty-state,
+.tutor-wrap .tutor-bg-white,
+.tutor-course-segment .tutor-empty,
+[class*="tutor-empty-state"],
+.tutor-dashboard-content .tutor-list-empty,
+.tutor-no-course-banner {
+  background: var(--tutor-surface) !important;
+  border: 1px solid var(--tutor-border) !important;
+  border-radius: var(--tutor-radius) !important;
+  color: var(--tutor-muted) !important;
+}
+/* Text and icon inside empty states */
+.tutor-empty-state *,
+.tutor-wrap .tutor-bg-white *,
+.tutor-dashboard-content .tutor-list-empty * {
+  color: var(--tutor-muted) !important;
+}
+
+/* ── HIDE Reviews (not needed) ── */
+.tutor-dashboard-menu li a[href*="reviews"],
+.tutor-dashboard-menu li:has(a[href*="reviews"]),
+.tutor-dashboard-menu li[data-key="reviews"],
+[data-page="tutor-reviews"],
+.tutor-reviews-section {
+  display: none !important;
+}
+
+/* ── Profile banner / student header ── */
+.tutor-dashboard-banner,
+.tutor-student-top-area,
+.tutor-dashboard-student-header,
+.tutor-profile-header-wrap {
+  background: var(--tutor-surface) !important;
+  border-bottom: 1px solid var(--tutor-border) !important;
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+.tutor-dashboard-banner *,
+.tutor-student-top-area *,
+.tutor-dashboard-student-header * {
+  color: var(--tutor-text) !important;
+}
+
+/* ── Sidebar menu: ensure all labels readable ── */
+.tutor-dashboard-menu li a,
+.tutor-dashboard-menu li button,
+.tutor-dashboard-menu .tutor-menu-item-label {
+  color: rgba(240,239,234,.78) !important;
+}
+/* Instructor section label in sidebar */
+.tutor-dashboard-menu .tutor-dashboard-menu-label {
+  color: var(--tutor-muted) !important;
+  font-size: .75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  padding: 16px 16px 6px !important;
+}
+
+/* ── Reduce excess whitespace between dashboard sections ── */
+.tutor-dashboard-content-inner > * + * {
+  margin-top: 24px !important;
+}
+.tutor-course-segment,
+.tutor-my-course-part {
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+}
+.tutor-dashboard-content {
+  padding: 24px 28px !important;
+}
+/* Tighten gap above/below section headings */
+.tutor-dashboard-content h2,
+.tutor-dashboard-content h3,
+.tutor-dashboard-content h4,
+.tutor-dashboard-content h5,
+.tutor-color-black {
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
 }
 
 /* ── Course player ── */
