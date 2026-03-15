@@ -27,7 +27,7 @@ get_header();
           <li>Mentor support</li>
         </ul>
 
-        <a href="#enroll" class="btn btn-accent cdp-enroll-btn">Enroll now for $299.00</a>
+        <a href="<?php echo esc_url( pt101_enroll_url( 253 ) ); ?>" class="btn btn-accent cdp-enroll-btn">Enroll now for $299.00</a>
 
         <div class="cdp-rating">
           <span class="cdp-stars" aria-label="4.9 out of 5 stars" role="img">★★★★★</span>
@@ -247,7 +247,7 @@ get_header();
 <!-- ═══ CTA ════════════════════════════════════════════════════ -->
 <section class="cta-section" id="enroll">
   <h2>Invest in the skills and confidence<br>to start earning!</h2>
-  <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="btn btn-accent">Choose your program</a>
+  <a href="<?php echo esc_url( pt101_enroll_url( 253 ) ); ?>" class="btn btn-accent">Enroll now &rarr;</a>
   <div class="cta-trust-row">
     <span class="cta-trust-item">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 1l1.3 2.8 3 .4-2.2 2.1.5 3-2.6-1.4L4 9.3l.5-3L2.2 4.2l3-.4z" stroke="#888b9e" stroke-width="1.1" stroke-linejoin="round"/></svg>
