@@ -2113,6 +2113,38 @@ function pt101_ajax_swap_course() {
     wp_send_json_success( [ 'product_id' => $product_id ] );
 }
 
+/* ── TUTOR LMS: COURSE LINK ROUTING ────────────────────────────
+ * If the visitor/student is NOT enrolled in a course, send them
+ * to the custom program page (proper design + enroll CTA).
+ * If they ARE enrolled, keep the Tutor LMS URL so they can
+ * access their lessons.
+ *
+ * Slug map: Tutor LMS course slug → custom program page slug.
+ */
+add_filter( 'post_type_link', function ( $url, $post ) {
+    if ( is_admin() ) return $url;
+    if ( ! function_exists( 'tutor_utils' ) ) return $url;
+    if ( 'courses' !== get_post_type( $post ) ) return $url;
+
+    // Enrolled users go to the Tutor LMS course player
+    if ( tutor_utils()->is_enrolled( $post->ID ) ) return $url;
+
+    $map = [
+        'intro-to-trading'                         => '/intro-to-trading',
+        'trading-foundations'                      => '/trading-foundations',
+        'market-mechanics-analysis'                => '/market-mechanics-analysis',
+        'strategy-development-advanced-technicals' => '/strategy-development-advanced-technicals',
+        'mastering-professional-trading'           => '/mastering-professional-trading',
+    ];
+
+    $slug = $post->post_name;
+    if ( isset( $map[ $slug ] ) ) {
+        return home_url( $map[ $slug ] );
+    }
+
+    return $url;
+}, 10, 2 );
+
 /* ── LOGIN PAGE CSS ─────────────────────────────────────────────
  * Styles for template-login.php — dark, centred card layout.
  */
