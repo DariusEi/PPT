@@ -1281,18 +1281,26 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     border-radius: var(--r-md) !important;
   }
 
-  /* Course switcher — mobile */
+  /* Course switcher — mobile: single-column rows */
   html body.pt101 .pt101-switcher {
     padding: 16px 18px 20px !important;
     border-radius: var(--r-md) !important;
     margin-bottom: 14px !important;
   }
   html body.pt101 .pt101-switcher__grid {
+    grid-template-columns: 1fr !important;
     gap: 7px !important;
   }
   html body.pt101 .pt101-switcher__btn {
-    padding: 9px 10px !important;
-    font-size: .79rem !important;
+    padding: 11px 14px !important;
+    font-size: .85rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  html body.pt101 .pt101-switcher__btn-price {
+    margin-top: 0 !important;
+    font-size: .8rem !important;
   }
 
   /* Place Order card */
@@ -1404,15 +1412,12 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     margin-bottom: 12px !important;
   }
   html body.pt101 .pt101-switcher__grid {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr !important;
     gap: 6px !important;
   }
   html body.pt101 .pt101-switcher__btn {
-    padding: 8px 9px !important;
-    font-size: .76rem !important;
-  }
-  html body.pt101 .pt101-switcher__btn-price {
-    font-size: .68rem !important;
+    padding: 10px 12px !important;
+    font-size: .82rem !important;
   }
   html body.pt101 .wc-block-checkout__actions_row,
   html body.pt101 .wc-block-checkout__actions {
