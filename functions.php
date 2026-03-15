@@ -1108,20 +1108,6 @@ html body.pt101 .wc-block-components-checkout-place-order-button:active,
 html body.pt101 #place_order:active {
   transform: translateY(0) !important;
 }
-/* Trust line — only on actions_row to avoid duplication */
-html body.pt101 .wc-block-checkout__actions_row::after {
-  content: 'Secure checkout · SSL encrypted · 30-day guarantee' !important;
-  display: block !important;
-  text-align: center !important;
-  font-size: .72rem !important;
-  color: var(--text-low) !important;
-  margin-top: 10px !important;
-  letter-spacing: .02em !important;
-}
-html body.pt101 .wc-block-checkout__actions::after {
-  content: none !important;
-  display: none !important;
-}
 
 /* ── 13. NOTICES ────────────────────────────────────────────── */
 html body.pt101 .woocommerce-error,
@@ -1162,10 +1148,14 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     margin-top: 20px !important;
     position: static !important;
   }
-  /* Hide the WC Blocks mobile sidebar toggler — it creates a duplicate
-     order summary header at the top while the full one is below the form */
+  /* Hide the WC Blocks mobile order summary duplicate — WC Blocks renders
+     the order summary both inside .wc-block-checkout__main (toggler/panel)
+     and as .wc-block-checkout__sidebar below the form. Keep only the sidebar. */
   html body.pt101 .wc-block-checkout__sidebar-toggler,
-  html body.pt101 .wc-block-checkout__sidebar-toggler-open { display: none !important; }
+  html body.pt101 .wc-block-checkout__sidebar-toggler-open,
+  html body.pt101 .wc-block-checkout__order-summary-step,
+  html body.pt101 .wc-block-checkout__order-summary-heading,
+  html body.pt101 .wc-block-checkout__main .wp-block-woocommerce-checkout-order-summary-block { display: none !important; }
 
   /* Card containers — reduce padding */
   html body.pt101 .wc-block-components-checkout-step {
