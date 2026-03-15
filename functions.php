@@ -1281,6 +1281,20 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
     border-radius: var(--r-md) !important;
   }
 
+  /* Course switcher — mobile */
+  html body.pt101 .pt101-switcher {
+    padding: 16px 18px 20px !important;
+    border-radius: var(--r-md) !important;
+    margin-bottom: 14px !important;
+  }
+  html body.pt101 .pt101-switcher__grid {
+    gap: 7px !important;
+  }
+  html body.pt101 .pt101-switcher__btn {
+    padding: 9px 10px !important;
+    font-size: .79rem !important;
+  }
+
   /* Place Order card */
   html body.pt101 .wc-block-checkout__actions_row,
   html body.pt101 .wc-block-checkout__actions {
@@ -1381,6 +1395,24 @@ html body.pt101 .wc-block-components-spinner::after { border-color: var(--accent
   html body.pt101 .wp-block-woocommerce-checkout-order-summary-block {
     padding: 16px 14px !important;
     border-radius: var(--r-sm) !important;
+  }
+
+  /* Course switcher — small mobile */
+  html body.pt101 .pt101-switcher {
+    padding: 14px 14px 16px !important;
+    border-radius: var(--r-sm) !important;
+    margin-bottom: 12px !important;
+  }
+  html body.pt101 .pt101-switcher__grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+  html body.pt101 .pt101-switcher__btn {
+    padding: 8px 9px !important;
+    font-size: .76rem !important;
+  }
+  html body.pt101 .pt101-switcher__btn-price {
+    font-size: .68rem !important;
   }
   html body.pt101 .wc-block-checkout__actions_row,
   html body.pt101 .wc-block-checkout__actions {
