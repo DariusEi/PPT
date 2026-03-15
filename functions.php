@@ -2026,9 +2026,7 @@ add_action( 'woocommerce_checkout_update_order_meta', function ( $order_id ) {
 add_action( 'wp_footer', function () {
     if ( ! function_exists( 'is_wc_endpoint_url' ) ) return;
     if ( ! is_wc_endpoint_url( 'order-received' ) ) return;
-    $dashboard_url = function_exists( 'wc_get_account_endpoint_url' )
-        ? wc_get_account_endpoint_url( 'dashboard' )
-        : home_url( '/my-account' );
+    $dashboard_url = home_url( '/dashboard/' );
     $courses_url   = home_url( '/programs' );
     ?>
 <script>
@@ -2114,3 +2112,417 @@ function pt101_ajax_swap_course() {
     }
     wp_send_json_success( [ 'product_id' => $product_id ] );
 }
+
+/* ── LOGIN PAGE CSS ─────────────────────────────────────────────
+ * Styles for template-login.php — dark, centred card layout.
+ */
+add_action( 'wp_head', function () {
+    if ( ! is_page_template( 'template-login.php' ) ) return;
+    ?>
+<style id="pt101-login-styles">
+.pt101-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  background: #0d0f1a;
+}
+.pt101-login-wrap {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.pt101-login-brand {
+  text-align: center;
+}
+.pt101-login-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f0efea;
+  text-decoration: none;
+  letter-spacing: -.01em;
+}
+.pt101-login-tagline {
+  margin: 8px 0 0;
+  font-size: .875rem;
+  color: rgba(240,239,234,.55);
+}
+.pt101-login-card {
+  background: #13162b;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 36px 32px;
+}
+.pt101-login-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f0efea;
+  margin: 0 0 24px;
+  letter-spacing: -.02em;
+}
+.pt101-login-error {
+  background: rgba(248,113,113,.12);
+  border: 1px solid rgba(248,113,113,.3);
+  color: #f87171;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: .875rem;
+  margin-bottom: 20px;
+}
+
+/* WP login form overrides */
+.pt101-login-card .login-username,
+.pt101-login-card .login-password {
+  margin-bottom: 16px;
+}
+.pt101-login-card label {
+  display: block;
+  font-size: .8125rem;
+  font-weight: 600;
+  color: rgba(240,239,234,.7);
+  margin-bottom: 6px;
+}
+.pt101-login-card input[type="text"],
+.pt101-login-card input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: .9375rem;
+  color: #f0efea;
+  outline: none;
+  transition: border-color .18s;
+  font-family: inherit;
+}
+.pt101-login-card input[type="text"]:focus,
+.pt101-login-card input[type="password"]:focus {
+  border-color: #7c6ef5;
+  box-shadow: 0 0 0 3px rgba(124,110,245,.18);
+}
+.pt101-login-card .login-remember {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pt101-login-card .login-remember label {
+  margin: 0;
+  font-size: .875rem;
+  color: rgba(240,239,234,.55);
+  font-weight: 400;
+}
+.pt101-login-card input[type="checkbox"] {
+  accent-color: #7c6ef5;
+  width: 16px;
+  height: 16px;
+}
+.pt101-login-card input[type="submit"],
+.pt101-login-card .wp-submit input {
+  width: 100%;
+  background: #7c6ef5;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 20px;
+  font-size: .9375rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: background .18s;
+  font-family: inherit;
+}
+.pt101-login-card input[type="submit"]:hover {
+  background: #6a5de0;
+}
+.pt101-login-forgot {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: .8125rem;
+}
+.pt101-login-forgot a {
+  color: rgba(240,239,234,.5);
+  text-decoration: none;
+  transition: color .18s;
+}
+.pt101-login-forgot a:hover { color: #f0efea; }
+
+.pt101-login-enroll {
+  text-align: center;
+  font-size: .875rem;
+  color: rgba(240,239,234,.45);
+  margin: 0;
+}
+.pt101-login-enroll a {
+  color: #7c6ef5;
+  text-decoration: none;
+  font-weight: 600;
+}
+.pt101-login-enroll a:hover { color: #f0efea; }
+
+@media (max-width: 480px) {
+  .pt101-login-card { padding: 28px 20px; }
+}
+</style>
+    <?php
+} );
+
+/* ── STUDENT PORTAL: REDIRECTS ─────────────────────────────────
+ * 1. /my-account (plain) → /dashboard/ (Tutor LMS)
+ * 2. After any WP login  → /dashboard/
+ */
+add_action( 'template_redirect', function () {
+    if ( ! function_exists( 'is_account_page' ) ) return;
+    if ( is_account_page() && ! is_wc_endpoint_url() && is_user_logged_in() ) {
+        wp_safe_redirect( home_url( '/dashboard/' ), 302 );
+        exit;
+    }
+} );
+
+add_filter( 'login_redirect', function ( $url, $requested, $user ) {
+    if ( $user instanceof WP_User ) {
+        return home_url( '/dashboard/' );
+    }
+    return $url;
+}, 10, 3 );
+
+/* ── TUTOR LMS: DARK THEME OVERRIDES ───────────────────────────
+ * Overrides Tutor LMS default white UI to match the site's dark
+ * design tokens. Targets dashboard, course player, and sidebar.
+ */
+add_action( 'wp_head', function () {
+    if ( ! function_exists( 'tutor' ) ) return;
+    ?>
+<style id="pt101-tutor-overrides">
+/* ── Design tokens (match style.css) ── */
+:root {
+  --tutor-bg:        #0d0f1a;
+  --tutor-surface:   #13162b;
+  --tutor-border:    rgba(255,255,255,.08);
+  --tutor-text:      #f0efea;
+  --tutor-muted:     rgba(240,239,234,.55);
+  --tutor-accent:    #7c6ef5;
+  --tutor-accent-h:  #6a5de0;
+  --tutor-radius:    10px;
+}
+
+/* ── Global wrappers ── */
+.tutor-wrap,
+.tutor-dashboard,
+.tutor-page-wrap,
+body.tutor-dashboard-page {
+  background: var(--tutor-bg) !important;
+  color: var(--tutor-text) !important;
+}
+
+/* ── Dashboard layout ── */
+.tutor-dashboard-sidebar {
+  background: var(--tutor-surface) !important;
+  border-right: 1px solid var(--tutor-border) !important;
+}
+.tutor-dashboard-content {
+  background: var(--tutor-bg) !important;
+}
+
+/* ── Sidebar nav ── */
+.tutor-dashboard-menu li a,
+.tutor-dashboard-menu li button {
+  color: var(--tutor-muted) !important;
+  border-radius: 8px !important;
+  transition: background .18s, color .18s !important;
+}
+.tutor-dashboard-menu li a:hover,
+.tutor-dashboard-menu li.tutor-is-active a {
+  background: rgba(124,110,245,.15) !important;
+  color: var(--tutor-text) !important;
+}
+.tutor-dashboard-menu li.tutor-is-active a {
+  font-weight: 600 !important;
+}
+
+/* ── Cards ── */
+.tutor-card,
+.tutor-course-card,
+.tutor-dashboard-card {
+  background: var(--tutor-surface) !important;
+  border: 1px solid var(--tutor-border) !important;
+  border-radius: var(--tutor-radius) !important;
+  color: var(--tutor-text) !important;
+  box-shadow: none !important;
+}
+.tutor-card-header,
+.tutor-card-footer {
+  background: transparent !important;
+  border-color: var(--tutor-border) !important;
+}
+
+/* ── Typography ── */
+.tutor-wrap h1,.tutor-wrap h2,.tutor-wrap h3,
+.tutor-wrap h4,.tutor-wrap h5,.tutor-wrap h6 {
+  color: var(--tutor-text) !important;
+}
+.tutor-wrap p,
+.tutor-wrap span,
+.tutor-wrap li,
+.tutor-wrap label {
+  color: var(--tutor-muted) !important;
+}
+.tutor-wrap strong,
+.tutor-course-card__title,
+.tutor-dashboard-title {
+  color: var(--tutor-text) !important;
+}
+
+/* ── Progress bar ── */
+.tutor-progress-bar {
+  background: rgba(255,255,255,.1) !important;
+  border-radius: 99px !important;
+  overflow: hidden !important;
+}
+.tutor-progress-bar__fill,
+.tutor-progress-bar > span {
+  background: var(--tutor-accent) !important;
+  border-radius: 99px !important;
+}
+
+/* ── Buttons ── */
+.tutor-btn-primary,
+.tutor-btn.tutor-btn-primary {
+  background: var(--tutor-accent) !important;
+  border-color: var(--tutor-accent) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: background .18s !important;
+}
+.tutor-btn-primary:hover {
+  background: var(--tutor-accent-h) !important;
+  border-color: var(--tutor-accent-h) !important;
+}
+.tutor-btn-outline-primary {
+  border-color: var(--tutor-accent) !important;
+  color: var(--tutor-accent) !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+}
+.tutor-btn-outline-primary:hover {
+  background: var(--tutor-accent) !important;
+  color: #fff !important;
+}
+
+/* ── Form inputs ── */
+.tutor-wrap input[type="text"],
+.tutor-wrap input[type="email"],
+.tutor-wrap input[type="password"],
+.tutor-wrap textarea,
+.tutor-wrap select {
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--tutor-border) !important;
+  color: var(--tutor-text) !important;
+  border-radius: 8px !important;
+}
+.tutor-wrap input::placeholder,
+.tutor-wrap textarea::placeholder {
+  color: var(--tutor-muted) !important;
+}
+
+/* ── Course player ── */
+.tutor-course-player,
+.tutor-single-course-segment {
+  background: var(--tutor-bg) !important;
+}
+.tutor-course-player-header {
+  background: var(--tutor-surface) !important;
+  border-bottom: 1px solid var(--tutor-border) !important;
+}
+.tutor-course-sidebar-list,
+.tutor-course-topics-list {
+  background: var(--tutor-surface) !important;
+  border-left: 1px solid var(--tutor-border) !important;
+}
+.tutor-course-topic-header {
+  background: rgba(255,255,255,.04) !important;
+  color: var(--tutor-text) !important;
+  border-bottom: 1px solid var(--tutor-border) !important;
+}
+.tutor-course-topic-header:hover {
+  background: rgba(124,110,245,.12) !important;
+}
+.tutor-course-lesson-item,
+.tutor-course-content-list-item {
+  color: var(--tutor-muted) !important;
+  border-bottom: 1px solid var(--tutor-border) !important;
+}
+.tutor-course-lesson-item.is-active,
+.tutor-course-lesson-item:hover {
+  background: rgba(124,110,245,.12) !important;
+  color: var(--tutor-text) !important;
+}
+.tutor-lesson-icon,
+.tutor-icon-filter {
+  color: var(--tutor-accent) !important;
+  filter: none !important;
+}
+
+/* ── Tables ── */
+.tutor-table thead th,
+.tutor-table th {
+  background: var(--tutor-surface) !important;
+  color: var(--tutor-muted) !important;
+  border-color: var(--tutor-border) !important;
+}
+.tutor-table td {
+  background: var(--tutor-bg) !important;
+  border-color: var(--tutor-border) !important;
+  color: var(--tutor-text) !important;
+}
+.tutor-table tr:hover td {
+  background: rgba(255,255,255,.03) !important;
+}
+
+/* ── Badges / tags ── */
+.tutor-badge,
+.tutor-status-badge {
+  border-radius: 99px !important;
+  font-size: .75rem !important;
+  font-weight: 600 !important;
+}
+.tutor-badge-success { background: rgba(52,211,153,.15) !important; color: #34d399 !important; }
+.tutor-badge-warning { background: rgba(251,191,36,.15)  !important; color: #fbbf24 !important; }
+.tutor-badge-danger  { background: rgba(248,113,113,.15) !important; color: #f87171 !important; }
+
+/* ── Tabs ── */
+.tutor-tabs-nav li a,
+.tutor-nav-tab {
+  color: var(--tutor-muted) !important;
+  border-color: transparent !important;
+}
+.tutor-tabs-nav li.tutor-is-active a,
+.tutor-nav-tab.is-active {
+  color: var(--tutor-text) !important;
+  border-bottom-color: var(--tutor-accent) !important;
+}
+
+/* ── Dropdown / modal overlays ── */
+.tutor-dropdown-content,
+.tutor-modal-overlay + .tutor-modal {
+  background: var(--tutor-surface) !important;
+  border: 1px solid var(--tutor-border) !important;
+  border-radius: var(--tutor-radius) !important;
+  color: var(--tutor-text) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5) !important;
+}
+
+/* ── Scrollbars ── */
+.tutor-wrap ::-webkit-scrollbar { width: 6px; }
+.tutor-wrap ::-webkit-scrollbar-track { background: var(--tutor-bg); }
+.tutor-wrap ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.15);
+  border-radius: 3px;
+}
+</style>
+    <?php
+}, 100 );
