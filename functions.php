@@ -2341,13 +2341,19 @@ add_action( 'wp_head', function () {
   --tutor-radius:    10px;
 }
 
-/* ── Push content below fixed site header (64px) ── */
-.tutor-page-wrap {
-  padding-top: 80px !important;
+/* ── Push ALL dashboard content below fixed nav (64px) ── */
+body.tutor-dashboard-page {
+  padding-top: calc(var(--nav-h) + 16px) !important;
 }
-/* When WP admin bar is present it adds 32px; WP handles that via body class */
+body.admin-bar.tutor-dashboard-page {
+  padding-top: calc(var(--nav-h) + 48px) !important;
+}
+/* Inner page-wrap no longer needs its own top padding */
+.tutor-page-wrap {
+  padding-top: 0 !important;
+}
 .admin-bar .tutor-page-wrap {
-  padding-top: 48px !important;
+  padding-top: 0 !important;
 }
 
 /* ── Global wrappers ── */
