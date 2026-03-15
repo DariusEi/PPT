@@ -941,6 +941,25 @@ html body.pt101 .wc-block-gateway-container {
   color: var(--text-hi) !important;
 }
 
+/* ── Express checkout moved into payment block ─────────────── */
+/* Hide the original "Express Checkout" top-level title & outer wrapper border */
+html body.pt101 .wp-block-woocommerce-checkout-express-payment-block .wc-block-components-express-payment__title-container {
+  display: none !important;
+}
+/* Remove the "Or continue below" rule that used to separate express from the form */
+html body.pt101 .wc-block-components-express-payment-continue-rule {
+  display: none !important;
+}
+/* Style express buttons inside the payment card */
+html body.pt101 .wp-block-woocommerce-checkout-payment-block .wp-block-woocommerce-checkout-express-payment-block {
+  border-bottom: 1px solid var(--border-dark) !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 16px !important;
+}
+html body.pt101 .wp-block-woocommerce-checkout-payment-block .wc-block-components-express-payment {
+  margin: 0 !important;
+}
+
 /* ── 11. TERMS / PRIVACY (default WC text — hidden, replaced by custom checkboxes) ── */
 html body.pt101 .wc-block-checkout__terms,
 html body.pt101 .wc-block-checkout__privacy-policy {
@@ -1684,6 +1703,28 @@ add_action( 'wp_footer', function () {
     });
   }
 
+  /* ── Move Express Checkout (Apple/Google Pay) into Payment block ── */
+  var _expressMoved = false;
+  function moveExpressPayment(){
+    if(_expressMoved) return;
+    var express = document.querySelector('.wp-block-woocommerce-checkout-express-payment-block');
+    var payment = document.querySelector('.wp-block-woocommerce-checkout-payment-block');
+    if(!express || !payment) return;
+    // Already inside payment block — nothing to do
+    if(payment.contains(express)) { _expressMoved = true; return; }
+    payment.insertBefore(express, payment.firstChild);
+    // Hide the "Or continue below" divider that sat between express and the form
+    var divider = document.querySelector('.wc-block-components-express-payment__title-container');
+    if(!divider) {
+      // Fallback: the separator is sometimes a standalone element before the payment block
+      var prev = payment.previousElementSibling;
+      if(prev && prev.classList.contains('wc-block-components-express-payment-continue-rule')){
+        prev.style.display = 'none';
+      }
+    }
+    _expressMoved = true;
+  }
+
   /* ── Main cleanup / injection ──────────────────────────── */
   function cleanup(){
     /* Hide empty checkout steps */
@@ -1696,6 +1737,9 @@ add_action( 'wp_footer', function () {
       });
       if(visible.length === 0) step.style.display = 'none';
     });
+
+    /* Move Express Checkout into the Payment block */
+    moveExpressPayment();
 
     /* Merge Contact Info + Billing into one card (JS fallback for :has()) */
     mergeContactAndBilling();
