@@ -960,6 +960,67 @@ html body.pt101 .wp-block-woocommerce-checkout-payment-block .wc-block-component
   margin: 0 !important;
 }
 
+/* ── Course switcher (sidebar) ─────────────────────────────── */
+html body.pt101 .pt101-switcher {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: var(--r-lg) !important;
+  padding: 20px 24px 24px !important;
+  margin-bottom: 16px !important;
+}
+html body.pt101 .pt101-switcher__title {
+  color: var(--text-low) !important;
+  font-size: .72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 14px !important;
+}
+html body.pt101 .pt101-switcher__grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+html body.pt101 .pt101-switcher__btn {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: var(--r-sm) !important;
+  color: var(--text-mid) !important;
+  cursor: pointer !important;
+  font-family: var(--font) !important;
+  font-size: .8rem !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  padding: 10px 12px !important;
+  text-align: left !important;
+  transition: background var(--t), border-color var(--t), color var(--t) !important;
+  width: 100% !important;
+}
+html body.pt101 .pt101-switcher__btn:hover {
+  border-color: var(--accent) !important;
+  color: var(--text-hi) !important;
+}
+html body.pt101 .pt101-switcher__btn.active {
+  background: rgba(124,110,245,.13) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+html body.pt101 .pt101-switcher__btn-name { display: block !important; }
+html body.pt101 .pt101-switcher__btn-price {
+  color: var(--text-low) !important;
+  display: block !important;
+  font-size: .72rem !important;
+  margin-top: 3px !important;
+}
+html body.pt101 .pt101-switcher__btn.active .pt101-switcher__btn-price {
+  color: var(--accent) !important;
+}
+html body.pt101 .pt101-switcher--busy {
+  opacity: .6 !important;
+  pointer-events: none !important;
+}
+
 /* ── 11. TERMS / PRIVACY (default WC text — hidden, replaced by custom checkboxes) ── */
 html body.pt101 .wc-block-checkout__terms,
 html body.pt101 .wc-block-checkout__privacy-policy {
@@ -1502,6 +1563,27 @@ add_action( 'wp_footer', function () {
   var PT101_NONCE  = <?php echo wp_json_encode( wp_create_nonce( 'pt101_checkout_pw' ) ); ?>;
   var PT101_GUEST  = <?php echo is_user_logged_in() ? 'false' : 'true'; ?>; // show pw field only for guests
 
+  <?php
+  // Current product in cart (used to pre-select the active course)
+  $pt101_current_pid = 0;
+  if ( function_exists( 'WC' ) && WC()->cart ) {
+      foreach ( WC()->cart->get_cart() as $_item ) {
+          $pt101_current_pid = (int) $_item['product_id'];
+          break;
+      }
+  }
+  $pt101_courses = [
+      [ 'id' => 158, 'name' => 'Intro to Trading',        'price' => 'Free' ],
+      [ 'id' => 256, 'name' => 'Trading Foundations',     'price' => '$89'  ],
+      [ 'id' => 253, 'name' => 'Market Mechanics',        'price' => '$299' ],
+      [ 'id' => 254, 'name' => 'Strategy Development',    'price' => '$399' ],
+      [ 'id' => 207, 'name' => 'Mastering Pro Trading',   'price' => '$499' ],
+  ];
+  ?>
+  var PT101_SWAP_NONCE      = <?php echo wp_json_encode( wp_create_nonce( 'pt101_swap_course' ) ); ?>;
+  var PT101_CURRENT_PRODUCT = <?php echo (int) $pt101_current_pid; ?>;
+  var PT101_COURSES         = <?php echo wp_json_encode( $pt101_courses ); ?>;
+
   /* ── Password field injection ──────────────────────────── */
   function buildPasswordCard(){
     var card = document.createElement('div');
@@ -1703,6 +1785,71 @@ add_action( 'wp_footer', function () {
     });
   }
 
+  /* ── Course switcher widget ─────────────────────────────── */
+  var _switcherBuilt = false;
+  var _activeProductId = PT101_CURRENT_PRODUCT;
+
+  function buildCourseSwitcher() {
+    if (_switcherBuilt) return;
+    var sidebar = document.querySelector('.wc-block-checkout__sidebar');
+    if (!sidebar) return;
+
+    var wrap = document.createElement('div');
+    wrap.id = 'pt101-course-switcher';
+    wrap.className = 'pt101-switcher';
+
+    var btnsHtml = PT101_COURSES.map(function(c) {
+      var active = c.id === _activeProductId ? ' active' : '';
+      return '<button type="button" class="pt101-switcher__btn' + active + '" data-pid="' + c.id + '">' +
+        '<span class="pt101-switcher__btn-name">' + c.name + '</span>' +
+        '<span class="pt101-switcher__btn-price">' + c.price + '</span>' +
+        '</button>';
+    }).join('');
+
+    wrap.innerHTML =
+      '<p class="pt101-switcher__title">Choose your course</p>' +
+      '<div class="pt101-switcher__grid">' + btnsHtml + '</div>';
+
+    sidebar.insertBefore(wrap, sidebar.firstChild);
+
+    wrap.addEventListener('click', function(e) {
+      var btn = e.target.closest('.pt101-switcher__btn');
+      if (!btn) return;
+      var pid = parseInt(btn.getAttribute('data-pid'), 10);
+      if (pid === _activeProductId) return;
+      swapCourse(pid);
+    });
+
+    _switcherBuilt = true;
+  }
+
+  function swapCourse(productId) {
+    var switcher = document.getElementById('pt101-course-switcher');
+    if (switcher) switcher.classList.add('pt101-switcher--busy');
+
+    var body = new URLSearchParams();
+    body.append('action', 'pt101_swap_course');
+    body.append('nonce', PT101_SWAP_NONCE);
+    body.append('product_id', String(productId));
+
+    fetch(PT101_AJAX, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        window.location.reload();
+      } else {
+        if (switcher) switcher.classList.remove('pt101-switcher--busy');
+      }
+    })
+    .catch(function() {
+      if (switcher) switcher.classList.remove('pt101-switcher--busy');
+    });
+  }
+
   /* ── Move Express Checkout (Apple/Google Pay) into Payment block ── */
   var _expressMoved = false;
   function moveExpressPayment(){
@@ -1737,6 +1884,9 @@ add_action( 'wp_footer', function () {
       });
       if(visible.length === 0) step.style.display = 'none';
     });
+
+    /* Build course switcher in the sidebar */
+    buildCourseSwitcher();
 
     /* Move Express Checkout into the Payment block */
     moveExpressPayment();
@@ -1903,3 +2053,27 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 10 );
+
+/* ── Course switcher: swap cart product via AJAX ────────────────
+ * Empties the cart and adds the requested course. Called from JS
+ * on the checkout page when the user picks a different course.
+ */
+add_action( 'wp_ajax_nopriv_pt101_swap_course', 'pt101_ajax_swap_course' );
+add_action( 'wp_ajax_pt101_swap_course',        'pt101_ajax_swap_course' );
+function pt101_ajax_swap_course() {
+    check_ajax_referer( 'pt101_swap_course', 'nonce' );
+    $product_id  = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+    $allowed_ids = [ 158, 207, 253, 254, 256 ];
+    if ( ! in_array( $product_id, $allowed_ids, true ) ) {
+        wp_send_json_error( 'Invalid product' );
+    }
+    if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+        wp_send_json_error( 'Cart unavailable' );
+    }
+    WC()->cart->empty_cart();
+    $key = WC()->cart->add_to_cart( $product_id, 1 );
+    if ( ! $key ) {
+        wp_send_json_error( 'Could not add product to cart' );
+    }
+    wp_send_json_success( [ 'product_id' => $product_id ] );
+}
