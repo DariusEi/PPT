@@ -752,15 +752,17 @@ html body.pt101 .wc-block-components-checkout-step:has(input[type="email"]) {
   border-bottom: none !important;
   margin-bottom: 0 !important;
 }
+/* Hide the standalone Country/Region step (separate card above billing form) */
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-country-input):not(:has(.wc-block-components-address-form)) {
+  display: none !important;
+}
 /* Step that contains the address form → no top border/radius */
-html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-address-form),
-html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-country-input) {
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-address-form) {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   border-top: 1px solid var(--border-dark) !important;
 }
-html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-address-form) .wc-block-components-checkout-step__title,
-html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-country-input) .wc-block-components-checkout-step__title {
+html body.pt101 .wc-block-components-checkout-step:has(.wc-block-components-address-form) .wc-block-components-checkout-step__title {
   display: none !important;
 }
 
@@ -1641,8 +1643,7 @@ add_action( 'wp_footer', function () {
 
     // Find the step that holds the address form (Billing Address)
     var addrEl = document.querySelector(
-      '.wc-block-checkout__main .wc-block-components-address-form,' +
-      '.wc-block-checkout__main .wc-block-components-country-input'
+      '.wc-block-checkout__main .wc-block-components-address-form'
     );
     if(!addrEl) return;
     var billingStep = addrEl.closest('.wc-block-components-checkout-step');
