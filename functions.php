@@ -2309,6 +2309,15 @@ add_action( 'wp_head', function () {
   --tutor-radius:    10px;
 }
 
+/* ── Push content below fixed site header (64px) ── */
+.tutor-page-wrap {
+  padding-top: 80px !important;
+}
+/* When WP admin bar is present it adds 32px; WP handles that via body class */
+.admin-bar .tutor-page-wrap {
+  padding-top: 48px !important;
+}
+
 /* ── Global wrappers ── */
 .tutor-wrap,
 .tutor-dashboard,
@@ -2359,21 +2368,85 @@ body.tutor-dashboard-page {
   border-color: var(--tutor-border) !important;
 }
 
-/* ── Typography ── */
-.tutor-wrap h1,.tutor-wrap h2,.tutor-wrap h3,
-.tutor-wrap h4,.tutor-wrap h5,.tutor-wrap h6 {
+/* ── Typography — headings & body text ── */
+.tutor-wrap h1, .tutor-wrap h2, .tutor-wrap h3,
+.tutor-wrap h4, .tutor-wrap h5, .tutor-wrap h6,
+.tutor-dashboard-content-inner h2,
+.tutor-dashboard-content-inner h3 {
   color: var(--tutor-text) !important;
 }
-.tutor-wrap p,
-.tutor-wrap span,
-.tutor-wrap li,
-.tutor-wrap label {
+/* Default body text: full brightness — only dim truly secondary copy */
+.tutor-wrap {
+  color: var(--tutor-text) !important;
+}
+/* Secondary / meta text explicitly */
+.tutor-meta,
+.tutor-course-card__meta,
+.tutor-dashboard-menu .tutor-menu-item-label,
+.tutor-stats-card__label,
+.tutor-color-muted,
+[class*="tutor-text-hint"],
+[class*="tutor-fs-7"] {
   color: var(--tutor-muted) !important;
 }
-.tutor-wrap strong,
-.tutor-course-card__title,
-.tutor-dashboard-title {
+/* Links inside dashboard: purple accent, not orange */
+.tutor-wrap a,
+.tutor-dashboard-content a {
+  color: var(--tutor-accent) !important;
+}
+.tutor-wrap a:hover,
+.tutor-dashboard-content a:hover {
   color: var(--tutor-text) !important;
+}
+/* But sidebar links handled separately above */
+.tutor-dashboard-menu li a {
+  color: var(--tutor-muted) !important;
+}
+/* Course titles in cards/tables: always full brightness */
+.tutor-course-name,
+.tutor-course-card__title,
+.tutor-dashboard-title,
+.tutor-table td a,
+.tutor-table td {
+  color: var(--tutor-text) !important;
+}
+/* Stat card numbers */
+.tutor-stats-card__count,
+[class*="tutor-fs-1"],
+[class*="tutor-fw-bold"] {
+  color: var(--tutor-text) !important;
+}
+/* Section labels (e.g. "Enrolled Courses" under the number) */
+.tutor-stats-card__label {
+  color: var(--tutor-muted) !important;
+}
+/* "View All" and similar secondary links */
+.tutor-dashboard-content a.tutor-color-secondary {
+  color: var(--tutor-muted) !important;
+}
+.tutor-dashboard-content a.tutor-color-secondary:hover {
+  color: var(--tutor-accent) !important;
+}
+/* "In Progress Courses", "My Courses" section headings */
+.tutor-segment-title,
+.tutor-dashboard-title,
+.tutor-section-title {
+  color: var(--tutor-text) !important;
+  font-weight: 700 !important;
+}
+/* Profile name & rating area */
+.tutor-dashboard-profile-name,
+.tutor-dashboard-profile-bio {
+  color: var(--tutor-text) !important;
+}
+.tutor-rating-value,
+.tutor-rating-count {
+  color: var(--tutor-muted) !important;
+}
+/* "Completed Lessons" and progress % labels */
+.tutor-course-progress-label,
+.tutor-course-progress-value {
+  color: var(--tutor-muted) !important;
 }
 
 /* ── Progress bar ── */
