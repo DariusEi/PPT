@@ -2366,7 +2366,7 @@ add_action( 'wp_head', function () {
 /* Hardcoded — CSS var --nav-h may not resolve inside PHP-injected <style> */
 body.tutor-screen-frontend-dashboard,
 body.tutor-frontend,
-body.single-tutor_course,
+body.single-courses,
 body.single-tutor_lesson,
 body.single-tutor_quiz,
 body.single-tutor_assignments {
@@ -2374,7 +2374,7 @@ body.single-tutor_assignments {
 }
 body.admin-bar.tutor-screen-frontend-dashboard,
 body.admin-bar.tutor-frontend,
-body.admin-bar.single-tutor_course,
+body.admin-bar.single-courses,
 body.admin-bar.single-tutor_lesson {
   padding-top: 112px !important; /* 80 + 32px admin bar */
 }
@@ -2389,10 +2389,10 @@ body.admin-bar.single-tutor_lesson {
 [data-page="tutor-reviews"],
 .tutor-reviews-section { display: none !important; }
 /* Course page tab — exact match via data-tutor-nav-target (inspected from live HTML) */
-body.single-tutor_course [data-tutor-nav-target="tutor-course-details-tab-reviews"],
-body.single-tutor_course li:has([data-tutor-nav-target="tutor-course-details-tab-reviews"]),
-body.single-tutor_course #tutor-course-details-tab-reviews,
-body.single-tutor_course [data-tutor-nav-target*="review"] { display: none !important; }
+body.single-courses [data-tutor-nav-target="tutor-course-details-tab-reviews"],
+body.single-courses li:has([data-tutor-nav-target="tutor-course-details-tab-reviews"]),
+body.single-courses #tutor-course-details-tab-reviews,
+body.single-courses [data-tutor-nav-target*="review"] { display: none !important; }
 
 /* ── Global wrappers ── */
 .tutor-wrap,
@@ -2777,10 +2777,10 @@ html body .tutor-bg-gray,
 .tutor-course-content-nav-tabs,
 .tutor-course-nav-tab-items,
 [class*="course-nav-tab"],
-body.single-tutor_course nav,
-body.single-tutor_course [class*="-tab-list"],
-body.single-tutor_course [class*="-tabs-wrap"],
-body.single-tutor_course [class*="-tabs-nav"] {
+body.single-courses nav,
+body.single-courses [class*="-tab-list"],
+body.single-courses [class*="-tabs-wrap"],
+body.single-courses [class*="-tabs-nav"] {
   background: var(--tutor-surface) !important;
   border-bottom: 1px solid var(--tutor-border) !important;
 }
@@ -2811,17 +2811,17 @@ body.single-tutor_course [class*="-tabs-nav"] {
 /* ── Bottom gap — space between course content and footer ────────────────
    Theme uses .site-content / .site-main / #primary (from style.css inspection).
    body.pt101 is the theme's own body class — use it for max specificity.       */
-html body.pt101.single-tutor_course .site-content,
-html body.pt101.single-tutor_course .site-main,
-html body.pt101.single-tutor_course #content,
-html body.pt101.single-tutor_course #primary,
-html body.pt101.single-tutor_course main,
-html body.single-tutor_course .site-content,
-html body.single-tutor_course .site-main,
-html body.single-tutor_course #primary,
-html body.single-tutor_course main,
-html body.single-tutor_course .tutor-page-wrap,
-html body.single-tutor_course .tutor-single-course {
+html body.pt101.single-courses .site-content,
+html body.pt101.single-courses .site-main,
+html body.pt101.single-courses #content,
+html body.pt101.single-courses #primary,
+html body.pt101.single-courses main,
+html body.single-courses .site-content,
+html body.single-courses .site-main,
+html body.single-courses #primary,
+html body.single-courses main,
+html body.single-courses .tutor-page-wrap,
+html body.single-courses .tutor-single-course {
   padding-bottom: 80px !important;
 }
 /* Dashboard page bottom gap */
@@ -2834,11 +2834,11 @@ html body.tutor-screen-frontend-dashboard #primary {
 }
 
 /* ── About Course / description text — readable brightness ── */
-body.single-tutor_course .tutor-course-description p,
-body.single-tutor_course .tutor-course-description,
-body.single-tutor_course .tutor-course-description *,
-body.single-tutor_course [class*="course-desc"] p,
-body.single-tutor_course [class*="course-overview"] p {
+body.single-courses .tutor-course-description p,
+body.single-courses .tutor-course-description,
+body.single-courses .tutor-course-description *,
+body.single-courses [class*="course-desc"] p,
+body.single-courses [class*="course-overview"] p {
   color: rgba(240,239,234,.88) !important;
   font-size: 1rem !important;
   line-height: 1.75 !important;
@@ -3205,10 +3205,10 @@ body.single-tutor_lesson [class*="lesson-content"] {
 
 /* ═══════════════════════════════════════════════════════
    SINGLE COURSE PAGE  (course detail / info page)
-   Uses body.single-tutor_course prefix for high specificity
+   Uses body.single-courses prefix for high specificity
    ═══════════════════════════════════════════════════════ */
 
-body.single-tutor_course,
+body.single-courses,
 body.single-courses {
   background: var(--tutor-bg) !important;
   color: var(--tutor-text) !important;
@@ -3223,10 +3223,10 @@ html body .tutor-single-course-sidebar [class*="enroll"],
 html body .tutor-single-course-sidebar [class*="entry"],
 html body .tutor-single-course-sidebar [class*="instructor"],
 html body .tutor-single-course-sidebar [class*="widget"],
-html body.single-tutor_course .tutor-card,
-html body.single-tutor_course [class*="tutor-enroll"],
-html body.single-tutor_course [class*="course-entry"],
-html body.single-tutor_course .tutor-bg-white {
+html body.single-courses .tutor-card,
+html body.single-courses [class*="tutor-enroll"],
+html body.single-courses [class*="course-entry"],
+html body.single-courses .tutor-bg-white {
   background: var(--tutor-surface) !important;
   background-color: var(--tutor-surface) !important;
   border: 1px solid var(--tutor-border) !important;
@@ -3251,8 +3251,8 @@ html body .tutor-single-course-sidebar [class*="enroll-date"] {
 /* Secondary meta (Beginner, Total Enrolled, Last Updated) */
 .tutor-single-course-sidebar [class*="meta"],
 .tutor-single-course-sidebar [class*="info-item"],
-body.single-tutor_course [class*="course-level"],
-body.single-tutor_course [class*="course-meta"] * {
+body.single-courses [class*="course-level"],
+body.single-courses [class*="course-meta"] * {
   color: rgba(240,239,234,.72) !important;
 }
 
@@ -3261,58 +3261,59 @@ body.single-tutor_course [class*="course-meta"] * {
    The grey background is on the parent wrapper div, not the nav itself.
    Use :has() to target the wrapping div, and the attribute selector for precision. */
 /* The nav itself */
-html body.single-tutor_course nav[tutor-priority-nav],
-html body.single-tutor_course nav.tutor-nav {
+html body.single-courses nav[tutor-priority-nav],
+html body.single-courses nav.tutor-nav {
   background: var(--tutor-surface) !important;
   background-color: var(--tutor-surface) !important;
 }
-/* The parent wrapper div that holds the nav — this is what's grey */
-html body.single-tutor_course .tutor-course-details-tab,
-html body.single-tutor_course [class*="course-details-tab"],
-html body.single-tutor_course div:has(> nav[tutor-priority-nav]),
-html body.single-tutor_course div:has(> nav.tutor-nav),
-html body.single-tutor_course [class*="tutor-nav"],
-html body.single-tutor_course [class*="tab-wrap"],
-html body.single-tutor_course [class*="tabs-wrap"] {
+/* The sticky wrapper is the actual grey element (rgba(255,255,255,0.6)) */
+html body.single-courses .tutor-is-sticky,
+html body.single-courses .tutor-course-details-tab,
+html body.single-courses [class*="course-details-tab"],
+html body.single-courses div:has(> nav[tutor-priority-nav]),
+html body.single-courses div:has(> nav.tutor-nav),
+html body.single-courses [class*="tutor-nav"],
+html body.single-courses [class*="tab-wrap"],
+html body.single-courses [class*="tabs-wrap"] {
   background: #13162b !important;
   background-color: #13162b !important;
   border-bottom: 1px solid rgba(255,255,255,.08) !important;
 }
 /* Tab link text — muted default, bright on active */
-html body.single-tutor_course nav[tutor-priority-nav] .tutor-nav-link,
-html body.single-tutor_course nav.tutor-nav .tutor-nav-link,
-html body.single-tutor_course .tutor-nav-link {
+html body.single-courses nav[tutor-priority-nav] .tutor-nav-link,
+html body.single-courses nav.tutor-nav .tutor-nav-link,
+html body.single-courses .tutor-nav-link {
   color: rgba(240,239,234,.65) !important;
   background: transparent !important;
 }
-html body.single-tutor_course .tutor-nav-link.is-active,
-html body.single-tutor_course .tutor-nav-link.active {
+html body.single-courses .tutor-nav-link.is-active,
+html body.single-courses .tutor-nav-link.active {
   color: var(--tutor-text) !important;
   border-bottom-color: var(--tutor-accent) !important;
 }
 
 /* About Course / description text — actual class from inspected HTML: cdp-hero-sub */
-body.single-tutor_course .cdp-hero-sub,
-body.single-tutor_course p.cdp-hero-sub,
-body.single-tutor_course [class*="cdp-hero"],
-body.single-tutor_course .tutor-course-description,
-body.single-tutor_course .tutor-course-description p,
-body.single-tutor_course .tutor-course-description *,
-body.single-tutor_course [class*="tab-content"] p,
-body.single-tutor_course [class*="course-detail"] p,
-body.single-tutor_course .tutor-single-course-main-content p {
+body.single-courses .cdp-hero-sub,
+body.single-courses p.cdp-hero-sub,
+body.single-courses [class*="cdp-hero"],
+body.single-courses .tutor-course-description,
+body.single-courses .tutor-course-description p,
+body.single-courses .tutor-course-description *,
+body.single-courses [class*="tab-content"] p,
+body.single-courses [class*="course-detail"] p,
+body.single-courses .tutor-single-course-main-content p {
   color: rgba(240,239,234,.9) !important;
   line-height: 1.75 !important;
 }
 /* Broad catch-all: any paragraph on the course page */
-html body.single-tutor_course p {
+html body.single-courses p {
   color: rgba(240,239,234,.88) !important;
 }
 
 /* "About Course" / "Course Content" headings */
-body.single-tutor_course .tutor-single-course-content h2,
-body.single-tutor_course .tutor-single-course-content h3,
-body.single-tutor_course .tutor-single-course-content h4 {
+body.single-courses .tutor-single-course-content h2,
+body.single-courses .tutor-single-course-content h3,
+body.single-courses .tutor-single-course-content h4 {
   color: var(--tutor-text) !important;
   font-weight: 700 !important;
   font-size: 1.125rem !important;
@@ -3320,34 +3321,34 @@ body.single-tutor_course .tutor-single-course-content h4 {
 }
 
 /* Course content accordion (curriculum on the detail page) */
-body.single-tutor_course .tutor-accordion-item {
+body.single-courses .tutor-accordion-item {
   border: 1px solid var(--tutor-border) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
   margin-bottom: 8px !important;
 }
-body.single-tutor_course .tutor-accordion-item-header,
-body.single-tutor_course [class*="accordion-item-header"] {
+body.single-courses .tutor-accordion-item-header,
+body.single-courses [class*="accordion-item-header"] {
   background: var(--tutor-surface) !important;
   color: var(--tutor-text) !important;
   font-weight: 600 !important;
 }
-body.single-tutor_course .tutor-accordion-item-body,
-body.single-tutor_course [class*="accordion-item-body"] {
+body.single-courses .tutor-accordion-item-body,
+body.single-courses [class*="accordion-item-body"] {
   background: rgba(19,22,43,.7) !important;
 }
-body.single-tutor_course .tutor-accordion-item-body * {
+body.single-courses .tutor-accordion-item-body * {
   color: rgba(240,239,234,.78) !important;
 }
 
 /* "Outline" button (Complete Course) → dark border style */
-body.single-tutor_course .tutor-btn-outline-primary,
+body.single-courses .tutor-btn-outline-primary,
 .tutor-single-course-sidebar .tutor-btn-outline-primary {
   background: transparent !important;
   border: 1px solid var(--tutor-accent) !important;
   color: var(--tutor-accent) !important;
 }
-body.single-tutor_course .tutor-btn-outline-primary:hover {
+body.single-courses .tutor-btn-outline-primary:hover {
   background: var(--tutor-accent) !important;
   color: #fff !important;
 }
@@ -3560,42 +3561,16 @@ body.single-tutor_lesson #tutor-course-player {
     <?php
 }, 100 );
 
-/* ── DIAGNOSTIC: reads live DOM and shows element info — REMOVE AFTER DEBUGGING ── */
-add_action( 'wp_footer', function () {
-    ?>
-<script>
-window.addEventListener('load',function(){
-  var out=[];
-  var nav=document.querySelector('nav.tutor-nav,[tutor-priority-nav]');
-  if(nav){
-    var p=nav.parentElement, gp=p&&p.parentElement;
-    out.push('NAV tag='+nav.tagName+' class="'+nav.className+'"');
-    out.push('NAV computed bg: '+getComputedStyle(nav).backgroundColor);
-    if(p){out.push('PARENT tag='+p.tagName+' class="'+p.className+'"');out.push('PARENT computed bg: '+getComputedStyle(p).backgroundColor);}
-    if(gp){out.push('GRANDPARENT tag='+gp.tagName+' class="'+gp.className+'"');out.push('GRANDPARENT computed bg: '+getComputedStyle(gp).backgroundColor);}
-  }else{out.push('NO nav.tutor-nav found');}
-  var p2=document.querySelector('.tutor-course-description p,.tutor-course-tab-content p');
-  if(p2){out.push('DESC P class="'+p2.className+'"');out.push('DESC P parent class="'+(p2.parentElement?p2.parentElement.className:'')+'"');out.push('DESC P computed color: '+getComputedStyle(p2).color);}
-  out.push('body classes: '+document.body.className);
-  var d=document.createElement('div');
-  d.id='pt101-diag';
-  d.style.cssText='position:fixed;top:60px;left:0;z-index:99999;background:#000;color:#0f0;padding:16px;font:11px/1.6 monospace;max-width:90vw;white-space:pre;border:2px solid #0f0;';
-  d.textContent=out.join('\n');
-  document.body.appendChild(d);
-});
-</script>
-    <?php
-}, 99 );
 
 /* ── Force-override Tutor LMS elements that resist CSS (JS runs after all scripts) ── */
 add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'tutor_course' ) ) return;
+    if ( ! is_singular( 'courses' ) ) return;
     ?>
 <script>
 (function(){
   function tutorFix(){
-    /* Tab bar: force dark background */
-    ['.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
+    /* Tab bar: force dark background — .tutor-is-sticky is the actual grey element */
+    ['.tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
       document.querySelectorAll(s).forEach(function(el){
         el.style.setProperty('background','#13162b','important');
         el.style.setProperty('background-color','#13162b','important');
