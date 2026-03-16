@@ -3638,13 +3638,34 @@ add_action( 'wp_footer', function () {
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',tutorFix);}
   else{tutorFix();}
   window.addEventListener('load',tutorFix);
+
+  /* MutationObserver: re-apply styles if Tutor Vue.js re-renders accordion elements */
+  var mo=new MutationObserver(function(mutations){
+    for(var i=0;i<mutations.length;i++){
+      var nodes=mutations[i].addedNodes;
+      for(var j=0;j<nodes.length;j++){
+        var n=nodes[j];
+        if(n.nodeType===1&&(
+          n.classList.contains('tutor-accordion-item')||
+          n.classList.contains('tutor-accordion')||
+          n.querySelector&&n.querySelector('.tutor-accordion-item')
+        )){
+          tutorFix();
+          return;
+        }
+      }
+    }
+  });
+  mo.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
     <?php
 }, 999 );
 
 /* ── Course page: Turing College-style polish ── */
-add_action( 'wp_head', function () {
+/* wp_footer (priority 101) = output AFTER all enqueued stylesheets in wp_head,
+   so our !important rules are the last declarations and always win over Tutor CSS. */
+add_action( 'wp_footer', function () {
     ?>
 <style id="pt101-course-polish">
 
