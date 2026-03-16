@@ -3560,6 +3560,33 @@ body.single-tutor_lesson #tutor-course-player {
     <?php
 }, 100 );
 
+/* ── DIAGNOSTIC: reads live DOM and shows element info — REMOVE AFTER DEBUGGING ── */
+add_action( 'wp_footer', function () {
+    ?>
+<script>
+window.addEventListener('load',function(){
+  var out=[];
+  var nav=document.querySelector('nav.tutor-nav,[tutor-priority-nav]');
+  if(nav){
+    var p=nav.parentElement, gp=p&&p.parentElement;
+    out.push('NAV tag='+nav.tagName+' class="'+nav.className+'"');
+    out.push('NAV computed bg: '+getComputedStyle(nav).backgroundColor);
+    if(p){out.push('PARENT tag='+p.tagName+' class="'+p.className+'"');out.push('PARENT computed bg: '+getComputedStyle(p).backgroundColor);}
+    if(gp){out.push('GRANDPARENT tag='+gp.tagName+' class="'+gp.className+'"');out.push('GRANDPARENT computed bg: '+getComputedStyle(gp).backgroundColor);}
+  }else{out.push('NO nav.tutor-nav found');}
+  var p2=document.querySelector('.tutor-course-description p,.tutor-course-tab-content p');
+  if(p2){out.push('DESC P class="'+p2.className+'"');out.push('DESC P parent class="'+(p2.parentElement?p2.parentElement.className:'')+'"');out.push('DESC P computed color: '+getComputedStyle(p2).color);}
+  out.push('body classes: '+document.body.className);
+  var d=document.createElement('div');
+  d.id='pt101-diag';
+  d.style.cssText='position:fixed;top:60px;left:0;z-index:99999;background:#000;color:#0f0;padding:16px;font:11px/1.6 monospace;max-width:90vw;white-space:pre;border:2px solid #0f0;';
+  d.textContent=out.join('\n');
+  document.body.appendChild(d);
+});
+</script>
+    <?php
+}, 99 );
+
 /* ── Force-override Tutor LMS elements that resist CSS (JS runs after all scripts) ── */
 add_action( 'wp_footer', function () {
     if ( ! is_singular( 'tutor_course' ) ) return;
