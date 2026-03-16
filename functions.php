@@ -2609,6 +2609,10 @@ body.tutor-dashboard-page {
 }
 
 /* ── Empty-state boxes ("No Data Found") — dark, not white ── */
+/* Also cover Tutor's hardcoded utility bg classes (not using CSS vars) */
+html body .tutor-bg-white,
+html body .tutor-bg-grey,
+html body .tutor-bg-gray,
 .tutor-empty-state,
 .tutor-wrap .tutor-bg-white,
 .tutor-course-segment .tutor-empty,
@@ -2616,6 +2620,7 @@ body.tutor-dashboard-page {
 .tutor-dashboard-content .tutor-list-empty,
 .tutor-no-course-banner {
   background: var(--tutor-surface) !important;
+  background-color: var(--tutor-surface) !important;
   border: 1px solid var(--tutor-border) !important;
   border-radius: var(--tutor-radius) !important;
   color: var(--tutor-muted) !important;
@@ -2790,14 +2795,22 @@ body.single-tutor_course [class*="-tabs-nav"] {
 }
 
 /* ── Bottom padding — prevent content/footer overlap ── */
-body.single-tutor_course .tutor-single-course-wrapper,
-body.single-tutor_course .tutor-wrap,
-body.single-tutor_course main {
+body.single-tutor_course {
   padding-bottom: 80px !important;
 }
-body.tutor-dashboard-page .tutor-wrap,
-body.tutor-dashboard-page .tutor-dashboard {
+body.tutor-dashboard-page {
   padding-bottom: 48px !important;
+}
+
+/* ── About Course / description text — readable brightness ── */
+body.single-tutor_course .tutor-course-description p,
+body.single-tutor_course .tutor-course-description,
+body.single-tutor_course .tutor-course-description *,
+body.single-tutor_course [class*="course-desc"] p,
+body.single-tutor_course [class*="course-overview"] p {
+  color: rgba(240,239,234,.88) !important;
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
 }
 
 /* ── Dropdown / modal overlays ── */
@@ -3309,6 +3322,16 @@ body.single-tutor_lesson .tutor-course-player-sidebar * {
 #tutor-course-player .tutor-accordion-item-header:hover {
   background-color: #1a2340 !important;
 }
+
+/* Explicitly force dark on ALL lesson list items in the player */
+#tutor-course-player .tutor-course-content-list,
+#tutor-course-player .tutor-course-content-list li,
+#tutor-course-player .tutor-course-content-list-item,
+#tutor-course-player [class*="content-list-item"],
+#tutor-course-player [class*="content-list"] li {
+  background: #111827 !important;
+  background-color: #111827 !important;
+}
 #tutor-course-player .tutor-course-content-list-item.is-active,
 #tutor-course-player [class*="content-list-item"].is-active,
 #tutor-course-player [class*="content-list-item"].current {
@@ -3336,22 +3359,24 @@ body.single-tutor_lesson .tutor-course-player-sidebar li {
   font-weight: 600 !important;
 }
 
-/* Video: full width, no overflow clipping */
+/* Video: full width — do NOT override overflow or aspect-ratio,
+   Plyr.js uses padding-top:56.25% intrinsic sizing that we must not break */
 #tutor-course-player .tutor-video-player,
-#tutor-course-player [class*="video-wrap"],
-#tutor-course-player [class*="video-player"],
-#tutor-course-player iframe,
-#tutor-course-player video {
+#tutor-course-player [class*="video-player"] {
   width: 100% !important;
   max-width: 100% !important;
-  overflow: visible !important;
-  border-radius: 0 !important;
-  margin-bottom: 0 !important;
 }
 #tutor-course-player [class*="video-wrap"],
 #tutor-course-player [class*="spotlight-video"] {
-  aspect-ratio: 16/9 !important;
   background: #000 !important;
+  width: 100% !important;
+}
+/* Ensure the video/iframe inside fills the player container */
+#tutor-course-player video,
+#tutor-course-player iframe {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
 }
 
 /* Lesson content area: constrain text width, bright text */
@@ -3389,17 +3414,23 @@ body.single-tutor_lesson .tutor-course-player-sidebar li {
   justify-content: center !important;
   gap: 16px !important;
 }
-/* Prev/Next/Complete buttons */
+/* Prev/Next/Complete buttons — cover all known Tutor v1+v2 class variants */
 #tutor-course-player [class*="prev-content"],
 #tutor-course-player [class*="next-content"],
 #tutor-course-player [class*="prev-btn"],
 #tutor-course-player [class*="next-btn"],
 #tutor-course-player [class*="complete-lesson"],
+#tutor-course-player [class*="footer"] a,
+#tutor-course-player [class*="footer"] button,
+.tutor-prev-content,
+.tutor-next-content,
 .tutor-btn-prev-content,
 .tutor-btn-next-content,
 .tutor-btn-complete-lesson,
 .tutor-btn-prev-lesson,
-.tutor-btn-next-lesson {
+.tutor-btn-next-lesson,
+.tutor-course-player-content-footer a,
+.tutor-course-player-content-footer button {
   background: rgba(124,110,245,.15) !important;
   border: 1px solid rgba(124,110,245,.35) !important;
   color: var(--tutor-accent) !important;
