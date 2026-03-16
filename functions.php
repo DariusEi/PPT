@@ -2365,14 +2365,16 @@ add_action( 'wp_head', function () {
 
 /* ── Push ALL page content below fixed 64px nav ── */
 /* Hardcoded — CSS var --nav-h may not resolve inside PHP-injected <style> */
-body.tutor-dashboard-page,
+body.tutor-screen-frontend-dashboard,
+body.tutor-frontend,
 body.single-tutor_course,
 body.single-tutor_lesson,
 body.single-tutor_quiz,
 body.single-tutor_assignments {
   padding-top: 80px !important;
 }
-body.admin-bar.tutor-dashboard-page,
+body.admin-bar.tutor-screen-frontend-dashboard,
+body.admin-bar.tutor-frontend,
 body.admin-bar.single-tutor_course,
 body.admin-bar.single-tutor_lesson {
   padding-top: 112px !important; /* 80 + 32px admin bar */
@@ -2383,9 +2385,7 @@ body.admin-bar.single-tutor_lesson {
 }
 
 /* ── HIDE Reviews globally (not needed) ── */
-.tutor-dashboard-menu li:nth-child(4),
-.tutor-dashboard-menu [data-key="reviews"],
-.tutor-dashboard-menu li a[href*="reviews"],
+.tutor-dashboard-menu-reviews,
 [data-page="tutor-reviews"],
 .tutor-single-course .tutor-reviews-tab,
 .tutor-course-nav [href*="reviews"],
@@ -2397,7 +2397,8 @@ body.admin-bar.single-tutor_lesson {
 .tutor-wrap,
 .tutor-dashboard,
 .tutor-page-wrap,
-body.tutor-dashboard-page {
+body.tutor-screen-frontend-dashboard,
+body.tutor-frontend {
   background: var(--tutor-bg) !important;
   color: var(--tutor-text) !important;
 }
@@ -2412,18 +2413,23 @@ body.tutor-dashboard-page {
 }
 
 /* ── Sidebar nav ── */
+/* Actual Tutor LMS v2 HTML: ul.tutor-dashboard-permalinks > li.tutor-dashboard-menu-item */
+.tutor-dashboard-permalinks .tutor-dashboard-menu-item-link,
 .tutor-dashboard-menu li a,
 .tutor-dashboard-menu li button {
   color: var(--tutor-muted) !important;
   border-radius: 8px !important;
   transition: background .18s, color .18s !important;
 }
+.tutor-dashboard-permalinks .tutor-dashboard-menu-item-link:hover,
+.tutor-dashboard-menu-item.active .tutor-dashboard-menu-item-link,
 .tutor-dashboard-menu li a:hover,
-.tutor-dashboard-menu li.tutor-is-active a {
+.tutor-dashboard-menu li.active a {
   background: rgba(124,110,245,.15) !important;
   color: var(--tutor-text) !important;
 }
-.tutor-dashboard-menu li.tutor-is-active a {
+.tutor-dashboard-menu-item.active .tutor-dashboard-menu-item-link,
+.tutor-dashboard-menu li.active a {
   font-weight: 600 !important;
 }
 
@@ -2474,6 +2480,7 @@ body.tutor-dashboard-page {
   color: var(--tutor-text) !important;
 }
 /* But sidebar links handled separately above */
+.tutor-dashboard-permalinks .tutor-dashboard-menu-item-link,
 .tutor-dashboard-menu li a {
   color: var(--tutor-muted) !important;
 }
@@ -2633,9 +2640,10 @@ html body .tutor-bg-gray,
 }
 
 /* ── HIDE Reviews (not needed) ── */
+.tutor-dashboard-menu-reviews,
+.tutor-dashboard-permalinks .tutor-dashboard-menu-reviews,
 .tutor-dashboard-menu li a[href*="reviews"],
 .tutor-dashboard-menu li:has(a[href*="reviews"]),
-.tutor-dashboard-menu li[data-key="reviews"],
 [data-page="tutor-reviews"],
 .tutor-reviews-section {
   display: none !important;
@@ -2658,13 +2666,16 @@ html body .tutor-bg-gray,
 }
 
 /* ── Sidebar menu: ensure all labels readable ── */
+.tutor-dashboard-permalinks .tutor-dashboard-menu-item-link,
+.tutor-dashboard-permalinks .tutor-dashboard-menu-item-link span,
 .tutor-dashboard-menu li a,
 .tutor-dashboard-menu li button,
 .tutor-dashboard-menu .tutor-menu-item-label {
   color: rgba(240,239,234,.78) !important;
 }
 /* Instructor section label in sidebar */
-.tutor-dashboard-menu .tutor-dashboard-menu-label {
+.tutor-dashboard-menu .tutor-dashboard-menu-label,
+.tutor-dashboard-permalinks .tutor-dashboard-menu-label {
   color: var(--tutor-muted) !important;
   font-size: .75rem !important;
   text-transform: uppercase !important;
@@ -2790,7 +2801,9 @@ body.single-tutor_course [class*="-tabs-nav"] {
 .tutor-course-card-thumbnail,
 .tutor-course-card .tutor-course-card__thumbnail,
 .tutor-course-card__thumbnail-wrap,
-.tutor-course-thumbnail {
+.tutor-course-thumbnail,
+.tutor-ratio,
+.tutor-course-card .tutor-ratio {
   background: #161d2e !important;
 }
 
@@ -2798,7 +2811,8 @@ body.single-tutor_course [class*="-tabs-nav"] {
 body.single-tutor_course {
   padding-bottom: 80px !important;
 }
-body.tutor-dashboard-page {
+body.tutor-screen-frontend-dashboard,
+body.tutor-frontend {
   padding-bottom: 48px !important;
 }
 
