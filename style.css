@@ -559,7 +559,9 @@ body.pt101 .work-section h2,
 body.pt101 .work-section,
 body.pt101 .programs-section,
 body.pt101 .cta-section,
-body.pt101 .site-footer,
+body.pt101 .site-footer {
+  color: #f0efea;
+}
 body.pt101 .testi-section {
   color: #111320;
 }
@@ -579,7 +581,7 @@ body.pt101 .site-footer h1,
 body.pt101 .site-footer h2,
 body.pt101 .site-footer h3,
 body.pt101 .site-footer h4 {
-  color: #000000 !important;
+  color: #f0efea !important;
 }
 
 /* ── TESTIMONIAL ── */
@@ -806,10 +808,10 @@ body.pt101 .cta-section h2,
 
 /* ── FOOTER ── */
 .site-footer {
-  background: #f0efea;
-  border-top: 1px solid rgba(30,30,50,0.1);
+  background: #0d0f1a;
+  border-top: 1px solid rgba(255,255,255,.08);
   padding: 72px 0 56px;
-  color: #111320;
+  color: #f0efea;
 }
 
 /* Full-width 4-column grid within container */
@@ -827,7 +829,7 @@ body.pt101 .footer-col h4,
 .footer-col h4 {
   font-size: 1rem;
   font-weight: 700;
-  color: #000000 !important;
+  color: #f0efea !important;
   margin-bottom: 20px;
   letter-spacing: 0;
   text-transform: none;
@@ -838,13 +840,13 @@ body.pt101 .footer-col h4,
 .footer-col ul li a {
   display: block;
   font-size: 0.9rem;
-  color: #3a3d52;
+  color: rgba(240,239,234,.65);
   transition: color 0.18s;
   line-height: 1.45;
   text-decoration: none;
 }
 .footer-col ul a:hover,
-.footer-col ul li a:hover { color: #111320; }
+.footer-col ul li a:hover { color: #f0efea; }
 
 /* Social icons — plain SVG icons in a row, NO circles */
 .footer-socials-row {
@@ -867,13 +869,14 @@ body.pt101 .footer-col h4,
   flex-shrink: 0;
   padding: 0;
 }
-.soc-icon svg { width: 22px; height: 22px; fill: #111320; color: #111320; }
+.soc-icon svg { width: 22px; height: 22px; fill: #f0efea; color: #f0efea; }
+.soc-icon svg path { fill: #f0efea; }
 .soc-icon:hover { opacity: 0.55; }
 
 /* Legal links */
 .footer-legal-links { display: flex; flex-direction: column; gap: 11px; }
-.footer-legal-links a { font-size: 0.9rem; color: #3a3d52; transition: color 0.18s; text-decoration: none; }
-.footer-legal-links a:hover { color: #111320; }
+.footer-legal-links a { font-size: 0.9rem; color: rgba(240,239,234,.5); transition: color 0.18s; text-decoration: none; }
+.footer-legal-links a:hover { color: #f0efea; }
 
 /* ── TESTIMONIAL METRICS ROW ── */
 .testi-metrics-row {

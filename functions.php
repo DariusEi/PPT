@@ -3267,14 +3267,16 @@ html body.single-tutor_course nav.tutor-nav {
   background-color: var(--tutor-surface) !important;
 }
 /* The parent wrapper div that holds the nav — this is what's grey */
+html body.single-tutor_course .tutor-course-details-tab,
+html body.single-tutor_course [class*="course-details-tab"],
 html body.single-tutor_course div:has(> nav[tutor-priority-nav]),
 html body.single-tutor_course div:has(> nav.tutor-nav),
 html body.single-tutor_course [class*="tutor-nav"],
 html body.single-tutor_course [class*="tab-wrap"],
 html body.single-tutor_course [class*="tabs-wrap"] {
-  background: var(--tutor-surface) !important;
-  background-color: var(--tutor-surface) !important;
-  border-bottom: 1px solid var(--tutor-border) !important;
+  background: #13162b !important;
+  background-color: #13162b !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
 }
 /* Tab link text — muted default, bright on active */
 html body.single-tutor_course nav[tutor-priority-nav] .tutor-nav-link,
@@ -3557,3 +3559,43 @@ body.single-tutor_lesson #tutor-course-player {
 </style>
     <?php
 }, 100 );
+
+/* ── Force-override Tutor LMS elements that resist CSS (JS runs after all scripts) ── */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'tutor_course' ) ) return;
+    ?>
+<script>
+(function(){
+  function tutorFix(){
+    /* Tab bar: force dark background */
+    ['.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
+      document.querySelectorAll(s).forEach(function(el){
+        el.style.setProperty('background','#13162b','important');
+        el.style.setProperty('background-color','#13162b','important');
+      });
+    });
+    /* Hide Reviews tab link + its <li> */
+    document.querySelectorAll('[data-tutor-nav-target="tutor-course-details-tab-reviews"]').forEach(function(el){
+      var li=el.closest('li');
+      if(li) li.style.setProperty('display','none','important');
+      el.style.setProperty('display','none','important');
+    });
+    /* Hide Reviews tab panel */
+    document.querySelectorAll('#tutor-course-details-tab-reviews').forEach(function(el){
+      el.style.setProperty('display','none','important');
+    });
+    /* About Course / description paragraphs: full brightness */
+    document.querySelectorAll(
+      '.tutor-course-tab-content p,#tutor-course-details-tab-course-info p,'+
+      '.tutor-course-description p,.tutor-single-course-main-content p,.tutor-course-details-page p'
+    ).forEach(function(el){
+      el.style.setProperty('color','rgba(240,239,234,0.9)','important');
+    });
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',tutorFix);}
+  else{tutorFix();}
+  window.addEventListener('load',tutorFix);
+})();
+</script>
+    <?php
+}, 999 );
