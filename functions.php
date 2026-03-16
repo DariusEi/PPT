@@ -3266,15 +3266,13 @@ html body.single-courses nav.tutor-nav {
   background: var(--tutor-surface) !important;
   background-color: var(--tutor-surface) !important;
 }
-/* The sticky wrapper is the actual grey element (rgba(255,255,255,0.6)) */
-html body.single-courses .tutor-is-sticky,
+/* The sticky wrapper inside the course tab area is the actual grey element.
+   Scoped tightly to .tutor-course-details-tab to avoid hitting the site header. */
+html body.single-courses .tutor-course-details-tab .tutor-is-sticky,
 html body.single-courses .tutor-course-details-tab,
 html body.single-courses [class*="course-details-tab"],
 html body.single-courses div:has(> nav[tutor-priority-nav]),
-html body.single-courses div:has(> nav.tutor-nav),
-html body.single-courses [class*="tutor-nav"],
-html body.single-courses [class*="tab-wrap"],
-html body.single-courses [class*="tabs-wrap"] {
+html body.single-courses div:has(> nav.tutor-nav) {
   background: #13162b !important;
   background-color: #13162b !important;
   border-bottom: 1px solid rgba(255,255,255,.08) !important;
@@ -3569,8 +3567,8 @@ add_action( 'wp_footer', function () {
 <script>
 (function(){
   function tutorFix(){
-    /* Tab bar: force dark background — .tutor-is-sticky is the actual grey element */
-    ['.tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
+    /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
+    ['.tutor-course-details-tab .tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
       document.querySelectorAll(s).forEach(function(el){
         el.style.setProperty('background','#13162b','important');
         el.style.setProperty('background-color','#13162b','important');
@@ -3625,34 +3623,78 @@ body.single-courses .tutor-course-tab-content,
 body.single-courses #tutor-course-details-tab-course-info {
   padding: 32px 0 !important;
 }
+
+/* Section headings (About Course, Course Content): match site tokens */
 body.single-courses .tutor-course-tab-content h2,
-body.single-courses .tutor-course-tab-content h3 {
+body.single-courses .tutor-course-tab-content h3,
+body.single-courses .tutor-single-course-content h2,
+body.single-courses .tutor-single-course-content h3 {
   font-size: 1.125rem !important;
   font-weight: 700 !important;
-  letter-spacing: -0.01em !important;
-  margin-bottom: 14px !important;
+  letter-spacing: -0.02em !important;
+  color: #f0f0f5 !important;
+  margin-bottom: 12px !important;
 }
 
-/* Accordion section headers: more spacious */
-body.single-courses .tutor-accordion-item-header {
-  padding: 18px 20px !important;
+/* ── Accordion: aligned to site design tokens ──────────────────────────
+   --bg-card: #161929  --r-md: 14px  --border-dark: rgba(255,255,255,.08) */
+
+/* Container: gap before first box + space between boxes */
+body.single-courses .tutor-accordion,
+body.single-courses [class*="tutor-accordion-list"],
+body.single-courses [class*="tutor-course-accordion"] {
+  margin-top: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* Each accordion box: site card radius + border */
+body.single-courses .tutor-accordion-item {
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  overflow: hidden !important;
+  margin-bottom: 0 !important;
+}
+
+/* Accordion header: --bg-card background, generous padding */
+body.single-courses .tutor-accordion-item-header,
+body.single-courses .tutor-accordion-item .tutor-accordion-item-header {
+  background: #161929 !important;
+  padding: 18px 22px !important;
 }
 body.single-courses .tutor-accordion-item-header * {
   font-size: 0.9375rem !important;
   font-weight: 600 !important;
+  color: #f0f0f5 !important;
 }
 
-/* Lesson list items: better padding */
+/* Accordion body: slightly deeper dark */
+body.single-courses .tutor-accordion-item-body,
+body.single-courses [class*="accordion-item-body"] {
+  background: #0f1120 !important;
+}
+
+/* Lesson list items: comfortable padding, site typography */
 body.single-courses .tutor-course-content-list-item a,
 body.single-courses .tutor-course-topics-list li a,
 body.single-courses .tutor-course-content-list-item .tutor-lesson-title {
-  padding: 13px 18px 13px 22px !important;
+  padding: 14px 20px 14px 22px !important;
   gap: 12px !important;
   font-size: 0.875rem !important;
   line-height: 1.5 !important;
+  color: rgba(240,240,245,.75) !important;
+}
+body.single-courses .tutor-course-content-list-item a:hover,
+body.single-courses .tutor-course-topics-list li a:hover {
+  background: rgba(124,110,245,.1) !important;
+  color: #f0f0f5 !important;
 }
 body.single-courses .tutor-course-content-list-item {
-  border-bottom: 1px solid rgba(255,255,255,.05) !important;
+  border-bottom: 1px solid rgba(255,255,255,.04) !important;
+}
+body.single-courses .tutor-course-content-list-item:last-child {
+  border-bottom: none !important;
 }
 
 /* Hero / thumbnail: dark fallback */
@@ -3660,14 +3702,14 @@ body.single-courses .tutor-single-course-hero,
 body.single-courses [class*="course-hero"],
 body.single-courses .tutor-ratio,
 body.single-courses .tutor-course-thumbnail {
-  background: #13162b !important;
+  background: #161929 !important;
 }
 
-/* Sidebar card: polished corners */
+/* Sidebar card: --r-md radius, proper padding */
 body.single-courses .tutor-single-course-sidebar .tutor-card,
 body.single-courses .tutor-single-course-sidebar > div {
-  border-radius: 12px !important;
-  padding: 20px !important;
+  border-radius: 14px !important;
+  padding: 22px !important;
 }
 
 /* ── Lesson player sidebar: exact classes from live DOM diagnostic ── */
@@ -3696,6 +3738,121 @@ body.single-lesson .tutor-course-single-sidebar-wrapper [class*="topic"] {
   background: rgba(255,255,255,.04) !important;
   border-bottom: 1px solid rgba(255,255,255,.07) !important;
   font-weight: 600 !important;
+}
+
+</style>
+    <?php
+}, 101 );
+
+/* ── Dashboard: Turing College-inspired clean UI ── */
+add_action( 'wp_head', function () {
+    ?>
+<style id="pt101-dashboard-polish">
+
+/* Cards: site tokens — #161929 bg, 14px radius, subtle border */
+body.tutor-frontend .tutor-card,
+body.tutor-frontend .tutor-course-card,
+body.tutor-screen-frontend-dashboard .tutor-card {
+  background: #161929 !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  transition: border-color .18s !important;
+}
+body.tutor-frontend .tutor-course-card:hover {
+  border-color: rgba(124,110,245,.3) !important;
+}
+
+/* Stats cards */
+body.tutor-screen-frontend-dashboard .tutor-stats-card,
+body.tutor-screen-frontend-dashboard [class*="stats-card"] {
+  background: #161929 !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 14px !important;
+  padding: 22px !important;
+}
+body.tutor-screen-frontend-dashboard .tutor-stats-card__count,
+body.tutor-screen-frontend-dashboard [class*="stats-card"] [class*="count"] {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  color: #f0f0f5 !important;
+}
+body.tutor-screen-frontend-dashboard .tutor-stats-card__label {
+  font-size: 0.8125rem !important;
+  color: rgba(240,240,245,.55) !important;
+  margin-top: 4px !important;
+}
+
+/* Progress bar: thin accent line */
+body.tutor-frontend .tutor-progress-bar,
+body.tutor-screen-frontend-dashboard .tutor-progress-bar {
+  height: 4px !important;
+  border-radius: 99px !important;
+  background: rgba(255,255,255,.1) !important;
+}
+body.tutor-frontend .tutor-progress-bar__fill,
+body.tutor-frontend .tutor-progress-bar > span,
+body.tutor-screen-frontend-dashboard .tutor-progress-bar__fill {
+  background: #7c6ef5 !important;
+  border-radius: 99px !important;
+}
+body.tutor-frontend .tutor-course-progress-value {
+  color: #7c6ef5 !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+}
+
+/* Course card title */
+body.tutor-frontend .tutor-course-card__title,
+body.tutor-frontend .tutor-course-name {
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  color: #f0f0f5 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Dashboard section headings */
+body.tutor-screen-frontend-dashboard .tutor-dashboard-content h2,
+body.tutor-screen-frontend-dashboard .tutor-dashboard-content h3,
+body.tutor-screen-frontend-dashboard .tutor-segment-title,
+body.tutor-screen-frontend-dashboard .tutor-section-title {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  color: #f0f0f5 !important;
+  margin-bottom: 20px !important;
+}
+
+/* Sidebar nav: clean, pill-style, accent on active */
+body.tutor-screen-frontend-dashboard .tutor-dashboard-permalinks .tutor-dashboard-menu-item-link {
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  margin-bottom: 2px !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  border-left: 3px solid transparent !important;
+  color: rgba(240,240,245,.65) !important;
+}
+body.tutor-screen-frontend-dashboard .tutor-dashboard-permalinks .tutor-dashboard-menu-item.active .tutor-dashboard-menu-item-link {
+  background: rgba(124,110,245,.12) !important;
+  border-left-color: #7c6ef5 !important;
+  color: #f0f0f5 !important;
+  font-weight: 600 !important;
+}
+body.tutor-screen-frontend-dashboard .tutor-dashboard-permalinks .tutor-dashboard-menu-item-link:hover {
+  background: rgba(255,255,255,.05) !important;
+  color: #f0f0f5 !important;
+}
+
+/* Primary buttons: pill style matching site buttons */
+body.tutor-frontend .tutor-btn-primary {
+  border-radius: 100px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  padding: 9px 22px !important;
+  background: #7c6ef5 !important;
+  border-color: #7c6ef5 !important;
 }
 
 </style>
