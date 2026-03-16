@@ -2367,15 +2367,15 @@ add_action( 'wp_head', function () {
 body.tutor-screen-frontend-dashboard,
 body.tutor-frontend,
 body.single-courses,
-body.single-tutor_lesson,
-body.single-tutor_quiz,
-body.single-tutor_assignments {
+body.single-lesson,
+body.single-quiz,
+body.single-assignments {
   padding-top: 80px !important;
 }
 body.admin-bar.tutor-screen-frontend-dashboard,
 body.admin-bar.tutor-frontend,
 body.admin-bar.single-courses,
-body.admin-bar.single-tutor_lesson {
+body.admin-bar.single-lesson {
   padding-top: 112px !important; /* 80 + 32px admin bar */
 }
 /* Inner page-wrap must NOT add extra top padding */
@@ -2870,8 +2870,8 @@ body.single-courses [class*="course-overview"] p {
 
 /* Full page background */
 body.single-lesson,
-body.single-tutor_quiz,
-body.single-tutor_assignments,
+body.single-quiz,
+body.single-assignments,
 #tutor-course-player,
 .tutor-lesson-wrap {
   background: var(--tutor-bg) !important;
@@ -3035,7 +3035,7 @@ body.single-tutor_assignments,
 .tutor-course-player-content p,
 .tutor-spotlight-wrap p,
 #tutor-course-player-content p,
-body.single-tutor_lesson .tutor-course-spotlight-wrap p {
+body.single-lesson .tutor-course-spotlight-wrap p {
   font-size: 1rem !important;
   line-height: 1.75 !important;
   color: #e8e6ff !important;
@@ -3044,8 +3044,8 @@ body.single-tutor_lesson .tutor-course-spotlight-wrap p {
 /* All text inside the lesson content area */
 #tutor-course-player-content,
 #tutor-course-player-content *:not(a),
-body.single-tutor_lesson .tutor-course-spotlight-wrap,
-body.single-tutor_lesson [class*="lesson-content"] {
+body.single-lesson .tutor-course-spotlight-wrap,
+body.single-lesson [class*="lesson-content"] {
   color: rgba(240,239,234,.92) !important;
 }
 
@@ -3355,14 +3355,14 @@ body.single-courses .tutor-btn-outline-primary:hover {
 
 /* ═══════════════════════════════════════════════════════════════
    COURSE PLAYER — use #tutor-course-player ID for high specificity
-   and body.single-tutor_lesson (correct Tutor LMS body class)
+   and body.single-lesson (correct Tutor LMS body class)
    ═══════════════════════════════════════════════════════════════ */
 
 /* Sidebar: force dark on EVERYTHING inside it */
 #tutor-course-player #tutor-course-player-sidebar,
 #tutor-course-player .tutor-course-player-sidebar,
-body.single-tutor_lesson #tutor-course-player-sidebar,
-body.single-tutor_lesson .tutor-course-player-sidebar {
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson .tutor-course-player-sidebar {
   background: #111827 !important;
   background-color: #111827 !important;
 }
@@ -3374,10 +3374,10 @@ body.single-tutor_lesson .tutor-course-player-sidebar {
 #tutor-course-player .tutor-course-player-sidebar,
 #tutor-course-player .tutor-popup-course-area,
 #tutor-course-player .tutor-lead-info,
-body.single-tutor_lesson #tutor-course-player-sidebar,
-body.single-tutor_lesson .tutor-course-player-sidebar,
-body.single-tutor_lesson .tutor-popup-course-area,
-body.single-tutor_lesson .tutor-lead-info {
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson .tutor-course-player-sidebar,
+body.single-lesson .tutor-popup-course-area,
+body.single-lesson .tutor-lead-info {
   background: #111827 !important;
   background-color: #111827 !important;
 }
@@ -3387,10 +3387,10 @@ body.single-tutor_lesson .tutor-lead-info {
 #tutor-course-player .tutor-course-player-sidebar *,
 #tutor-course-player .tutor-popup-course-area *,
 #tutor-course-player .tutor-lead-info *,
-body.single-tutor_lesson #tutor-course-player-sidebar *,
-body.single-tutor_lesson .tutor-course-player-sidebar *,
-body.single-tutor_lesson .tutor-popup-course-area *,
-body.single-tutor_lesson .tutor-lead-info * {
+body.single-lesson #tutor-course-player-sidebar *,
+body.single-lesson .tutor-course-player-sidebar *,
+body.single-lesson .tutor-popup-course-area *,
+body.single-lesson .tutor-lead-info * {
   background-color: #111827 !important;
 }
 
@@ -3399,8 +3399,8 @@ body.single-tutor_lesson .tutor-lead-info * {
 #tutor-course-player [class*="topic-header"],
 #tutor-course-player [class*="topic-head"],
 #tutor-course-player [class*="section-header"],
-body.single-tutor_lesson [class*="topic-header"],
-body.single-tutor_lesson [class*="topic-head"] {
+body.single-lesson [class*="topic-header"],
+body.single-lesson [class*="topic-head"] {
   background-color: #161d2e !important;
 }
 #tutor-course-player .tutor-accordion-item-header:hover,
@@ -3414,7 +3414,7 @@ body.single-tutor_lesson [class*="topic-head"] {
 #tutor-course-player [class*="content-list-item"].current,
 #tutor-course-player [class*="topic-item"].is-active,
 #tutor-course-player [class*="lesson-item"].is-active,
-body.single-tutor_lesson [class*="topic-item"].is-active {
+body.single-lesson [class*="topic-item"].is-active {
   background-color: rgba(124,110,245,.15) !important;
   border-left: 3px solid var(--tutor-accent) !important;
 }
@@ -3426,14 +3426,14 @@ body.single-tutor_lesson [class*="topic-item"].is-active {
 #tutor-course-player .tutor-course-player-sidebar *,
 #tutor-course-player .tutor-popup-course-area,
 #tutor-course-player .tutor-popup-course-area *,
-body.single-tutor_lesson #tutor-course-player-sidebar,
-body.single-tutor_lesson #tutor-course-player-sidebar *,
-body.single-tutor_lesson .tutor-course-player-sidebar *,
-body.single-tutor_lesson .tutor-popup-course-area * {
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson #tutor-course-player-sidebar *,
+body.single-lesson .tutor-course-player-sidebar *,
+body.single-lesson .tutor-popup-course-area * {
   color: rgba(240,239,234,.82) !important;
 }
 #tutor-course-player #tutor-course-player-sidebar a:hover,
-body.single-tutor_lesson .tutor-course-player-sidebar a:hover {
+body.single-lesson .tutor-course-player-sidebar a:hover {
   color: #fff !important;
 }
 /* Active / currently playing lesson */
@@ -3551,10 +3551,10 @@ body.single-tutor_lesson .tutor-course-player-sidebar a:hover {
 #tutor-course-player {
   padding-bottom: 0 !important;
 }
-body.single-tutor_lesson {
+body.single-lesson {
   padding-bottom: 0 !important;
 }
-body.single-tutor_lesson #tutor-course-player {
+body.single-lesson #tutor-course-player {
   min-height: calc(100vh - 80px) !important;
 }
 </style>
@@ -3670,28 +3670,64 @@ body.single-courses .tutor-single-course-sidebar > div {
   padding: 20px !important;
 }
 
+/* ── Lesson player sidebar: exact classes from live DOM diagnostic ── */
+body.single-lesson .tutor-lesson-sidebar,
+body.single-lesson .tutor-course-single-sidebar-wrapper,
+body.single-lesson .tutor-course-single-content-wrapper .tutor-lesson-sidebar {
+  background: #111827 !important;
+  background-color: #111827 !important;
+  border-right: 1px solid rgba(255,255,255,.08) !important;
+}
+body.single-lesson .tutor-lesson-sidebar *,
+body.single-lesson .tutor-course-single-sidebar-wrapper * {
+  color: rgba(240,239,234,.85) !important;
+}
+/* Active lesson row */
+body.single-lesson .tutor-lesson-sidebar .tutor-is-active,
+body.single-lesson .tutor-lesson-sidebar [class*="is-active"],
+body.single-lesson .tutor-lesson-sidebar [class*="active"] {
+  background: rgba(124,110,245,.15) !important;
+  border-left: 3px solid #7c6ef5 !important;
+}
+/* Section / topic headers */
+body.single-lesson .tutor-lesson-sidebar [class*="topic-header"],
+body.single-lesson .tutor-lesson-sidebar [class*="section-header"],
+body.single-lesson .tutor-course-single-sidebar-wrapper [class*="topic"] {
+  background: rgba(255,255,255,.04) !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  font-weight: 600 !important;
+}
+
 </style>
     <?php
 }, 101 );
 
-/* ── Lesson player diagnostic — finds sidebar classes from live DOM ── */
+/* ── Lesson player: JS force-override sidebar (same pattern as course page) ── */
 add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
     ?>
 <script>
-window.addEventListener('load',function(){
-  var sb=document.querySelector('#tutor-course-player-sidebar,.tutor-course-player-sidebar,[class*="course-player-sidebar"],[class*="lesson-sidebar"]');
-  if(!sb) return;
-  var out=[];
-  out.push('SIDEBAR id="'+sb.id+'" class="'+sb.className+'"');
-  out.push('SIDEBAR bg: '+getComputedStyle(sb).backgroundColor);
-  var p=sb.parentElement;
-  if(p){out.push('PARENT class="'+p.className+'" bg: '+getComputedStyle(p).backgroundColor);}
-  out.push('body: '+document.body.className);
-  var d=document.createElement('div');
-  d.style.cssText='position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;padding:12px;font:11px/1.6 monospace;white-space:pre;border:2px solid #0f0;max-width:90vw;';
-  d.textContent=out.join('\n');
-  document.body.appendChild(d);
-});
+(function(){
+  function lessonFix(){
+    /* Sidebar: force dark */
+    ['.tutor-lesson-sidebar','.tutor-course-single-sidebar-wrapper'].forEach(function(s){
+      document.querySelectorAll(s).forEach(function(el){
+        el.style.setProperty('background','#111827','important');
+        el.style.setProperty('background-color','#111827','important');
+      });
+    });
+    /* All text inside sidebar: readable */
+    document.querySelectorAll('.tutor-lesson-sidebar *,.tutor-course-single-sidebar-wrapper *').forEach(function(el){
+      var bg=getComputedStyle(el).backgroundColor;
+      if(bg==='rgb(239, 241, 246)'||bg==='rgb(255, 255, 255)'){
+        el.style.setProperty('background-color','#111827','important');
+      }
+    });
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',lessonFix);}
+  else{lessonFix();}
+  window.addEventListener('load',lessonFix);
+})();
 </script>
     <?php
-}, 98 );
+}, 999 );
