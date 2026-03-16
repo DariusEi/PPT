@@ -3078,6 +3078,178 @@ body.single-tutor_assignments,
     justify-content: center !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   SINGLE COURSE PAGE  (course detail / info page)
+   Uses body.single-tutor_course prefix for high specificity
+   ═══════════════════════════════════════════════════════ */
+
+body.single-tutor_course,
+body.single-courses {
+  background: var(--tutor-bg) !important;
+  color: var(--tutor-text) !important;
+}
+
+/* Every card/box in the right sidebar → dark surface */
+.tutor-single-course-sidebar .tutor-card,
+.tutor-single-course-sidebar [class*="enrollment"],
+.tutor-single-course-sidebar [class*="enroll"],
+.tutor-single-course-sidebar [class*="entry-box"],
+body.single-tutor_course .tutor-card,
+body.single-tutor_course .tutor-bg-white,
+body.single-tutor_course [class*="tutor-course-entry"],
+body.single-tutor_course [class*="tutor-enroll"],
+.tutor-course-enroll-wrap,
+.tutor-single-course-entry-box {
+  background: var(--tutor-surface) !important;
+  border: 1px solid var(--tutor-border) !important;
+  border-radius: var(--tutor-radius) !important;
+  box-shadow: none !important;
+}
+
+/* All text inside the right sidebar → readable */
+.tutor-single-course-sidebar,
+.tutor-single-course-sidebar * {
+  color: var(--tutor-text) !important;
+}
+
+/* Secondary meta (Beginner, Total Enrolled, Last Updated) */
+.tutor-single-course-sidebar [class*="meta"],
+.tutor-single-course-sidebar [class*="info-item"],
+body.single-tutor_course [class*="course-level"],
+body.single-tutor_course [class*="course-meta"] * {
+  color: rgba(240,239,234,.72) !important;
+}
+
+/* Tabs bar (Course Info / Reviews / Announcements) → dark */
+body.single-tutor_course .tutor-tabs-nav,
+body.single-tutor_course [class*="course-tab"],
+body.single-tutor_course [class*="course-nav"],
+.tutor-single-course .tutor-tabs-nav,
+.tutor-course-nav-tab-wrap {
+  background: var(--tutor-surface) !important;
+  border-bottom: 1px solid var(--tutor-border) !important;
+}
+body.single-tutor_course .tutor-tabs-nav li a,
+body.single-tutor_course [class*="course-tab"] a {
+  color: var(--tutor-muted) !important;
+  background: transparent !important;
+}
+body.single-tutor_course .tutor-tabs-nav li.tutor-is-active a,
+body.single-tutor_course [class*="course-tab"] a.is-active,
+body.single-tutor_course [class*="course-tab"] a.active {
+  color: var(--tutor-text) !important;
+  border-bottom-color: var(--tutor-accent) !important;
+}
+
+/* About Course / description text — full readable brightness */
+body.single-tutor_course .tutor-course-description,
+body.single-tutor_course .tutor-course-description p,
+body.single-tutor_course .tutor-course-description *,
+body.single-tutor_course .tutor-course-overview,
+body.single-tutor_course .tutor-course-overview p {
+  color: rgba(240,239,234,.88) !important;
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+}
+
+/* "About Course" / "Course Content" headings */
+body.single-tutor_course .tutor-single-course-content h2,
+body.single-tutor_course .tutor-single-course-content h3,
+body.single-tutor_course .tutor-single-course-content h4 {
+  color: var(--tutor-text) !important;
+  font-weight: 700 !important;
+  font-size: 1.125rem !important;
+  margin-bottom: 10px !important;
+}
+
+/* Course content accordion (curriculum on the detail page) */
+body.single-tutor_course .tutor-accordion-item {
+  border: 1px solid var(--tutor-border) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  margin-bottom: 8px !important;
+}
+body.single-tutor_course .tutor-accordion-item-header,
+body.single-tutor_course [class*="accordion-item-header"] {
+  background: var(--tutor-surface) !important;
+  color: var(--tutor-text) !important;
+  font-weight: 600 !important;
+}
+body.single-tutor_course .tutor-accordion-item-body,
+body.single-tutor_course [class*="accordion-item-body"] {
+  background: rgba(19,22,43,.7) !important;
+}
+body.single-tutor_course .tutor-accordion-item-body * {
+  color: rgba(240,239,234,.78) !important;
+}
+
+/* "Outline" button (Complete Course) → dark border style */
+body.single-tutor_course .tutor-btn-outline-primary,
+.tutor-single-course-sidebar .tutor-btn-outline-primary {
+  background: transparent !important;
+  border: 1px solid var(--tutor-accent) !important;
+  color: var(--tutor-accent) !important;
+}
+body.single-tutor_course .tutor-btn-outline-primary:hover {
+  background: var(--tutor-accent) !important;
+  color: #fff !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   COURSE PLAYER — high-specificity overrides for the
+   sidebar lesson list (accordion-item-body) that keeps
+   getting Tutor's white background despite !important.
+   Using body.single-lesson prefix to win specificity.
+   ═══════════════════════════════════════════════════════ */
+
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson .tutor-course-player-sidebar {
+  background: #111827 !important;
+}
+/* Kill any white bg on accordion item bodies / lesson lists */
+body.single-lesson #tutor-course-player-sidebar [class*="accordion-item-body"],
+body.single-lesson #tutor-course-player-sidebar [class*="content-list"],
+body.single-lesson #tutor-course-player-sidebar [class*="topic-content"],
+body.single-lesson #tutor-course-player-sidebar [class*="lesson-list"],
+body.single-lesson .tutor-course-player-sidebar [class*="accordion-item-body"],
+body.single-lesson .tutor-course-player-sidebar [class*="content-list"],
+body.single-lesson .tutor-course-player-sidebar ul,
+body.single-lesson .tutor-course-player-sidebar li,
+body.single-lesson .tutor-course-player-sidebar > div {
+  background: #111827 !important;
+  background-color: #111827 !important;
+}
+
+/* Lesson links and labels: bright enough to read */
+body.single-lesson .tutor-course-player-sidebar a,
+body.single-lesson .tutor-course-player-sidebar li > *,
+body.single-lesson .tutor-course-player-sidebar span:not(.tutor-badge) {
+  color: rgba(240,239,234,.78) !important;
+}
+body.single-lesson .tutor-course-player-sidebar a:hover {
+  color: var(--tutor-text) !important;
+  background: rgba(124,110,245,.12) !important;
+}
+body.single-lesson .tutor-course-player-sidebar li.is-active > a,
+body.single-lesson .tutor-course-player-sidebar [class*="active"] > a {
+  color: var(--tutor-text) !important;
+  font-weight: 600 !important;
+}
+
+/* Lesson content text — bright, readable */
+body.single-lesson .tutor-lesson-content,
+body.single-lesson .tutor-spotlight-wrap .tutor-container,
+body.single-lesson [class*="lesson-content"] {
+  color: rgba(240,239,234,.9) !important;
+}
+body.single-lesson .tutor-lesson-content p,
+body.single-lesson [class*="lesson-content"] p {
+  font-size: 1.0625rem !important;
+  line-height: 1.8 !important;
+  color: rgba(240,239,234,.88) !important;
+  margin-bottom: 1.3em !important;
+}
 </style>
     <?php
 }, 100 );
