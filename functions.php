@@ -3601,3 +3601,97 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 999 );
+
+/* ── Course page: Turing College-style polish ── */
+add_action( 'wp_head', function () {
+    ?>
+<style id="pt101-course-polish">
+
+/* Tab bar: more spacious */
+body.single-courses .tutor-nav-link {
+  padding: 14px 24px !important;
+  font-size: 0.9375rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+}
+body.single-courses .tutor-nav-link.is-active,
+body.single-courses .tutor-nav-link.active {
+  font-weight: 600 !important;
+  border-bottom-width: 2px !important;
+}
+
+/* Tab content: breathing room */
+body.single-courses .tutor-course-tab-content,
+body.single-courses #tutor-course-details-tab-course-info {
+  padding: 32px 0 !important;
+}
+body.single-courses .tutor-course-tab-content h2,
+body.single-courses .tutor-course-tab-content h3 {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  margin-bottom: 14px !important;
+}
+
+/* Accordion section headers: more spacious */
+body.single-courses .tutor-accordion-item-header {
+  padding: 18px 20px !important;
+}
+body.single-courses .tutor-accordion-item-header * {
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+}
+
+/* Lesson list items: better padding */
+body.single-courses .tutor-course-content-list-item a,
+body.single-courses .tutor-course-topics-list li a,
+body.single-courses .tutor-course-content-list-item .tutor-lesson-title {
+  padding: 13px 18px 13px 22px !important;
+  gap: 12px !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+body.single-courses .tutor-course-content-list-item {
+  border-bottom: 1px solid rgba(255,255,255,.05) !important;
+}
+
+/* Hero / thumbnail: dark fallback */
+body.single-courses .tutor-single-course-hero,
+body.single-courses [class*="course-hero"],
+body.single-courses .tutor-ratio,
+body.single-courses .tutor-course-thumbnail {
+  background: #13162b !important;
+}
+
+/* Sidebar card: polished corners */
+body.single-courses .tutor-single-course-sidebar .tutor-card,
+body.single-courses .tutor-single-course-sidebar > div {
+  border-radius: 12px !important;
+  padding: 20px !important;
+}
+
+</style>
+    <?php
+}, 101 );
+
+/* ── Lesson player diagnostic — finds sidebar classes from live DOM ── */
+add_action( 'wp_footer', function () {
+    ?>
+<script>
+window.addEventListener('load',function(){
+  var sb=document.querySelector('#tutor-course-player-sidebar,.tutor-course-player-sidebar,[class*="course-player-sidebar"],[class*="lesson-sidebar"]');
+  if(!sb) return;
+  var out=[];
+  out.push('SIDEBAR id="'+sb.id+'" class="'+sb.className+'"');
+  out.push('SIDEBAR bg: '+getComputedStyle(sb).backgroundColor);
+  var p=sb.parentElement;
+  if(p){out.push('PARENT class="'+p.className+'" bg: '+getComputedStyle(p).backgroundColor);}
+  out.push('body: '+document.body.className);
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;padding:12px;font:11px/1.6 monospace;white-space:pre;border:2px solid #0f0;max-width:90vw;';
+  d.textContent=out.join('\n');
+  document.body.appendChild(d);
+});
+</script>
+    <?php
+}, 98 );
