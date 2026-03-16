@@ -2389,26 +2389,11 @@ body.admin-bar.single-tutor_lesson {
 .tutor-dashboard-menu-reviews,
 [data-page="tutor-reviews"],
 .tutor-reviews-section { display: none !important; }
-/* Course page tabs — hide "Reviews" tab and its panel.
-   Tutor v2 uses .tutor-nav-item divs (not li). Cover all variants. */
-body.single-tutor_course .tutor-tabs-nav li:has(a[href*="review"]),
-body.single-tutor_course .tutor-tabs-nav a[href*="review"],
-body.single-tutor_course .tutor-nav a[href*="review"],
-body.single-tutor_course .tutor-nav-link[href*="review"],
-body.single-tutor_course .tutor-nav-item:has(a[href*="review"]),
-body.single-tutor_course .tutor-nav-item:nth-child(2),
-body.single-tutor_course [class*="tutor-nav"] > *:nth-child(2),
-body.single-tutor_course [data-tab="reviews"],
-body.single-tutor_course [data-id="reviews"],
-body.single-tutor_course .tutor-tab-reviews,
-body.single-tutor_course #tutor-course-review-tab,
-body.single-tutor_course #tutor-course-reviews,
-body.single-tutor_course [id*="review"],
-body.single-tutor_course [class*="-tab-review"],
-body.single-tutor_course .tutor-tabs-nav li:nth-child(2),
-body.single-tutor_course .tutor-single-course .tutor-reviews-tab,
-body.single-tutor_course [class*="tab"][class*="review"],
-body.single-tutor_course [class*="reviews-tab"] { display: none !important; }
+/* Course page tab — exact match via data-tutor-nav-target (inspected from live HTML) */
+body.single-tutor_course [data-tutor-nav-target="tutor-course-details-tab-reviews"],
+body.single-tutor_course li:has([data-tutor-nav-target="tutor-course-details-tab-reviews"]),
+body.single-tutor_course #tutor-course-details-tab-reviews,
+body.single-tutor_course [data-tutor-nav-target*="review"] { display: none !important; }
 
 /* ── Global wrappers ── */
 .tutor-wrap,
@@ -2824,24 +2809,28 @@ body.single-tutor_course [class*="-tabs-nav"] {
   background: #161d2e !important;
 }
 
-/* ── Bottom gap — prevent course content being flush with footer ──────────
-   body padding-bottom adds space AFTER the footer, not before it.
-   Target the actual content wrappers so there's breathing room above footer. */
-html body.single-tutor_course .tutor-page-wrap,
-html body.single-tutor_course .tutor-container,
-html body.single-tutor_course .tutor-single-course,
-html body.single-tutor_course main,
-html body.single-tutor_course #main,
+/* ── Bottom gap — space between course content and footer ────────────────
+   Theme uses .site-content / .site-main / #primary (from style.css inspection).
+   body.pt101 is the theme's own body class — use it for max specificity.       */
+html body.pt101.single-tutor_course .site-content,
+html body.pt101.single-tutor_course .site-main,
+html body.pt101.single-tutor_course #content,
+html body.pt101.single-tutor_course #primary,
+html body.pt101.single-tutor_course main,
+html body.single-tutor_course .site-content,
 html body.single-tutor_course .site-main,
-html body.single-tutor_course [class*="site-content"],
-html body.single-tutor_course [class*="page-content"] {
+html body.single-tutor_course #primary,
+html body.single-tutor_course main,
+html body.single-tutor_course .tutor-page-wrap,
+html body.single-tutor_course .tutor-single-course {
   padding-bottom: 80px !important;
-  margin-bottom: 0 !important;
 }
-html body.tutor-screen-frontend-dashboard .tutor-page-wrap,
-html body.tutor-screen-frontend-dashboard .tutor-dashboard,
-html body.tutor-screen-frontend-dashboard main,
-html body.tutor-screen-frontend-dashboard #main {
+/* Dashboard page bottom gap */
+html body.pt101.tutor-screen-frontend-dashboard .site-content,
+html body.pt101.tutor-screen-frontend-dashboard .site-main,
+html body.pt101.tutor-screen-frontend-dashboard #primary,
+html body.tutor-screen-frontend-dashboard .site-main,
+html body.tutor-screen-frontend-dashboard #primary {
   padding-bottom: 64px !important;
 }
 
@@ -3269,63 +3258,52 @@ body.single-tutor_course [class*="course-meta"] * {
 }
 
 /* ── Tabs bar (Course Info / Reviews / Announcements) → dark ────────────
-   Tutor LMS v2 uses .tutor-nav / .tutor-nav-underline — NOT .tutor-tabs-nav.
-   Force dark background + readable text on every known tab container.       */
-html body.single-tutor_course .tutor-tabs-nav,
-html body.single-tutor_course .tutor-nav,
-html body.single-tutor_course .tutor-nav-underline,
+   Actual HTML: <nav class="tutor-nav" tutor-priority-nav="">
+   The grey background is on the parent wrapper div, not the nav itself.
+   Use :has() to target the wrapping div, and the attribute selector for precision. */
+/* The nav itself */
+html body.single-tutor_course nav[tutor-priority-nav],
+html body.single-tutor_course nav.tutor-nav {
+  background: var(--tutor-surface) !important;
+  background-color: var(--tutor-surface) !important;
+}
+/* The parent wrapper div that holds the nav — this is what's grey */
+html body.single-tutor_course div:has(> nav[tutor-priority-nav]),
+html body.single-tutor_course div:has(> nav.tutor-nav),
 html body.single-tutor_course [class*="tutor-nav"],
-html body.single-tutor_course [class*="course-tab"],
-html body.single-tutor_course [class*="course-nav"],
 html body.single-tutor_course [class*="tab-wrap"],
-html body.single-tutor_course [class*="tabs-wrap"],
-html body.single-tutor_course [class*="tab-list"],
-.tutor-single-course .tutor-tabs-nav,
-.tutor-course-nav-tab-wrap,
-.tutor-single-course .tutor-nav {
+html body.single-tutor_course [class*="tabs-wrap"] {
   background: var(--tutor-surface) !important;
   background-color: var(--tutor-surface) !important;
   border-bottom: 1px solid var(--tutor-border) !important;
 }
-/* Tab link text — muted by default, bright on active */
-html body.single-tutor_course .tutor-nav a,
-html body.single-tutor_course .tutor-nav-link,
-html body.single-tutor_course [class*="tutor-nav"] a,
-html body.single-tutor_course [class*="course-tab"] a,
-html body.single-tutor_course .tutor-tabs-nav li a {
+/* Tab link text — muted default, bright on active */
+html body.single-tutor_course nav[tutor-priority-nav] .tutor-nav-link,
+html body.single-tutor_course nav.tutor-nav .tutor-nav-link,
+html body.single-tutor_course .tutor-nav-link {
   color: rgba(240,239,234,.65) !important;
   background: transparent !important;
 }
 html body.single-tutor_course .tutor-nav-link.is-active,
-html body.single-tutor_course .tutor-nav-link.active,
-html body.single-tutor_course .tutor-tabs-nav li.tutor-is-active a,
-html body.single-tutor_course [class*="course-tab"] a.is-active,
-html body.single-tutor_course [class*="course-tab"] a.active {
+html body.single-tutor_course .tutor-nav-link.active {
   color: var(--tutor-text) !important;
   border-bottom-color: var(--tutor-accent) !important;
 }
 
-/* About Course / description text — full readable brightness.
-   Tutor v2 wraps content in .tutor-course-details-tab / .tutor-tab-content.
-   Cast wide net with wildcards. */
+/* About Course / description text — actual class from inspected HTML: cdp-hero-sub */
+body.single-tutor_course .cdp-hero-sub,
+body.single-tutor_course p.cdp-hero-sub,
+body.single-tutor_course [class*="cdp-hero"],
 body.single-tutor_course .tutor-course-description,
 body.single-tutor_course .tutor-course-description p,
 body.single-tutor_course .tutor-course-description *,
-body.single-tutor_course .tutor-course-overview,
-body.single-tutor_course .tutor-course-overview p,
-body.single-tutor_course [class*="course-detail"] p,
 body.single-tutor_course [class*="tab-content"] p,
-body.single-tutor_course [class*="tab-content"],
-body.single-tutor_course [class*="course-info"] p,
-body.single-tutor_course [class*="course-about"] p,
-body.single-tutor_course [class*="course-benefit"] p,
-body.single-tutor_course [class*="entry-content"] p,
-body.single-tutor_course .tutor-single-course-main-content p,
-body.single-tutor_course .tutor-single-course-main-content {
+body.single-tutor_course [class*="course-detail"] p,
+body.single-tutor_course .tutor-single-course-main-content p {
   color: rgba(240,239,234,.9) !important;
   line-height: 1.75 !important;
 }
-/* Catch any remaining paragraph text on the course page that's still dim */
+/* Broad catch-all: any paragraph on the course page */
 html body.single-tutor_course p {
   color: rgba(240,239,234,.88) !important;
 }
