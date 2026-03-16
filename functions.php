@@ -3591,6 +3591,43 @@ add_action( 'wp_footer', function () {
     ).forEach(function(el){
       el.style.setProperty('color','rgba(240,239,234,0.9)','important');
     });
+
+    /* ── Accordion spacing: find real container via .tutor-accordion-item ── */
+    var items = document.querySelectorAll('.tutor-accordion-item');
+    if(items.length){
+      var container = items[0].parentElement;
+      /* Log actual classes so we can confirm the selector */
+      console.log('[PT101 accordion] container tag='+container.tagName+' class="'+container.className+'"');
+      container.style.setProperty('margin-top','24px','important');
+      container.style.setProperty('display','flex','important');
+      container.style.setProperty('flex-direction','column','important');
+      container.style.setProperty('gap','10px','important');
+      items.forEach(function(item){
+        item.style.setProperty('margin-bottom','0','important');
+        item.style.setProperty('border-radius','14px','important');
+        item.style.setProperty('border','1px solid rgba(255,255,255,.08)','important');
+        item.style.setProperty('overflow','hidden','important');
+      });
+      /* Header bg */
+      document.querySelectorAll('.tutor-accordion-item-header').forEach(function(h){
+        h.style.setProperty('background','#161929','important');
+        h.style.setProperty('padding','18px 22px','important');
+      });
+      /* Body bg */
+      document.querySelectorAll('.tutor-accordion-item-body').forEach(function(b){
+        b.style.setProperty('background','#0f1120','important');
+      });
+    }
+
+    /* ── "Course Content" heading: more breathing room above accordion ── */
+    document.querySelectorAll(
+      '.tutor-course-tab-content h2,.tutor-single-course-content h2,'+
+      '#tutor-course-details-tab-course-info h2'
+    ).forEach(function(h){
+      h.style.setProperty('margin-bottom','12px','important');
+      h.style.setProperty('font-weight','700','important');
+      h.style.setProperty('letter-spacing','-0.02em','important');
+    });
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',tutorFix);}
   else{tutorFix();}
