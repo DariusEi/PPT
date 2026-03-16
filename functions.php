@@ -3561,12 +3561,18 @@ body.single-lesson #tutor-course-player {
 
 
 /* ── Force-override Tutor LMS elements that resist CSS (JS runs after all scripts) ── */
+/* No is_singular gate — course page may be a WP page type, detect via DOM instead */
 add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'courses' ) ) return;
     ?>
 <script>
 (function(){
+  /* Diagnostic: always log body classes so we can confirm what the course page uses */
+  console.log('[PT101] body classes: '+document.body.className);
+
   function tutorFix(){
+    /* Only run if Tutor course elements are present on this page */
+    if(!document.querySelector('.tutor-course-details-tab, .tutor-accordion-item, .tutor-single-course-wrap')) return;
+
     /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
     ['.tutor-course-details-tab .tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
       document.querySelectorAll(s).forEach(function(el){
@@ -3673,65 +3679,70 @@ body.single-courses .tutor-single-course-content h3 {
   margin-bottom: 12px !important;
 }
 
-/* ── Accordion: aligned to site design tokens ──────────────────────────
+/* ── Accordion: no body-class prefix — works regardless of WP post type ──
    --bg-card: #161929  --r-md: 14px  --border-dark: rgba(255,255,255,.08) */
 
-/* Container: gap before first box + space between boxes */
-body.single-courses .tutor-accordion,
-body.single-courses [class*="tutor-accordion-list"],
-body.single-courses [class*="tutor-course-accordion"] {
-  margin-top: 20px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-/* Each accordion box: site card radius + border */
-body.single-courses .tutor-accordion-item {
+/* Each item: card radius + border */
+.tutor-accordion-item {
   border-radius: 14px !important;
   border: 1px solid rgba(255,255,255,.08) !important;
   overflow: hidden !important;
   margin-bottom: 0 !important;
 }
+/* Gap between boxes via sibling selector */
+.tutor-accordion-item + .tutor-accordion-item {
+  margin-top: 10px !important;
+}
+/* Space between "Course Content" heading and first box */
+.tutor-accordion-item:first-child {
+  margin-top: 24px !important;
+}
 
-/* Accordion header: --bg-card background, generous padding */
-body.single-courses .tutor-accordion-item-header,
-body.single-courses .tutor-accordion-item .tutor-accordion-item-header {
+/* Header: --bg-card background, generous padding */
+.tutor-accordion-item-header {
   background: #161929 !important;
   padding: 18px 22px !important;
 }
-body.single-courses .tutor-accordion-item-header * {
+.tutor-accordion-item-header * {
   font-size: 0.9375rem !important;
   font-weight: 600 !important;
   color: #f0f0f5 !important;
 }
 
-/* Accordion body: slightly deeper dark */
-body.single-courses .tutor-accordion-item-body,
-body.single-courses [class*="accordion-item-body"] {
+/* Body: slightly deeper dark */
+.tutor-accordion-item-body {
   background: #0f1120 !important;
 }
 
 /* Lesson list items: comfortable padding, site typography */
-body.single-courses .tutor-course-content-list-item a,
-body.single-courses .tutor-course-topics-list li a,
-body.single-courses .tutor-course-content-list-item .tutor-lesson-title {
+.tutor-course-content-list-item a,
+.tutor-course-topics-list li a,
+.tutor-course-content-list-item .tutor-lesson-title {
   padding: 14px 20px 14px 22px !important;
   gap: 12px !important;
   font-size: 0.875rem !important;
   line-height: 1.5 !important;
   color: rgba(240,240,245,.75) !important;
 }
-body.single-courses .tutor-course-content-list-item a:hover,
-body.single-courses .tutor-course-topics-list li a:hover {
+.tutor-course-content-list-item a:hover,
+.tutor-course-topics-list li a:hover {
   background: rgba(124,110,245,.1) !important;
   color: #f0f0f5 !important;
 }
-body.single-courses .tutor-course-content-list-item {
+.tutor-course-content-list-item {
   border-bottom: 1px solid rgba(255,255,255,.04) !important;
 }
-body.single-courses .tutor-course-content-list-item:last-child {
+.tutor-course-content-list-item:last-child {
   border-bottom: none !important;
+}
+
+/* Keep scoped rules as well for specificity on confirmed single-courses pages */
+body.single-courses .tutor-accordion,
+body.single-courses [class*="tutor-accordion-list"] {
+  margin-top: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
 }
 
 /* Hero / thumbnail: dark fallback */
