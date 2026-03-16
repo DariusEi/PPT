@@ -2326,7 +2326,6 @@ add_filter( 'login_redirect', function ( $url, $requested, $user ) {
  * design tokens. Targets dashboard, course player, and sidebar.
  */
 add_action( 'wp_head', function () {
-    if ( ! function_exists( 'tutor' ) ) return;
     ?>
 <style id="pt101-tutor-overrides">
 /* ── Design tokens (match style.css) ── */
