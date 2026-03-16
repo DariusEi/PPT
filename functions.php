@@ -2385,13 +2385,23 @@ body.admin-bar.single-tutor_lesson {
 }
 
 /* ── HIDE Reviews globally (not needed) ── */
+/* Dashboard sidebar nav item */
 .tutor-dashboard-menu-reviews,
 [data-page="tutor-reviews"],
-.tutor-single-course .tutor-reviews-tab,
-.tutor-course-nav [href*="reviews"],
-.tutor-course-nav li:nth-child(2) {
-  display: none !important;
-}
+.tutor-reviews-section { display: none !important; }
+/* Course page tabs — hide "Reviews" tab and its panel */
+body.single-tutor_course .tutor-tabs-nav li:has(a[href*="review"]),
+body.single-tutor_course .tutor-tabs-nav a[href*="review"],
+body.single-tutor_course [data-tab="reviews"],
+body.single-tutor_course [data-id="reviews"],
+body.single-tutor_course .tutor-tab-reviews,
+body.single-tutor_course #tutor-course-review-tab,
+body.single-tutor_course #tutor-course-reviews,
+body.single-tutor_course [id*="review"],
+body.single-tutor_course [class*="-tab-review"],
+body.single-tutor_course .tutor-tabs-nav li:nth-child(2),
+body.single-tutor_course .tutor-single-course .tutor-reviews-tab,
+body.single-tutor_course [class*="tab"][class*="review"] { display: none !important; }
 
 /* ── Global wrappers ── */
 .tutor-wrap,
@@ -2808,12 +2818,18 @@ body.single-tutor_course [class*="-tabs-nav"] {
 }
 
 /* ── Bottom padding — prevent content/footer overlap ── */
-body.single-tutor_course {
-  padding-bottom: 80px !important;
+html body.single-tutor_course {
+  padding-bottom: 120px !important;
 }
-body.tutor-screen-frontend-dashboard,
-body.tutor-frontend {
-  padding-bottom: 48px !important;
+html body.tutor-screen-frontend-dashboard,
+html body.tutor-frontend {
+  padding-bottom: 64px !important;
+}
+/* Extra inner padding on the course content wrapper */
+body.single-tutor_course .tutor-single-course-main-content,
+body.single-tutor_course .tutor-page-wrap,
+body.single-tutor_course .tutor-container {
+  padding-bottom: 60px !important;
 }
 
 /* ── About Course / description text — readable brightness ── */
@@ -3016,11 +3032,20 @@ body.single-tutor_assignments,
 /* Lesson body text */
 .tutor-lesson-content p,
 .tutor-course-player-content p,
-.tutor-spotlight-wrap p {
+.tutor-spotlight-wrap p,
+#tutor-course-player-content p,
+body.single-tutor_lesson .tutor-course-spotlight-wrap p {
   font-size: 1rem !important;
   line-height: 1.75 !important;
-  color: rgba(240,239,234,.88) !important;
+  color: #e8e6ff !important;
   margin-bottom: 1.25em !important;
+}
+/* All text inside the lesson content area */
+#tutor-course-player-content,
+#tutor-course-player-content *:not(a),
+body.single-tutor_lesson .tutor-course-spotlight-wrap,
+body.single-tutor_lesson [class*="lesson-content"] {
+  color: rgba(240,239,234,.92) !important;
 }
 
 /* Lesson content headings */
@@ -3319,78 +3344,107 @@ body.single-tutor_lesson .tutor-course-player-sidebar {
   background-color: #111827 !important;
 }
 
-/* Every descendant of the sidebar that might have a white bg */
-#tutor-course-player #tutor-course-player-sidebar *,
-#tutor-course-player .tutor-course-player-sidebar *,
-body.single-tutor_lesson #tutor-course-player-sidebar *,
-body.single-tutor_lesson .tutor-course-player-sidebar * {
-  background-color: transparent !important;
-}
-
-/* Restore specific backgrounds that should NOT be transparent */
-#tutor-course-player .tutor-accordion-item-header,
-#tutor-course-player [class*="topic-header"],
-#tutor-course-player [class*="content-list-header"] {
-  background-color: #161d2e !important;
-}
-#tutor-course-player .tutor-accordion-item-header:hover {
-  background-color: #1a2340 !important;
-}
-
-/* Explicitly force dark on ALL lesson list items in the player */
-#tutor-course-player .tutor-course-content-list,
-#tutor-course-player .tutor-course-content-list li,
-#tutor-course-player .tutor-course-content-list-item,
-#tutor-course-player [class*="content-list-item"],
-#tutor-course-player [class*="content-list"] li {
+/* ── Force dark on EVERY element inside the sidebar ─────────────────────────
+   Use the most aggressive selector possible. Tutor v2 uses many class variants
+   so we target by parent ID/class + wildcard, then restore specific overrides.  */
+#tutor-course-player #tutor-course-player-sidebar,
+#tutor-course-player .tutor-course-player-sidebar,
+#tutor-course-player .tutor-popup-course-area,
+#tutor-course-player .tutor-lead-info,
+body.single-tutor_lesson #tutor-course-player-sidebar,
+body.single-tutor_lesson .tutor-course-player-sidebar,
+body.single-tutor_lesson .tutor-popup-course-area,
+body.single-tutor_lesson .tutor-lead-info {
   background: #111827 !important;
   background-color: #111827 !important;
 }
+
+/* All descendants — wipe any white/grey bg Tutor injects */
+#tutor-course-player #tutor-course-player-sidebar *,
+#tutor-course-player .tutor-course-player-sidebar *,
+#tutor-course-player .tutor-popup-course-area *,
+#tutor-course-player .tutor-lead-info *,
+body.single-tutor_lesson #tutor-course-player-sidebar *,
+body.single-tutor_lesson .tutor-course-player-sidebar *,
+body.single-tutor_lesson .tutor-popup-course-area *,
+body.single-tutor_lesson .tutor-lead-info * {
+  background-color: #111827 !important;
+}
+
+/* Restore: topic/accordion HEADERS → slightly lighter */
+#tutor-course-player .tutor-accordion-item-header,
+#tutor-course-player [class*="topic-header"],
+#tutor-course-player [class*="topic-head"],
+#tutor-course-player [class*="section-header"],
+body.single-tutor_lesson [class*="topic-header"],
+body.single-tutor_lesson [class*="topic-head"] {
+  background-color: #161d2e !important;
+}
+#tutor-course-player .tutor-accordion-item-header:hover,
+#tutor-course-player [class*="topic-header"]:hover {
+  background-color: #1a2340 !important;
+}
+
+/* Active lesson item — purple tint */
 #tutor-course-player .tutor-course-content-list-item.is-active,
 #tutor-course-player [class*="content-list-item"].is-active,
-#tutor-course-player [class*="content-list-item"].current {
+#tutor-course-player [class*="content-list-item"].current,
+#tutor-course-player [class*="topic-item"].is-active,
+#tutor-course-player [class*="lesson-item"].is-active,
+body.single-tutor_lesson [class*="topic-item"].is-active {
   background-color: rgba(124,110,245,.15) !important;
   border-left: 3px solid var(--tutor-accent) !important;
 }
 
-/* All sidebar text: readable */
-#tutor-course-player #tutor-course-player-sidebar a,
-#tutor-course-player #tutor-course-player-sidebar span,
-#tutor-course-player #tutor-course-player-sidebar li,
-#tutor-course-player #tutor-course-player-sidebar label,
-body.single-tutor_lesson .tutor-course-player-sidebar a,
-body.single-tutor_lesson .tutor-course-player-sidebar span,
-body.single-tutor_lesson .tutor-course-player-sidebar li {
-  color: rgba(240,239,234,.80) !important;
+/* All sidebar text: readable on dark background */
+#tutor-course-player #tutor-course-player-sidebar,
+#tutor-course-player #tutor-course-player-sidebar *,
+#tutor-course-player .tutor-course-player-sidebar,
+#tutor-course-player .tutor-course-player-sidebar *,
+#tutor-course-player .tutor-popup-course-area,
+#tutor-course-player .tutor-popup-course-area *,
+body.single-tutor_lesson #tutor-course-player-sidebar,
+body.single-tutor_lesson #tutor-course-player-sidebar *,
+body.single-tutor_lesson .tutor-course-player-sidebar *,
+body.single-tutor_lesson .tutor-popup-course-area * {
+  color: rgba(240,239,234,.82) !important;
 }
-#tutor-course-player #tutor-course-player-sidebar a:hover {
-  color: var(--tutor-text) !important;
+#tutor-course-player #tutor-course-player-sidebar a:hover,
+body.single-tutor_lesson .tutor-course-player-sidebar a:hover {
+  color: #fff !important;
 }
 /* Active / currently playing lesson */
 #tutor-course-player [class*="content-list-item"].is-active a,
-#tutor-course-player [class*="content-list-item"].is-active span {
+#tutor-course-player [class*="content-list-item"].is-active span,
+#tutor-course-player [class*="topic-item"].is-active a,
+#tutor-course-player [class*="topic-item"].is-active span {
   color: var(--tutor-text) !important;
   font-weight: 600 !important;
 }
 
-/* Video: full width — do NOT override overflow or aspect-ratio,
-   Plyr.js uses padding-top:56.25% intrinsic sizing that we must not break */
+/* Video: full width — do NOT touch overflow or aspect-ratio,
+   Plyr.js uses padding-top:56.25% intrinsic sizing — breaking it makes video collapse.
+   Only set width and background; let Plyr control height via its own padding trick. */
 #tutor-course-player .tutor-video-player,
-#tutor-course-player [class*="video-player"] {
+#tutor-course-player [class*="video-player"],
+#tutor-course-player [class*="video-wrap"],
+#tutor-course-player [class*="spotlight-video"],
+#tutor-course-player .plyr,
+#tutor-course-player .plyr__video-wrapper {
   width: 100% !important;
   max-width: 100% !important;
-}
-#tutor-course-player [class*="video-wrap"],
-#tutor-course-player [class*="spotlight-video"] {
   background: #000 !important;
-  width: 100% !important;
 }
-/* Ensure the video/iframe inside fills the player container */
-#tutor-course-player video,
-#tutor-course-player iframe {
-  width: 100% !important;
-  height: 100% !important;
+/* Do NOT set height: 100% here — Plyr's padding-top % technique handles it.
+   Setting height: 100% on the wrapper would collapse it if parent has no height. */
+#tutor-course-player video {
   display: block !important;
+  max-width: 100% !important;
+}
+#tutor-course-player iframe {
+  display: block !important;
+  width: 100% !important;
+  /* Let the parent's padding-top set the height, don't force 100% */
 }
 
 /* Lesson content area: constrain text width, bright text */
