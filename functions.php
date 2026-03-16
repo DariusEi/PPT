@@ -2389,9 +2389,15 @@ body.admin-bar.single-tutor_lesson {
 .tutor-dashboard-menu-reviews,
 [data-page="tutor-reviews"],
 .tutor-reviews-section { display: none !important; }
-/* Course page tabs — hide "Reviews" tab and its panel */
+/* Course page tabs — hide "Reviews" tab and its panel.
+   Tutor v2 uses .tutor-nav-item divs (not li). Cover all variants. */
 body.single-tutor_course .tutor-tabs-nav li:has(a[href*="review"]),
 body.single-tutor_course .tutor-tabs-nav a[href*="review"],
+body.single-tutor_course .tutor-nav a[href*="review"],
+body.single-tutor_course .tutor-nav-link[href*="review"],
+body.single-tutor_course .tutor-nav-item:has(a[href*="review"]),
+body.single-tutor_course .tutor-nav-item:nth-child(2),
+body.single-tutor_course [class*="tutor-nav"] > *:nth-child(2),
 body.single-tutor_course [data-tab="reviews"],
 body.single-tutor_course [data-id="reviews"],
 body.single-tutor_course .tutor-tab-reviews,
@@ -2401,7 +2407,8 @@ body.single-tutor_course [id*="review"],
 body.single-tutor_course [class*="-tab-review"],
 body.single-tutor_course .tutor-tabs-nav li:nth-child(2),
 body.single-tutor_course .tutor-single-course .tutor-reviews-tab,
-body.single-tutor_course [class*="tab"][class*="review"] { display: none !important; }
+body.single-tutor_course [class*="tab"][class*="review"],
+body.single-tutor_course [class*="reviews-tab"] { display: none !important; }
 
 /* ── Global wrappers ── */
 .tutor-wrap,
@@ -2817,19 +2824,25 @@ body.single-tutor_course [class*="-tabs-nav"] {
   background: #161d2e !important;
 }
 
-/* ── Bottom padding — prevent content/footer overlap ── */
-html body.single-tutor_course {
-  padding-bottom: 120px !important;
+/* ── Bottom gap — prevent course content being flush with footer ──────────
+   body padding-bottom adds space AFTER the footer, not before it.
+   Target the actual content wrappers so there's breathing room above footer. */
+html body.single-tutor_course .tutor-page-wrap,
+html body.single-tutor_course .tutor-container,
+html body.single-tutor_course .tutor-single-course,
+html body.single-tutor_course main,
+html body.single-tutor_course #main,
+html body.single-tutor_course .site-main,
+html body.single-tutor_course [class*="site-content"],
+html body.single-tutor_course [class*="page-content"] {
+  padding-bottom: 80px !important;
+  margin-bottom: 0 !important;
 }
-html body.tutor-screen-frontend-dashboard,
-html body.tutor-frontend {
+html body.tutor-screen-frontend-dashboard .tutor-page-wrap,
+html body.tutor-screen-frontend-dashboard .tutor-dashboard,
+html body.tutor-screen-frontend-dashboard main,
+html body.tutor-screen-frontend-dashboard #main {
   padding-bottom: 64px !important;
-}
-/* Extra inner padding on the course content wrapper */
-body.single-tutor_course .tutor-single-course-main-content,
-body.single-tutor_course .tutor-page-wrap,
-body.single-tutor_course .tutor-container {
-  padding-bottom: 60px !important;
 }
 
 /* ── About Course / description text — readable brightness ── */
@@ -3255,36 +3268,66 @@ body.single-tutor_course [class*="course-meta"] * {
   color: rgba(240,239,234,.72) !important;
 }
 
-/* Tabs bar (Course Info / Reviews / Announcements) → dark */
-body.single-tutor_course .tutor-tabs-nav,
-body.single-tutor_course [class*="course-tab"],
-body.single-tutor_course [class*="course-nav"],
+/* ── Tabs bar (Course Info / Reviews / Announcements) → dark ────────────
+   Tutor LMS v2 uses .tutor-nav / .tutor-nav-underline — NOT .tutor-tabs-nav.
+   Force dark background + readable text on every known tab container.       */
+html body.single-tutor_course .tutor-tabs-nav,
+html body.single-tutor_course .tutor-nav,
+html body.single-tutor_course .tutor-nav-underline,
+html body.single-tutor_course [class*="tutor-nav"],
+html body.single-tutor_course [class*="course-tab"],
+html body.single-tutor_course [class*="course-nav"],
+html body.single-tutor_course [class*="tab-wrap"],
+html body.single-tutor_course [class*="tabs-wrap"],
+html body.single-tutor_course [class*="tab-list"],
 .tutor-single-course .tutor-tabs-nav,
-.tutor-course-nav-tab-wrap {
+.tutor-course-nav-tab-wrap,
+.tutor-single-course .tutor-nav {
   background: var(--tutor-surface) !important;
+  background-color: var(--tutor-surface) !important;
   border-bottom: 1px solid var(--tutor-border) !important;
 }
-body.single-tutor_course .tutor-tabs-nav li a,
-body.single-tutor_course [class*="course-tab"] a {
-  color: var(--tutor-muted) !important;
+/* Tab link text — muted by default, bright on active */
+html body.single-tutor_course .tutor-nav a,
+html body.single-tutor_course .tutor-nav-link,
+html body.single-tutor_course [class*="tutor-nav"] a,
+html body.single-tutor_course [class*="course-tab"] a,
+html body.single-tutor_course .tutor-tabs-nav li a {
+  color: rgba(240,239,234,.65) !important;
   background: transparent !important;
 }
-body.single-tutor_course .tutor-tabs-nav li.tutor-is-active a,
-body.single-tutor_course [class*="course-tab"] a.is-active,
-body.single-tutor_course [class*="course-tab"] a.active {
+html body.single-tutor_course .tutor-nav-link.is-active,
+html body.single-tutor_course .tutor-nav-link.active,
+html body.single-tutor_course .tutor-tabs-nav li.tutor-is-active a,
+html body.single-tutor_course [class*="course-tab"] a.is-active,
+html body.single-tutor_course [class*="course-tab"] a.active {
   color: var(--tutor-text) !important;
   border-bottom-color: var(--tutor-accent) !important;
 }
 
-/* About Course / description text — full readable brightness */
+/* About Course / description text — full readable brightness.
+   Tutor v2 wraps content in .tutor-course-details-tab / .tutor-tab-content.
+   Cast wide net with wildcards. */
 body.single-tutor_course .tutor-course-description,
 body.single-tutor_course .tutor-course-description p,
 body.single-tutor_course .tutor-course-description *,
 body.single-tutor_course .tutor-course-overview,
-body.single-tutor_course .tutor-course-overview p {
-  color: rgba(240,239,234,.88) !important;
-  font-size: 1rem !important;
+body.single-tutor_course .tutor-course-overview p,
+body.single-tutor_course [class*="course-detail"] p,
+body.single-tutor_course [class*="tab-content"] p,
+body.single-tutor_course [class*="tab-content"],
+body.single-tutor_course [class*="course-info"] p,
+body.single-tutor_course [class*="course-about"] p,
+body.single-tutor_course [class*="course-benefit"] p,
+body.single-tutor_course [class*="entry-content"] p,
+body.single-tutor_course .tutor-single-course-main-content p,
+body.single-tutor_course .tutor-single-course-main-content {
+  color: rgba(240,239,234,.9) !important;
   line-height: 1.75 !important;
+}
+/* Catch any remaining paragraph text on the course page that's still dim */
+html body.single-tutor_course p {
+  color: rgba(240,239,234,.88) !important;
 }
 
 /* "About Course" / "Course Content" headings */
