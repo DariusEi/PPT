@@ -2339,21 +2339,58 @@ add_action( 'wp_head', function () {
   --tutor-accent:    #7c6ef5;
   --tutor-accent-h:  #6a5de0;
   --tutor-radius:    10px;
+
+  /* ── Override Tutor LMS v2's own CSS variables ──────────────────
+     Tutor v2 uses these internally with !important on card/modal
+     backgrounds. Redefining them here is the only reliable fix.  */
+  --tutor-white:           #13162b;
+  --tutor-color-white:     #13162b;
+  --tutor-body-color:      #f0efea;
+  --tutor-body-bg:         #0d0f1a;
+  --tutor-card-color:      #f0efea;
+  --tutor-card-bg:         #13162b;
+  --tutor-black:           #f0efea;
+  --tutor-color-black:     #f0efea;
+  --tutor-gray-50:         #161d2e;
+  --tutor-gray-100:        #1a2240;
+  --tutor-gray-200:        #1e2848;
+  --tutor-gray-400:        rgba(240,239,234,.45);
+  --tutor-gray-500:        rgba(240,239,234,.55);
+  --tutor-gray-600:        rgba(240,239,234,.65);
+  --tutor-border-color:    rgba(255,255,255,.08);
+  --tutor-input-bg:        rgba(255,255,255,.06);
+  --tutor-input-color:     #f0efea;
+  --tutor-placeholder-color: rgba(240,239,234,.45);
 }
 
-/* ── Push ALL dashboard content below fixed nav (64px) ── */
-body.tutor-dashboard-page {
-  padding-top: calc(var(--nav-h) + 16px) !important;
+/* ── Push ALL page content below fixed 64px nav ── */
+/* Hardcoded — CSS var --nav-h may not resolve inside PHP-injected <style> */
+body.tutor-dashboard-page,
+body.single-tutor_course,
+body.single-tutor_lesson,
+body.single-tutor_quiz,
+body.single-tutor_assignments {
+  padding-top: 80px !important;
 }
-body.admin-bar.tutor-dashboard-page {
-  padding-top: calc(var(--nav-h) + 48px) !important;
+body.admin-bar.tutor-dashboard-page,
+body.admin-bar.single-tutor_course,
+body.admin-bar.single-tutor_lesson {
+  padding-top: 112px !important; /* 80 + 32px admin bar */
 }
-/* Inner page-wrap no longer needs its own top padding */
+/* Inner page-wrap must NOT add extra top padding */
 .tutor-page-wrap {
   padding-top: 0 !important;
 }
-.admin-bar .tutor-page-wrap {
-  padding-top: 0 !important;
+
+/* ── HIDE Reviews globally (not needed) ── */
+.tutor-dashboard-menu li:nth-child(4),
+.tutor-dashboard-menu [data-key="reviews"],
+.tutor-dashboard-menu li a[href*="reviews"],
+[data-page="tutor-reviews"],
+.tutor-single-course .tutor-reviews-tab,
+.tutor-course-nav [href*="reviews"],
+.tutor-course-nav li:nth-child(2) {
+  display: none !important;
 }
 
 /* ── Global wrappers ── */
@@ -2718,15 +2755,49 @@ body.tutor-dashboard-page {
 .tutor-badge-danger  { background: rgba(248,113,113,.15) !important; color: #f87171 !important; }
 
 /* ── Tabs ── */
+/* Container bar (the gray/light strip behind Course Info / Reviews tabs) */
+.tutor-tabs-nav,
+.tutor-course-content-nav-tabs,
+.tutor-course-nav-tab-items,
+[class*="course-nav-tab"],
+body.single-tutor_course nav,
+body.single-tutor_course [class*="-tab-list"],
+body.single-tutor_course [class*="-tabs-wrap"],
+body.single-tutor_course [class*="-tabs-nav"] {
+  background: var(--tutor-surface) !important;
+  border-bottom: 1px solid var(--tutor-border) !important;
+}
 .tutor-tabs-nav li a,
-.tutor-nav-tab {
+.tutor-nav-tab,
+.tutor-course-nav-tab-item {
   color: var(--tutor-muted) !important;
   border-color: transparent !important;
+  background: transparent !important;
 }
 .tutor-tabs-nav li.tutor-is-active a,
-.tutor-nav-tab.is-active {
+.tutor-nav-tab.is-active,
+.tutor-course-nav-tab-item.is-active {
   color: var(--tutor-text) !important;
   border-bottom-color: var(--tutor-accent) !important;
+}
+
+/* ── Course card thumbnail (dashboard In Progress section) ── */
+.tutor-course-card-thumbnail,
+.tutor-course-card .tutor-course-card__thumbnail,
+.tutor-course-card__thumbnail-wrap,
+.tutor-course-thumbnail {
+  background: #161d2e !important;
+}
+
+/* ── Bottom padding — prevent content/footer overlap ── */
+body.single-tutor_course .tutor-single-course-wrapper,
+body.single-tutor_course .tutor-wrap,
+body.single-tutor_course main {
+  padding-bottom: 80px !important;
+}
+body.tutor-dashboard-page .tutor-wrap,
+body.tutor-dashboard-page .tutor-dashboard {
+  padding-bottom: 48px !important;
 }
 
 /* ── Dropdown / modal overlays ── */
@@ -3090,27 +3161,38 @@ body.single-courses {
   color: var(--tutor-text) !important;
 }
 
-/* Every card/box in the right sidebar → dark surface */
-.tutor-single-course-sidebar .tutor-card,
-.tutor-single-course-sidebar [class*="enrollment"],
-.tutor-single-course-sidebar [class*="enroll"],
-.tutor-single-course-sidebar [class*="entry-box"],
-body.single-tutor_course .tutor-card,
-body.single-tutor_course .tutor-bg-white,
-body.single-tutor_course [class*="tutor-course-entry"],
-body.single-tutor_course [class*="tutor-enroll"],
-.tutor-course-enroll-wrap,
-.tutor-single-course-entry-box {
+/* Every card/box in the right sidebar → dark surface
+   Using html+body chain for maximum specificity (beats Tutor's !important) */
+html body .tutor-single-course-sidebar .tutor-card,
+html body .tutor-single-course-sidebar > div,
+html body .tutor-single-course-sidebar [class*="card"],
+html body .tutor-single-course-sidebar [class*="enroll"],
+html body .tutor-single-course-sidebar [class*="entry"],
+html body .tutor-single-course-sidebar [class*="instructor"],
+html body .tutor-single-course-sidebar [class*="widget"],
+html body.single-tutor_course .tutor-card,
+html body.single-tutor_course [class*="tutor-enroll"],
+html body.single-tutor_course [class*="course-entry"],
+html body.single-tutor_course .tutor-bg-white {
   background: var(--tutor-surface) !important;
+  background-color: var(--tutor-surface) !important;
   border: 1px solid var(--tutor-border) !important;
   border-radius: var(--tutor-radius) !important;
   box-shadow: none !important;
 }
 
 /* All text inside the right sidebar → readable */
-.tutor-single-course-sidebar,
-.tutor-single-course-sidebar * {
+html body .tutor-single-course-sidebar,
+html body .tutor-single-course-sidebar * {
   color: var(--tutor-text) !important;
+}
+/* Enrolled-on date pill (dark tooltip style) */
+html body .tutor-single-course-sidebar [class*="enrolled-date"],
+html body .tutor-single-course-sidebar [class*="enroll-date"] {
+  background: rgba(124,110,245,.15) !important;
+  border: 1px solid rgba(124,110,245,.3) !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
 }
 
 /* Secondary meta (Beginner, Total Enrolled, Last Updated) */
@@ -3196,59 +3278,162 @@ body.single-tutor_course .tutor-btn-outline-primary:hover {
   color: #fff !important;
 }
 
-/* ═══════════════════════════════════════════════════════
-   COURSE PLAYER — high-specificity overrides for the
-   sidebar lesson list (accordion-item-body) that keeps
-   getting Tutor's white background despite !important.
-   Using body.single-lesson prefix to win specificity.
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   COURSE PLAYER — use #tutor-course-player ID for high specificity
+   and body.single-tutor_lesson (correct Tutor LMS body class)
+   ═══════════════════════════════════════════════════════════════ */
 
-body.single-lesson #tutor-course-player-sidebar,
-body.single-lesson .tutor-course-player-sidebar {
-  background: #111827 !important;
-}
-/* Kill any white bg on accordion item bodies / lesson lists */
-body.single-lesson #tutor-course-player-sidebar [class*="accordion-item-body"],
-body.single-lesson #tutor-course-player-sidebar [class*="content-list"],
-body.single-lesson #tutor-course-player-sidebar [class*="topic-content"],
-body.single-lesson #tutor-course-player-sidebar [class*="lesson-list"],
-body.single-lesson .tutor-course-player-sidebar [class*="accordion-item-body"],
-body.single-lesson .tutor-course-player-sidebar [class*="content-list"],
-body.single-lesson .tutor-course-player-sidebar ul,
-body.single-lesson .tutor-course-player-sidebar li,
-body.single-lesson .tutor-course-player-sidebar > div {
+/* Sidebar: force dark on EVERYTHING inside it */
+#tutor-course-player #tutor-course-player-sidebar,
+#tutor-course-player .tutor-course-player-sidebar,
+body.single-tutor_lesson #tutor-course-player-sidebar,
+body.single-tutor_lesson .tutor-course-player-sidebar {
   background: #111827 !important;
   background-color: #111827 !important;
 }
 
-/* Lesson links and labels: bright enough to read */
-body.single-lesson .tutor-course-player-sidebar a,
-body.single-lesson .tutor-course-player-sidebar li > *,
-body.single-lesson .tutor-course-player-sidebar span:not(.tutor-badge) {
-  color: rgba(240,239,234,.78) !important;
+/* Every descendant of the sidebar that might have a white bg */
+#tutor-course-player #tutor-course-player-sidebar *,
+#tutor-course-player .tutor-course-player-sidebar *,
+body.single-tutor_lesson #tutor-course-player-sidebar *,
+body.single-tutor_lesson .tutor-course-player-sidebar * {
+  background-color: transparent !important;
 }
-body.single-lesson .tutor-course-player-sidebar a:hover {
+
+/* Restore specific backgrounds that should NOT be transparent */
+#tutor-course-player .tutor-accordion-item-header,
+#tutor-course-player [class*="topic-header"],
+#tutor-course-player [class*="content-list-header"] {
+  background-color: #161d2e !important;
+}
+#tutor-course-player .tutor-accordion-item-header:hover {
+  background-color: #1a2340 !important;
+}
+#tutor-course-player .tutor-course-content-list-item.is-active,
+#tutor-course-player [class*="content-list-item"].is-active,
+#tutor-course-player [class*="content-list-item"].current {
+  background-color: rgba(124,110,245,.15) !important;
+  border-left: 3px solid var(--tutor-accent) !important;
+}
+
+/* All sidebar text: readable */
+#tutor-course-player #tutor-course-player-sidebar a,
+#tutor-course-player #tutor-course-player-sidebar span,
+#tutor-course-player #tutor-course-player-sidebar li,
+#tutor-course-player #tutor-course-player-sidebar label,
+body.single-tutor_lesson .tutor-course-player-sidebar a,
+body.single-tutor_lesson .tutor-course-player-sidebar span,
+body.single-tutor_lesson .tutor-course-player-sidebar li {
+  color: rgba(240,239,234,.80) !important;
+}
+#tutor-course-player #tutor-course-player-sidebar a:hover {
   color: var(--tutor-text) !important;
-  background: rgba(124,110,245,.12) !important;
 }
-body.single-lesson .tutor-course-player-sidebar li.is-active > a,
-body.single-lesson .tutor-course-player-sidebar [class*="active"] > a {
+/* Active / currently playing lesson */
+#tutor-course-player [class*="content-list-item"].is-active a,
+#tutor-course-player [class*="content-list-item"].is-active span {
   color: var(--tutor-text) !important;
   font-weight: 600 !important;
 }
 
-/* Lesson content text — bright, readable */
-body.single-lesson .tutor-lesson-content,
-body.single-lesson .tutor-spotlight-wrap .tutor-container,
-body.single-lesson [class*="lesson-content"] {
+/* Video: full width, no overflow clipping */
+#tutor-course-player .tutor-video-player,
+#tutor-course-player [class*="video-wrap"],
+#tutor-course-player [class*="video-player"],
+#tutor-course-player iframe,
+#tutor-course-player video {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  border-radius: 0 !important;
+  margin-bottom: 0 !important;
+}
+#tutor-course-player [class*="video-wrap"],
+#tutor-course-player [class*="spotlight-video"] {
+  aspect-ratio: 16/9 !important;
+  background: #000 !important;
+}
+
+/* Lesson content area: constrain text width, bright text */
+#tutor-course-player [class*="lesson-content"],
+#tutor-course-player [class*="spotlight-wrap"] .tutor-container {
+  max-width: 760px !important;
+  margin: 0 auto !important;
+  padding: 40px 36px !important;
   color: rgba(240,239,234,.9) !important;
 }
-body.single-lesson .tutor-lesson-content p,
-body.single-lesson [class*="lesson-content"] p {
+#tutor-course-player [class*="lesson-content"] p,
+#tutor-course-player [class*="spotlight-wrap"] p {
   font-size: 1.0625rem !important;
   line-height: 1.8 !important;
   color: rgba(240,239,234,.88) !important;
   margin-bottom: 1.3em !important;
+}
+#tutor-course-player [class*="lesson-content"] h1,
+#tutor-course-player [class*="lesson-content"] h2,
+#tutor-course-player [class*="lesson-content"] h3 {
+  color: var(--tutor-text) !important;
+  font-weight: 700 !important;
+  margin-bottom: .5em !important;
+}
+
+/* Prev / Next navigation bar */
+#tutor-course-player [class*="course-player-footer"],
+#tutor-course-player [class*="player-content-footer"],
+#tutor-course-player [class*="lesson-nav"],
+.tutor-course-player-content-footer {
+  background: var(--tutor-surface) !important;
+  border-top: 1px solid var(--tutor-border) !important;
+  padding: 16px 32px !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 16px !important;
+}
+/* Prev/Next/Complete buttons */
+#tutor-course-player [class*="prev-content"],
+#tutor-course-player [class*="next-content"],
+#tutor-course-player [class*="prev-btn"],
+#tutor-course-player [class*="next-btn"],
+#tutor-course-player [class*="complete-lesson"],
+.tutor-btn-prev-content,
+.tutor-btn-next-content,
+.tutor-btn-complete-lesson,
+.tutor-btn-prev-lesson,
+.tutor-btn-next-lesson {
+  background: rgba(124,110,245,.15) !important;
+  border: 1px solid rgba(124,110,245,.35) !important;
+  color: var(--tutor-accent) !important;
+  border-radius: 8px !important;
+  padding: 10px 22px !important;
+  font-weight: 600 !important;
+  font-size: .875rem !important;
+  text-decoration: none !important;
+  transition: background .18s !important;
+}
+#tutor-course-player [class*="prev-content"]:hover,
+#tutor-course-player [class*="next-content"]:hover,
+.tutor-btn-prev-content:hover,
+.tutor-btn-next-content:hover {
+  background: var(--tutor-accent) !important;
+  color: #fff !important;
+}
+/* Complete lesson = solid accent */
+#tutor-course-player [class*="complete-lesson"],
+.tutor-btn-complete-lesson {
+  background: var(--tutor-accent) !important;
+  border-color: var(--tutor-accent) !important;
+  color: #fff !important;
+}
+
+/* Course player bottom padding */
+#tutor-course-player {
+  padding-bottom: 0 !important;
+}
+body.single-tutor_lesson {
+  padding-bottom: 0 !important;
+}
+body.single-tutor_lesson #tutor-course-player {
+  min-height: calc(100vh - 80px) !important;
 }
 </style>
     <?php
