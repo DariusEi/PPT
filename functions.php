@@ -3583,6 +3583,8 @@ add_action( 'wp_footer', function () {
   function tutorFix(){
     PT101_RUN++;
     console.log('[PT101] tutorFix() call #'+PT101_RUN+' readyState='+document.readyState);
+    window.PT101_RUN_COUNT=PT101_RUN;
+    window.PT101_LAST_RUN=new Date().toLocaleTimeString();
 
     /* Guard: only run on Tutor course pages */
     var guardA = document.querySelector('.tutor-course-details-tab');
@@ -4048,3 +4050,70 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 999 );
+
+/* ── PT101 VISUAL DEBUG OVERLAY — remove when done diagnosing ── */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'courses' ) ) return;
+    ?>
+<style>
+#pt101-dbg {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  z-index: 999999;
+  background: #003300;
+  border: 3px solid #00ff66;
+  color: #00ff66;
+  font: 600 11px/1.4 monospace;
+  padding: 10px 14px;
+  max-width: 440px;
+  border-radius: 6px;
+  pointer-events: none;
+  white-space: pre;
+}
+/* Coloured outlines on every element we target — visible immediately */
+.tutor-tab          { outline: 4px solid cyan   !important; }
+.tutor-tab-item     { outline: 4px solid magenta !important; }
+.tutor-accordion-item-header { outline: 4px solid orange  !important; }
+li.tutor-course-content-list-item { outline: 4px solid yellow !important; }
+nav.tutor-nav .tutor-nav-link     { outline: 4px solid lime   !important; }
+</style>
+<div id="pt101-dbg">PT101 DEBUG — loading…</div>
+<script>
+(function(){
+  function cs(sel,prop){
+    var el=document.querySelector(sel);
+    if(!el) return sel+' NOT FOUND';
+    var v=getComputedStyle(el)[prop];
+    /* also show inline style attribute for comparison */
+    var inl=el.style[prop]||el.getAttribute('style')||'';
+    return sel+'\n  computed '+prop+': '+v+'\n  inline attr: '+(inl.slice(0,60)||'(none)');
+  }
+  function update(){
+    var lines=[
+      'tutorFix runs: '+(window.PT101_RUN_COUNT||'?'),
+      'last run: '+(window.PT101_LAST_RUN||'never'),
+      '',
+      cs('.tutor-tab','paddingTop'),
+      '',
+      cs('.tutor-accordion-item-header','background'),
+      cs('.tutor-accordion-item-header','padding'),
+      '',
+      cs('li.tutor-course-content-list-item','padding'),
+      '',
+      cs('.tutor-nav-link','padding'),
+    ];
+    var box=document.getElementById('pt101-dbg');
+    if(box) box.textContent=lines.join('\n');
+  }
+  /* Hook into tutorFix counter */
+  window.PT101_RUN_COUNT=0;
+  window.PT101_LAST_RUN='never';
+  var origDescriptor=Object.getOwnPropertyDescriptor(window,'PT101_RUN_COUNT');
+  /* Poll every 800ms */
+  setInterval(update,800);
+  window.addEventListener('load',function(){ setTimeout(update,100); });
+})();
+</script>
+    <?php
+}, 1001 );
