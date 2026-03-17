@@ -3,7 +3,7 @@ Theme Name: Prop Trading 101
 Theme URI: https://proptrading101.com
 Author: Prop Trading 101
 Description: Professional prop trading education platform
-Version: 6.2.5
+Version: 6.2.6
 License: GNU General Public License v2 or later
 Text Domain: prop-trading-101
 */
@@ -1964,7 +1964,47 @@ body.pt101.page-template-template-course-strategy-development .site-footer h4 {
 }
 
 /* ── LIGHT HEADER — Trading Foundations & Intro to Trading ──────── */
-/* course page headers use the global dark header — no overrides needed */
+.page-template-template-course-trading-foundations .site-header,
+.page-template-template-course-intro-to-trading .site-header {
+  background: #f8f7f4 !important;
+  border-bottom: 1px solid rgba(17,19,32,0.1);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+.page-template-template-course-trading-foundations .site-header.scrolled,
+.page-template-template-course-intro-to-trading .site-header.scrolled {
+  background: #f8f7f4 !important;
+  box-shadow: 0 2px 20px rgba(17,19,32,0.08);
+}
+.page-template-template-course-trading-foundations .site-logo,
+.page-template-template-course-intro-to-trading .site-logo { color: var(--text-dark); }
+.page-template-template-course-trading-foundations .primary-nav li a,
+.page-template-template-course-intro-to-trading .primary-nav li a,
+.page-template-template-course-trading-foundations .nav-dropdown-trigger,
+.page-template-template-course-intro-to-trading .nav-dropdown-trigger { color: var(--text-dark-2); }
+.page-template-template-course-trading-foundations .primary-nav li a:hover,
+.page-template-template-course-intro-to-trading .primary-nav li a:hover,
+.page-template-template-course-trading-foundations .nav-dropdown-trigger:hover,
+.page-template-template-course-intro-to-trading .nav-dropdown-trigger:hover,
+.page-template-template-course-trading-foundations .nav-item-dropdown.open .nav-dropdown-trigger,
+.page-template-template-course-intro-to-trading .nav-item-dropdown.open .nav-dropdown-trigger {
+  color: var(--text-dark);
+  background: rgba(17,19,32,0.06);
+}
+.page-template-template-course-trading-foundations .btn-hdr-login,
+.page-template-template-course-intro-to-trading .btn-hdr-login {
+  color: var(--text-dark) !important;
+  border-color: rgba(17,19,32,0.25);
+}
+.page-template-template-course-trading-foundations .btn-hdr-login:hover,
+.page-template-template-course-intro-to-trading .btn-hdr-login:hover {
+  color: var(--text-dark) !important;
+  border-color: rgba(17,19,32,0.5);
+  background: rgba(17,19,32,0.05);
+}
+.page-template-template-course-trading-foundations .hamburger span,
+.page-template-template-course-intro-to-trading .hamburger span { background: var(--text-dark); }
+.page-template-template-course-trading-foundations .nav-dropdown-trigger svg path,
+.page-template-template-course-intro-to-trading .nav-dropdown-trigger svg path { stroke: var(--text-dark-2); }
 
 /* ── LIGHT HERO VARIANT (Trading Foundations / Intro to Trading) ── */
 .cdp-hero--light {
@@ -2308,10 +2348,10 @@ body.pt101 .mtr-cta-section h2 {
    GETTING FUNDED PAGE
    ════════════════════════════════════════════════════════════ */
 
-/* ── Page-level colour — dark theme (same as rest of site) ─ */
+/* ── Page-level colour reset (override dark-theme body defaults) ─ */
 body.page-template-template-getting-funded {
-  background: var(--bg) !important;
-  color: var(--white) !important;
+  background: var(--light) !important;
+  color: var(--text-dark) !important;
 }
 body.page-template-template-getting-funded h1,
 body.page-template-template-getting-funded h2,
@@ -2319,15 +2359,15 @@ body.page-template-template-getting-funded h3,
 body.page-template-template-getting-funded h4,
 body.page-template-template-getting-funded h5,
 body.page-template-template-getting-funded h6 {
-  color: var(--white) !important;
+  color: var(--text-dark) !important;
 }
 body.page-template-template-getting-funded p {
-  color: var(--text-mid) !important;
+  color: var(--text-dark-2) !important;
 }
 body.page-template-template-getting-funded li {
-  color: var(--text-mid) !important;
+  color: var(--text-dark-2) !important;
 }
-/* Risk-free dark section — white text is already the default now */
+/* Risk-free dark section: restore white text */
 body.page-template-template-getting-funded .gf-riskfree-section h2 {
   color: var(--white) !important;
 }
@@ -2336,7 +2376,35 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 }
 
 /* ── Light nav override ───────────────────────────────────── */
-/* getting-funded page header uses the global dark header — no overrides needed */
+.page-template-template-getting-funded .site-header {
+  background: var(--light) !important;
+  border-bottom: 1px solid rgba(17,19,32,0.1);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+.page-template-template-getting-funded .site-header.scrolled {
+  background: var(--light) !important;
+  box-shadow: 0 2px 20px rgba(17,19,32,0.08);
+}
+.page-template-template-getting-funded .site-logo { color: var(--text-dark); }
+.page-template-template-getting-funded .primary-nav li a,
+.page-template-template-getting-funded .nav-dropdown-trigger { color: var(--text-dark-2); }
+.page-template-template-getting-funded .primary-nav li a:hover,
+.page-template-template-getting-funded .nav-dropdown-trigger:hover,
+.page-template-template-getting-funded .nav-item-dropdown.open .nav-dropdown-trigger {
+  color: var(--text-dark);
+  background: rgba(17,19,32,0.06);
+}
+.page-template-template-getting-funded .btn-hdr-login {
+  color: var(--text-dark) !important;
+  border-color: rgba(17,19,32,0.25);
+}
+.page-template-template-getting-funded .btn-hdr-login:hover {
+  color: var(--text-dark) !important;
+  border-color: rgba(17,19,32,0.5);
+  background: rgba(17,19,32,0.05);
+}
+.page-template-template-getting-funded .hamburger span { background: var(--text-dark); }
+.page-template-template-getting-funded .nav-dropdown-trigger svg path { stroke: var(--text-dark-2); }
 
 /* ── HERO ─────────────────────────────────────────────────── */
 .gf-hero {
