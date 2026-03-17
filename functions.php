@@ -2362,6 +2362,16 @@ add_action( 'wp_head', function () {
   --tutor-placeholder-color: rgba(240,239,234,.45);
 }
 
+/* ── Nav: consistent dark background on all Tutor pages ── */
+/* backdrop-filter can pick up different bg colors on course pages, force solid */
+body.single-courses .site-header,
+body.single-lesson .site-header,
+body.single-quiz .site-header,
+body.tutor-frontend .site-header,
+body.tutor-screen-frontend-dashboard .site-header {
+  background: rgba(13,15,26,0.97) !important;
+}
+
 /* ── Push ALL page content below fixed 64px nav ── */
 /* Hardcoded — CSS var --nav-h may not resolve inside PHP-injected <style> */
 body.tutor-screen-frontend-dashboard,
@@ -3669,9 +3679,9 @@ add_action( 'wp_footer', function () {
     ?>
 <style id="pt101-course-polish">
 
-/* Tab bar: more spacious */
+/* Tab bar: spacious with clear breathing room */
 body.single-courses .tutor-nav-link {
-  padding: 14px 24px !important;
+  padding: 18px 28px !important;
   font-size: 0.9375rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.01em !important;
@@ -3682,10 +3692,10 @@ body.single-courses .tutor-nav-link.active {
   border-bottom-width: 2px !important;
 }
 
-/* Tab content: breathing room */
+/* Tab content: generous breathing room */
 body.single-courses .tutor-course-tab-content,
 body.single-courses #tutor-course-details-tab-course-info {
-  padding: 32px 0 !important;
+  padding: 48px 0 !important;
 }
 
 /* Section headings (About Course, Course Content): match site tokens */
@@ -3722,7 +3732,7 @@ body.single-courses .tutor-single-course-content h3 {
 /* Header: --bg-card background, generous padding */
 .tutor-accordion-item-header {
   background: #161929 !important;
-  padding: 18px 22px !important;
+  padding: 20px 24px !important;
 }
 .tutor-accordion-item-header * {
   font-size: 0.9375rem !important;
@@ -3739,7 +3749,7 @@ body.single-courses .tutor-single-course-content h3 {
 .tutor-course-content-list-item a,
 .tutor-course-topics-list li a,
 .tutor-course-content-list-item .tutor-lesson-title {
-  padding: 14px 20px 14px 22px !important;
+  padding: 16px 22px 16px 24px !important;
   gap: 12px !important;
   font-size: 0.875rem !important;
   line-height: 1.5 !important;
