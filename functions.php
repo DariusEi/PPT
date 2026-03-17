@@ -2368,7 +2368,9 @@ body.single-courses .site-header,
 body.single-lesson .site-header,
 body.single-quiz .site-header,
 body.tutor-frontend .site-header,
-body.tutor-screen-frontend-dashboard .site-header {
+body.tutor-screen-frontend-dashboard .site-header,
+body.page-template-template-course-intro-to-trading .site-header,
+body.page-template-template-course-trading-foundations .site-header {
   background: #0d0f1a !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -2377,33 +2379,45 @@ body.tutor-screen-frontend-dashboard .site-header {
 /* Force light text/logo on dark header — overrides any light-template rules */
 body.single-courses .site-logo,
 body.single-lesson .site-logo,
-body.single-quiz .site-logo {
+body.single-quiz .site-logo,
+body.page-template-template-course-intro-to-trading .site-logo,
+body.page-template-template-course-trading-foundations .site-logo {
   color: #f0efea !important;
 }
 body.single-courses .primary-nav li a,
 body.single-lesson .primary-nav li a,
-body.single-quiz .primary-nav li a {
+body.single-quiz .primary-nav li a,
+body.page-template-template-course-intro-to-trading .primary-nav li a,
+body.page-template-template-course-trading-foundations .primary-nav li a {
   color: rgba(240,239,234,0.75) !important;
 }
 body.single-courses .primary-nav li a:hover,
 body.single-lesson .primary-nav li a:hover,
-body.single-quiz .primary-nav li a:hover {
+body.single-quiz .primary-nav li a:hover,
+body.page-template-template-course-intro-to-trading .primary-nav li a:hover,
+body.page-template-template-course-trading-foundations .primary-nav li a:hover {
   color: #f0efea !important;
   background: rgba(255,255,255,0.06) !important;
 }
 body.single-courses .nav-dropdown-trigger,
 body.single-lesson .nav-dropdown-trigger,
-body.single-quiz .nav-dropdown-trigger {
+body.single-quiz .nav-dropdown-trigger,
+body.page-template-template-course-intro-to-trading .nav-dropdown-trigger,
+body.page-template-template-course-trading-foundations .nav-dropdown-trigger {
   color: rgba(240,239,234,0.75) !important;
 }
 body.single-courses .nav-dropdown-trigger svg path,
 body.single-lesson .nav-dropdown-trigger svg path,
-body.single-quiz .nav-dropdown-trigger svg path {
+body.single-quiz .nav-dropdown-trigger svg path,
+body.page-template-template-course-intro-to-trading .nav-dropdown-trigger svg path,
+body.page-template-template-course-trading-foundations .nav-dropdown-trigger svg path {
   stroke: rgba(240,239,234,0.75) !important;
 }
 body.single-courses .btn-hdr-login,
 body.single-lesson .btn-hdr-login,
-body.single-quiz .btn-hdr-login {
+body.single-quiz .btn-hdr-login,
+body.page-template-template-course-intro-to-trading .btn-hdr-login,
+body.page-template-template-course-trading-foundations .btn-hdr-login {
   color: #f0efea !important;
   border-color: rgba(240,239,234,0.3) !important;
 }
