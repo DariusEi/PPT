@@ -3583,6 +3583,23 @@ add_action( 'wp_footer', function () {
     /* Only run if Tutor course elements are present on this page */
     if(!document.querySelector('.tutor-course-details-tab, .tutor-accordion-item, .tutor-single-course-wrap')) return;
 
+    /* ── Nav: force consistent dark background (backdrop-filter blends course bg) ── */
+    var hdr=document.querySelector('.site-header');
+    if(hdr){
+      hdr.style.setProperty('background','rgba(13,15,26,0.97)','important');
+      hdr.style.setProperty('backdrop-filter','none','important');
+      hdr.style.setProperty('-webkit-backdrop-filter','none','important');
+    }
+
+    /* ── Breathing room: tab links and tab content panel ── */
+    document.querySelectorAll('.tutor-nav-link').forEach(function(el){
+      el.style.setProperty('padding','18px 28px','important');
+    });
+    document.querySelectorAll('.tutor-course-tab-content,#tutor-course-details-tab-course-info').forEach(function(el){
+      el.style.setProperty('padding-top','48px','important');
+      el.style.setProperty('padding-bottom','48px','important');
+    });
+
     /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
     ['.tutor-course-details-tab .tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
       document.querySelectorAll(s).forEach(function(el){
@@ -3627,11 +3644,15 @@ add_action( 'wp_footer', function () {
       /* Header bg */
       document.querySelectorAll('.tutor-accordion-item-header').forEach(function(h){
         h.style.setProperty('background','#161929','important');
-        h.style.setProperty('padding','18px 22px','important');
+        h.style.setProperty('padding','20px 24px','important');
       });
       /* Body bg */
       document.querySelectorAll('.tutor-accordion-item-body').forEach(function(b){
         b.style.setProperty('background','#0f1120','important');
+      });
+      /* Lesson list items: generous padding */
+      document.querySelectorAll('.tutor-course-content-list-item a,.tutor-course-topics-list li a,.tutor-course-content-list-item .tutor-lesson-title').forEach(function(el){
+        el.style.setProperty('padding','16px 22px 16px 24px','important');
       });
     }
 
