@@ -3622,53 +3622,6 @@ body.single-lesson #tutor-course-player {
 }, 100 );
 
 
-/* ── HEADER DEBUG — logs computed styles to console, remove after diagnosis ── */
-add_action( 'wp_footer', function () {
-    ?>
-<script id="pt101-header-debug">
-(function(){
-  function pt101Debug(){
-    var hdr = document.querySelector('.site-header') || document.getElementById('site-header');
-    if (!hdr) { console.warn('[PT101 debug] .site-header not found'); return; }
-    var cs = window.getComputedStyle(hdr);
-    console.group('[PT101 header debug]');
-    console.log('body classes :', document.body.className);
-    console.log('computed bg  :', cs.background);
-    console.log('computed bg-c:', cs.backgroundColor);
-    console.log('computed bdf :', cs.backdropFilter || cs.webkitBackdropFilter);
-    console.log('inline style :', hdr.getAttribute('style'));
-    /* Walk matched CSS rules (Chrome/Edge/Firefox) */
-    try {
-      var rules = [];
-      Array.from(document.styleSheets).forEach(function(ss){
-        try {
-          Array.from(ss.cssRules || []).forEach(function(r){
-            if (r.selectorText && r.selectorText.indexOf('site-header') !== -1) {
-              rules.push(ss.href || 'inline', r.selectorText, r.style.background || r.style.backgroundColor);
-            }
-          });
-        } catch(e){}
-      });
-      console.log('matching rules:', rules);
-    } catch(e){ console.warn('rules walk failed', e); }
-    console.groupEnd();
-    /* Force the fix regardless — belt + suspenders */
-    hdr.style.setProperty('background', '#0d0f1a', 'important');
-    hdr.style.setProperty('background-color', '#0d0f1a', 'important');
-    hdr.style.setProperty('backdrop-filter', 'none', 'important');
-    hdr.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', pt101Debug);
-  } else { pt101Debug(); }
-  window.addEventListener('load', pt101Debug);
-  [300, 800, 1500].forEach(function(ms){ setTimeout(pt101Debug, ms); });
-})();
-</script>
-    <?php
-}, 999 );
-
-
 /* ── Force-override Tutor LMS elements that resist CSS (JS runs after all scripts) ── */
 /* No is_singular gate — course page may be a WP page type, detect via DOM instead */
 add_action( 'wp_footer', function () {

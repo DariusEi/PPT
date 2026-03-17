@@ -1964,47 +1964,7 @@ body.pt101.page-template-template-course-strategy-development .site-footer h4 {
 }
 
 /* ── LIGHT HEADER — Trading Foundations & Intro to Trading ──────── */
-.page-template-template-course-trading-foundations .site-header,
-.page-template-template-course-intro-to-trading .site-header {
-  background: #f8f7f4 !important;
-  border-bottom: 1px solid rgba(17,19,32,0.1);
-  backdrop-filter: none; -webkit-backdrop-filter: none;
-}
-.page-template-template-course-trading-foundations .site-header.scrolled,
-.page-template-template-course-intro-to-trading .site-header.scrolled {
-  background: #f8f7f4 !important;
-  box-shadow: 0 2px 20px rgba(17,19,32,0.08);
-}
-.page-template-template-course-trading-foundations .site-logo,
-.page-template-template-course-intro-to-trading .site-logo { color: var(--text-dark); }
-.page-template-template-course-trading-foundations .primary-nav li a,
-.page-template-template-course-intro-to-trading .primary-nav li a,
-.page-template-template-course-trading-foundations .nav-dropdown-trigger,
-.page-template-template-course-intro-to-trading .nav-dropdown-trigger { color: var(--text-dark-2); }
-.page-template-template-course-trading-foundations .primary-nav li a:hover,
-.page-template-template-course-intro-to-trading .primary-nav li a:hover,
-.page-template-template-course-trading-foundations .nav-dropdown-trigger:hover,
-.page-template-template-course-intro-to-trading .nav-dropdown-trigger:hover,
-.page-template-template-course-trading-foundations .nav-item-dropdown.open .nav-dropdown-trigger,
-.page-template-template-course-intro-to-trading .nav-item-dropdown.open .nav-dropdown-trigger {
-  color: var(--text-dark);
-  background: rgba(17,19,32,0.06);
-}
-.page-template-template-course-trading-foundations .btn-hdr-login,
-.page-template-template-course-intro-to-trading .btn-hdr-login {
-  color: var(--text-dark) !important;
-  border-color: rgba(17,19,32,0.25);
-}
-.page-template-template-course-trading-foundations .btn-hdr-login:hover,
-.page-template-template-course-intro-to-trading .btn-hdr-login:hover {
-  color: var(--text-dark) !important;
-  border-color: rgba(17,19,32,0.5);
-  background: rgba(17,19,32,0.05);
-}
-.page-template-template-course-trading-foundations .hamburger span,
-.page-template-template-course-intro-to-trading .hamburger span { background: var(--text-dark); }
-.page-template-template-course-trading-foundations .nav-dropdown-trigger svg path,
-.page-template-template-course-intro-to-trading .nav-dropdown-trigger svg path { stroke: var(--text-dark-2); }
+/* course page headers use the global dark header — no overrides needed */
 
 /* ── LIGHT HERO VARIANT (Trading Foundations / Intro to Trading) ── */
 .cdp-hero--light {
@@ -2376,35 +2336,7 @@ body.page-template-template-getting-funded .gf-riskfree-section p {
 }
 
 /* ── Light nav override ───────────────────────────────────── */
-.page-template-template-getting-funded .site-header {
-  background: var(--light) !important;
-  border-bottom: 1px solid rgba(17,19,32,0.1);
-  backdrop-filter: none; -webkit-backdrop-filter: none;
-}
-.page-template-template-getting-funded .site-header.scrolled {
-  background: var(--light) !important;
-  box-shadow: 0 2px 20px rgba(17,19,32,0.08);
-}
-.page-template-template-getting-funded .site-logo { color: var(--text-dark); }
-.page-template-template-getting-funded .primary-nav li a,
-.page-template-template-getting-funded .nav-dropdown-trigger { color: var(--text-dark-2); }
-.page-template-template-getting-funded .primary-nav li a:hover,
-.page-template-template-getting-funded .nav-dropdown-trigger:hover,
-.page-template-template-getting-funded .nav-item-dropdown.open .nav-dropdown-trigger {
-  color: var(--text-dark);
-  background: rgba(17,19,32,0.06);
-}
-.page-template-template-getting-funded .btn-hdr-login {
-  color: var(--text-dark) !important;
-  border-color: rgba(17,19,32,0.25);
-}
-.page-template-template-getting-funded .btn-hdr-login:hover {
-  color: var(--text-dark) !important;
-  border-color: rgba(17,19,32,0.5);
-  background: rgba(17,19,32,0.05);
-}
-.page-template-template-getting-funded .hamburger span { background: var(--text-dark); }
-.page-template-template-getting-funded .nav-dropdown-trigger svg path { stroke: var(--text-dark-2); }
+/* getting-funded page header uses the global dark header — no overrides needed */
 
 /* ── HERO ─────────────────────────────────────────────────── */
 .gf-hero {
