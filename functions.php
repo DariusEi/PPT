@@ -2378,49 +2378,36 @@ add_action( 'wp_head', function () {
 }
 .tippy-arrow { color: #1e2848 !important; }
 
-/* ── Nav: base is now solid dark — light text on Tutor pages ── */
-/* Force light text/logo on dark header — overrides any light-template rules */
+/* ── Nav: light text on Tutor single-course/lesson/quiz (dark header) ── */
 body.single-courses .site-logo,
 body.single-lesson .site-logo,
-body.single-quiz .site-logo,
-body.page-template-template-course-intro-to-trading .site-logo,
-body.page-template-template-course-trading-foundations .site-logo {
+body.single-quiz .site-logo {
   color: #f0efea !important;
 }
 body.single-courses .primary-nav li a,
 body.single-lesson .primary-nav li a,
-body.single-quiz .primary-nav li a,
-body.page-template-template-course-intro-to-trading .primary-nav li a,
-body.page-template-template-course-trading-foundations .primary-nav li a {
+body.single-quiz .primary-nav li a {
   color: rgba(240,239,234,0.75) !important;
 }
 body.single-courses .primary-nav li a:hover,
 body.single-lesson .primary-nav li a:hover,
-body.single-quiz .primary-nav li a:hover,
-body.page-template-template-course-intro-to-trading .primary-nav li a:hover,
-body.page-template-template-course-trading-foundations .primary-nav li a:hover {
+body.single-quiz .primary-nav li a:hover {
   color: #f0efea !important;
   background: rgba(255,255,255,0.06) !important;
 }
 body.single-courses .nav-dropdown-trigger,
 body.single-lesson .nav-dropdown-trigger,
-body.single-quiz .nav-dropdown-trigger,
-body.page-template-template-course-intro-to-trading .nav-dropdown-trigger,
-body.page-template-template-course-trading-foundations .nav-dropdown-trigger {
+body.single-quiz .nav-dropdown-trigger {
   color: rgba(240,239,234,0.75) !important;
 }
 body.single-courses .nav-dropdown-trigger svg path,
 body.single-lesson .nav-dropdown-trigger svg path,
-body.single-quiz .nav-dropdown-trigger svg path,
-body.page-template-template-course-intro-to-trading .nav-dropdown-trigger svg path,
-body.page-template-template-course-trading-foundations .nav-dropdown-trigger svg path {
+body.single-quiz .nav-dropdown-trigger svg path {
   stroke: rgba(240,239,234,0.75) !important;
 }
 body.single-courses .btn-hdr-login,
 body.single-lesson .btn-hdr-login,
-body.single-quiz .btn-hdr-login,
-body.page-template-template-course-intro-to-trading .btn-hdr-login,
-body.page-template-template-course-trading-foundations .btn-hdr-login {
+body.single-quiz .btn-hdr-login {
   color: #f0efea !important;
   border-color: rgba(240,239,234,0.3) !important;
 }
