@@ -238,6 +238,12 @@ body.pt101 section#home h1 {
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; height: 100%; }
 .site-logo { font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--white); flex-shrink: 0; }
 .header-inner > nav { flex: 1; display: flex; align-items: center; justify-content: center; background: transparent !important; }
+/* Override TutorLMS nav background injections */
+.site-header nav,
+.site-header nav ul,
+.site-header nav > ul,
+#site-header nav,
+#site-header nav ul { background: transparent !important; background-color: transparent !important; }
 .primary-nav { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
 .primary-nav li { position: relative; }
 .primary-nav li a,
