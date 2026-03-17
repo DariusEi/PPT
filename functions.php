@@ -3615,6 +3615,8 @@ add_action( 'wp_footer', function () {
     console.log('[PT101] tab content els count='+tabEls.length);
     tabEls.forEach(function(el){
       el.style.setProperty('padding-top','48px','important');
+      /* Probe: log computed value immediately after setting */
+      console.log('[PT101] .tutor-tab computed padding-top AFTER set: '+getComputedStyle(el).paddingTop);
     });
 
     /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
@@ -3696,12 +3698,33 @@ add_action( 'wp_footer', function () {
     console.log('[PT101] DOM already ready, calling tutorFix immediately');
     tutorFix();
   }
-  window.addEventListener('load',tutorFix);
+  /* Run at load AND at 500 ms / 1500 ms after load to beat any late Tutor scripts */
+  window.addEventListener('load', function(){
+    tutorFix();
+    setTimeout(function(){ console.log('[PT101] 500ms re-run'); tutorFix(); }, 500);
+    setTimeout(function(){ console.log('[PT101] 1500ms re-run'); tutorFix(); }, 1500);
+  });
 
-  /* MutationObserver: re-apply styles if Tutor Vue.js re-renders accordion elements */
+  /* MutationObserver: re-apply when Tutor adds nodes OR mutates style attributes */
   var mo=new MutationObserver(function(mutations){
+    var needsFix=false;
     for(var i=0;i<mutations.length;i++){
-      var nodes=mutations[i].addedNodes;
+      var m=mutations[i];
+      /* Style attribute changed on a watched element */
+      if(m.type==='attributes'&&m.attributeName==='style'){
+        var t=m.target;
+        if(t.classList.contains('tutor-accordion-item')||
+           t.classList.contains('tutor-accordion-item-header')||
+           t.classList.contains('tutor-accordion-item-body')||
+           t.classList.contains('tutor-tab')||
+           t.classList.contains('tutor-tab-item')){
+          console.log('[PT101] MO: style attr changed on '+t.tagName+'.'+t.className.split(' ')[0]+' — re-applying');
+          needsFix=true;
+          break;
+        }
+      }
+      /* New nodes added */
+      var nodes=m.addedNodes;
       for(var j=0;j<nodes.length;j++){
         var n=nodes[j];
         if(n.nodeType===1&&(
@@ -3709,13 +3732,20 @@ add_action( 'wp_footer', function () {
           n.classList.contains('tutor-accordion')||
           n.querySelector&&n.querySelector('.tutor-accordion-item')
         )){
-          tutorFix();
-          return;
+          needsFix=true;
+          break;
         }
       }
+      if(needsFix) break;
     }
+    if(needsFix) tutorFix();
   });
-  mo.observe(document.body,{childList:true,subtree:true});
+  mo.observe(document.body,{
+    childList:true,
+    subtree:true,
+    attributes:true,
+    attributeFilter:['style']
+  });
 })();
 </script>
     <?php
