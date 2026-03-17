@@ -14,6 +14,7 @@ $fallback_programs = [
     'level'        => 'No prior experience',
     'for'          => 'Ideal for: complete beginners with no trading background',
     'url'          => home_url( '/market-mechanics-analysis' ),
+    'product_id'   => 253,
     'price'        => '$299.00',
     'badge'        => '',
     'accent'       => '#7c6ef5',
@@ -34,6 +35,7 @@ $fallback_programs = [
     'level'        => 'With prior experience',
     'for'          => 'Ideal for: traders ready to go professional and get funded',
     'url'          => home_url( '/mastering-professional-trading' ),
+    'product_id'   => 207,
     'price'        => '$499.00',
     'badge'        => 'Most popular',
     'accent'       => '#e8503a',
@@ -54,6 +56,7 @@ $fallback_programs = [
     'level'        => 'With prior experience',
     'for'          => 'Ideal for: traders who already know the basics and want an edge',
     'url'          => home_url( '/strategy-development-advanced-technicals' ),
+    'product_id'   => 254,
     'price'        => '$399.00',
     'badge'        => 'Best value',
     'accent'       => '#00b67a',
@@ -74,6 +77,7 @@ $fallback_programs = [
     'level'        => 'No prior experience',
     'for'          => 'Ideal for: complete beginners wanting a structured starting point',
     'url'          => home_url( '/trading-foundations' ),
+    'product_id'   => 256,
     'price'        => '$89.00',
     'badge'        => '',
     'accent'       => '#7c6ef5',
@@ -92,6 +96,7 @@ $fallback_programs = [
     'level'        => 'No prior experience',
     'for'          => 'Ideal for: anyone curious about trading with zero commitment',
     'url'          => home_url( '/intro-to-trading' ),
+    'product_id'   => 158,
     'price'        => 'Free',
     'badge'        => 'Free',
     'accent'       => '#00b67a',
@@ -202,8 +207,12 @@ $tabs = [
         $accent     = esc_attr( $prog['accent'] ?: '#7c6ef5' );
         $has_badge  = ! empty( $prog['badge'] );
         $is_free    = strtolower( trim( $prog['price'] ) ) === 'free';
-        $enroll_url = $prog['url'] ?? home_url('/programs');
         $view_url   = $prog['url'] ?? home_url('/programs');
+        // Courses with a product_id go straight to checkout; others go to their course page.
+        $product_id = ! empty( $prog['product_id'] ) ? (int) $prog['product_id'] : 0;
+        $enroll_url = ( $product_id && function_exists( 'pt101_enroll_url' ) )
+                      ? pt101_enroll_url( $product_id )
+                      : $view_url;
       ?>
 
       <div class="pg-card<?php echo $has_badge ? ' pg-card--has-badge' : ''; ?>"

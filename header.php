@@ -127,8 +127,13 @@
       </nav>
 
       <div class="header-actions">
-        <a href="<?php echo esc_url( wp_login_url() ); ?>" class="btn-hdr-login">Log In</a>
-        <a href="#programs" class="btn-hdr-enroll">Enroll now &rarr;</a>
+        <?php if ( is_user_logged_in() ) : ?>
+          <a href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>" class="btn-hdr-login">My Courses</a>
+          <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="btn-hdr-enroll">Log Out</a>
+        <?php else : ?>
+          <a href="<?php echo esc_url( home_url( '/login' ) ); ?>" class="btn-hdr-login">Log In</a>
+          <a href="#programs" class="btn-hdr-enroll">Enroll now &rarr;</a>
+        <?php endif; ?>
       </div>
 
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-drawer" type="button">
@@ -173,7 +178,12 @@
     ?>
   </ul>
   <div class="mobile-drawer-ctas">
-    <a href="<?php echo esc_url( wp_login_url() ); ?>" class="btn btn-ghost">Log In</a>
-    <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="btn btn-accent">Enroll now &rarr;</a>
+    <?php if ( is_user_logged_in() ) : ?>
+      <a href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>" class="btn btn-accent">My Courses &rarr;</a>
+      <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="btn btn-ghost">Log Out</a>
+    <?php else : ?>
+      <a href="<?php echo esc_url( home_url( '/login' ) ); ?>" class="btn btn-ghost">Log In</a>
+      <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="btn btn-accent">Enroll now &rarr;</a>
+    <?php endif; ?>
   </div>
 </nav>

@@ -31,7 +31,7 @@ get_header();
           <div class="ct-info-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2.5 5.5A1.5 1.5 0 014 4h12a1.5 1.5 0 011.5 1.5v9A1.5 1.5 0 0116 16H4a1.5 1.5 0 01-1.5-1.5v-9z" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 5.5l7.5 5.5 7.5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div>
+          <div class="ct-info-text">
             <p class="ct-info-label">Email us</p>
             <p class="ct-info-val">info@proptrading101.com</p>
           </div>
@@ -41,7 +41,7 @@ get_header();
           <div class="ct-info-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4.5l2.5 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <div>
+          <div class="ct-info-text">
             <p class="ct-info-label">Response time</p>
             <p class="ct-info-val">Within one business day</p>
           </div>
@@ -51,7 +51,7 @@ get_header();
           <div class="ct-info-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 17c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div>
+          <div class="ct-info-text">
             <p class="ct-info-label">Become a mentor</p>
             <p class="ct-info-val">Interested in teaching? Mention it in your message.</p>
           </div>
