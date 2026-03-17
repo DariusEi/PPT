@@ -3,7 +3,7 @@ Theme Name: Prop Trading 101
 Theme URI: https://proptrading101.com
 Author: Prop Trading 101
 Description: Professional prop trading education platform
-Version: 6.2.8
+Version: 6.2.9
 License: GNU General Public License v2 or later
 Text Domain: prop-trading-101
 */
@@ -1960,60 +1960,7 @@ body.pt101.page-template-template-course-strategy-development .site-footer h4 {
 }
 .page-template-template-course-trading-foundations .footer-cookie-btn:hover,
 .page-template-template-course-intro-to-trading .footer-cookie-btn:hover {
-  color: var(--text-dark);
-}
-
-/* ── LIGHT FOOTER — Trading Foundations, Intro to Trading, Getting Funded ── */
-.page-template-template-course-trading-foundations .site-footer,
-.page-template-template-course-intro-to-trading .site-footer,
-.page-template-template-getting-funded .site-footer {
-  background: var(--light);
-  border-top: 1px solid rgba(30,30,50,0.1);
-  color: var(--text-dark);
-}
-.page-template-template-course-trading-foundations .footer-col h4,
-.page-template-template-course-intro-to-trading .footer-col h4,
-.page-template-template-getting-funded .footer-col h4,
-body.pt101.page-template-template-course-trading-foundations .site-footer h4,
-body.pt101.page-template-template-course-intro-to-trading .site-footer h4,
-body.pt101.page-template-template-getting-funded .site-footer h4 {
-  color: var(--text-dark) !important;
-}
-.page-template-template-course-trading-foundations .footer-col ul a,
-.page-template-template-course-trading-foundations .footer-col ul li a,
-.page-template-template-course-intro-to-trading .footer-col ul a,
-.page-template-template-course-intro-to-trading .footer-col ul li a,
-.page-template-template-getting-funded .footer-col ul a,
-.page-template-template-getting-funded .footer-col ul li a {
-  color: var(--text-dark-2);
-}
-.page-template-template-course-trading-foundations .footer-col ul a:hover,
-.page-template-template-course-trading-foundations .footer-col ul li a:hover,
-.page-template-template-course-intro-to-trading .footer-col ul a:hover,
-.page-template-template-course-intro-to-trading .footer-col ul li a:hover,
-.page-template-template-getting-funded .footer-col ul a:hover,
-.page-template-template-getting-funded .footer-col ul li a:hover {
-  color: var(--text-dark);
-}
-.page-template-template-course-trading-foundations .footer-legal-links a,
-.page-template-template-course-intro-to-trading .footer-legal-links a,
-.page-template-template-getting-funded .footer-legal-links a {
-  color: var(--text-dark-2);
-}
-.page-template-template-course-trading-foundations .footer-legal-links a:hover,
-.page-template-template-course-intro-to-trading .footer-legal-links a:hover,
-.page-template-template-getting-funded .footer-legal-links a:hover {
-  color: var(--text-dark);
-}
-.page-template-template-course-trading-foundations .soc-icon svg,
-.page-template-template-course-intro-to-trading .soc-icon svg,
-.page-template-template-getting-funded .soc-icon svg {
-  fill: var(--text-dark);
-}
-.page-template-template-course-trading-foundations .footer-cookie-btn,
-.page-template-template-course-intro-to-trading .footer-cookie-btn,
-.page-template-template-getting-funded .footer-cookie-btn {
-  color: var(--text-dark-2);
+  color: var(--white);
 }
 
 /* ── LIGHT HEADER — Trading Foundations & Intro to Trading ──────── */
