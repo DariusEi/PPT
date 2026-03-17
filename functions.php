@@ -2362,6 +2362,22 @@ add_action( 'wp_head', function () {
   --tutor-placeholder-color: rgba(240,239,234,.45);
 }
 
+/* ── Tutor tooltips (ⓘ icon hover on topic/lesson rows) ── */
+/* Tutor v2 renders these as .tutor-tooltip > .tutor-tooltip-content  */
+/* Some versions also use .tutor-tip, .tippy-box, or [data-tippy-content] */
+.tutor-tooltip-content,
+.tutor-tooltip > span:last-child,
+.tutor-tooltip .tutor-tooltip-txt,
+.tippy-box,
+.tutor-tip,
+[class*="tutor-tooltip"]:not([class*="icon"]) {
+  background: #1e2848 !important;
+  color: #f0efea !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 6px !important;
+}
+.tippy-arrow { color: #1e2848 !important; }
+
 /* ── Nav: base is now solid dark — light text on Tutor pages ── */
 /* Force light text/logo on dark header — overrides any light-template rules */
 body.single-courses .site-logo,
