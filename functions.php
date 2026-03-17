@@ -2369,7 +2369,43 @@ body.single-lesson .site-header,
 body.single-quiz .site-header,
 body.tutor-frontend .site-header,
 body.tutor-screen-frontend-dashboard .site-header {
-  background: rgba(13,15,26,0.97) !important;
+  background: #0d0f1a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+/* Force light text/logo on dark header — overrides any light-template rules */
+body.single-courses .site-logo,
+body.single-lesson .site-logo,
+body.single-quiz .site-logo {
+  color: #f0efea !important;
+}
+body.single-courses .primary-nav li a,
+body.single-lesson .primary-nav li a,
+body.single-quiz .primary-nav li a {
+  color: rgba(240,239,234,0.75) !important;
+}
+body.single-courses .primary-nav li a:hover,
+body.single-lesson .primary-nav li a:hover,
+body.single-quiz .primary-nav li a:hover {
+  color: #f0efea !important;
+  background: rgba(255,255,255,0.06) !important;
+}
+body.single-courses .nav-dropdown-trigger,
+body.single-lesson .nav-dropdown-trigger,
+body.single-quiz .nav-dropdown-trigger {
+  color: rgba(240,239,234,0.75) !important;
+}
+body.single-courses .nav-dropdown-trigger svg path,
+body.single-lesson .nav-dropdown-trigger svg path,
+body.single-quiz .nav-dropdown-trigger svg path {
+  stroke: rgba(240,239,234,0.75) !important;
+}
+body.single-courses .btn-hdr-login,
+body.single-lesson .btn-hdr-login,
+body.single-quiz .btn-hdr-login {
+  color: #f0efea !important;
+  border-color: rgba(240,239,234,0.3) !important;
 }
 
 /* ── Push ALL page content below fixed 64px nav ── */
@@ -4071,12 +4107,6 @@ add_action( 'wp_footer', function () {
   pointer-events: none;
   white-space: pre;
 }
-/* Coloured outlines on every element we target — visible immediately */
-.tutor-tab          { outline: 4px solid cyan   !important; }
-.tutor-tab-item     { outline: 4px solid magenta !important; }
-.tutor-accordion-item-header { outline: 4px solid orange  !important; }
-li.tutor-course-content-list-item { outline: 4px solid yellow !important; }
-nav.tutor-nav .tutor-nav-link     { outline: 4px solid lime   !important; }
 </style>
 <div id="pt101-dbg">PT101 DEBUG — loading…</div>
 <script>
