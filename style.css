@@ -229,15 +229,12 @@ body.pt101 section#home h1 {
 .site-header {
   position: fixed; inset: 0 0 auto 0; z-index: 9999;
   height: var(--nav-h);
-  background: rgba(13,15,26,0.95); /* solid fallback for iOS that blocks backdrop-filter */
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: #0d0f1a;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
   border-bottom: 1px solid var(--border-dark);
   transition: background var(--t), box-shadow var(--t);
 }
-@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-  .site-header { background: rgba(13,15,26,0.82); }
-}
-.site-header.scrolled { background: rgba(13,15,26,0.97); box-shadow: 0 4px 40px rgba(0,0,0,0.5); }
+.site-header.scrolled { background: #0d0f1a; box-shadow: 0 4px 40px rgba(0,0,0,0.5); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; height: 100%; }
 .site-logo { font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--white); flex-shrink: 0; }
 .header-inner > nav { flex: 1; display: flex; align-items: center; justify-content: center; }

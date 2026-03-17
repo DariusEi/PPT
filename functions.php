@@ -2362,20 +2362,7 @@ add_action( 'wp_head', function () {
   --tutor-placeholder-color: rgba(240,239,234,.45);
 }
 
-/* ── Nav: consistent dark background on all Tutor pages ── */
-/* backdrop-filter can pick up different bg colors on course pages, force solid */
-body.single-courses .site-header,
-body.single-lesson .site-header,
-body.single-quiz .site-header,
-body.tutor-frontend .site-header,
-body.tutor-screen-frontend-dashboard .site-header,
-body.page-template-template-course-intro-to-trading .site-header,
-body.page-template-template-course-trading-foundations .site-header {
-  background: #0d0f1a !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.07) !important;
-}
+/* ── Nav: base is now solid dark — light text on Tutor pages ── */
 /* Force light text/logo on dark header — overrides any light-template rules */
 body.single-courses .site-logo,
 body.single-lesson .site-logo,
@@ -3630,14 +3617,6 @@ add_action( 'wp_footer', function () {
     if(!document.querySelector('.tutor-course-details-tab') &&
        !document.querySelector('.tutor-accordion-item') &&
        !document.querySelector('.tutor-single-course-wrap')){ return; }
-
-    /* ── Site header: solid dark, no blur ── */
-    var hdr=document.querySelector('.site-header');
-    if(hdr){
-      hdr.style.setProperty('background','#0d0f1a','important');
-      hdr.style.setProperty('backdrop-filter','none','important');
-      hdr.style.setProperty('-webkit-backdrop-filter','none','important');
-    }
 
     /* ── Tab links: generous padding ── */
     document.querySelectorAll('.tutor-nav-link').forEach(function(el){
