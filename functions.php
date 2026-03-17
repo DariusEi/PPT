@@ -3579,12 +3579,25 @@ add_action( 'wp_footer', function () {
   /* Diagnostic: always log body classes so we can confirm what the course page uses */
   console.log('[PT101] body classes: '+document.body.className);
 
+  var PT101_RUN = 0;
   function tutorFix(){
-    /* Only run if Tutor course elements are present on this page */
-    if(!document.querySelector('.tutor-course-details-tab, .tutor-accordion-item, .tutor-single-course-wrap')) return;
+    PT101_RUN++;
+    console.log('[PT101] tutorFix() call #'+PT101_RUN+' readyState='+document.readyState);
+
+    /* Guard: only run on Tutor course pages */
+    var guardA = document.querySelector('.tutor-course-details-tab');
+    var guardB = document.querySelector('.tutor-accordion-item');
+    var guardC = document.querySelector('.tutor-single-course-wrap');
+    console.log('[PT101] guard: .tutor-course-details-tab='+!!guardA+' .tutor-accordion-item='+!!guardB+' .tutor-single-course-wrap='+!!guardC);
+    if(!guardA && !guardB && !guardC){
+      console.log('[PT101] guard failed — no Tutor elements found, exiting');
+      return;
+    }
+    console.log('[PT101] guard passed — applying styles');
 
     /* ── Nav: force consistent dark background (backdrop-filter blends course bg) ── */
     var hdr=document.querySelector('.site-header');
+    console.log('[PT101] .site-header found='+!!hdr);
     if(hdr){
       hdr.style.setProperty('background','rgba(13,15,26,0.97)','important');
       hdr.style.setProperty('backdrop-filter','none','important');
@@ -3592,11 +3605,15 @@ add_action( 'wp_footer', function () {
     }
 
     /* ── Breathing room: tab links and tab content panel ── */
-    document.querySelectorAll('.tutor-nav-link').forEach(function(el){
+    var navLinks = document.querySelectorAll('.tutor-nav-link');
+    console.log('[PT101] .tutor-nav-link count='+navLinks.length);
+    navLinks.forEach(function(el){
       el.style.setProperty('padding','18px 28px','important');
     });
     /* .tutor-tab has Tutor's tutor-pt-24 utility (24px); override to 48px */
-    document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item').forEach(function(el){
+    var tabEls = document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item');
+    console.log('[PT101] tab content els count='+tabEls.length);
+    tabEls.forEach(function(el){
       el.style.setProperty('padding-top','48px','important');
     });
 
@@ -3627,9 +3644,9 @@ add_action( 'wp_footer', function () {
 
     /* ── Accordion spacing: find real container via .tutor-accordion-item ── */
     var items = document.querySelectorAll('.tutor-accordion-item');
+    console.log('[PT101] .tutor-accordion-item count='+items.length);
     if(items.length){
       var container = items[0].parentElement;
-      /* Log actual classes so we can confirm the selector */
       console.log('[PT101 accordion] container tag='+container.tagName+' class="'+container.className+'"');
       container.style.setProperty('margin-top','24px','important');
       container.style.setProperty('display','flex','important');
@@ -3651,7 +3668,9 @@ add_action( 'wp_footer', function () {
         b.style.setProperty('background','#0f1120','important');
       });
       /* Lesson list items: generous padding on the <li> directly */
-      document.querySelectorAll('li.tutor-course-content-list-item').forEach(function(el){
+      var listItems = document.querySelectorAll('li.tutor-course-content-list-item');
+      console.log('[PT101] li.tutor-course-content-list-item count='+listItems.length);
+      listItems.forEach(function(el){
         el.style.setProperty('padding','14px 22px','important');
         el.style.setProperty('display','flex','important');
         el.style.setProperty('justify-content','space-between','important');
@@ -3669,8 +3688,14 @@ add_action( 'wp_footer', function () {
       h.style.setProperty('letter-spacing','-0.02em','important');
     });
   }
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',tutorFix);}
-  else{tutorFix();}
+  console.log('[PT101] script parsed, readyState='+document.readyState);
+  if(document.readyState==='loading'){
+    console.log('[PT101] waiting for DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded',tutorFix);
+  } else {
+    console.log('[PT101] DOM already ready, calling tutorFix immediately');
+    tutorFix();
+  }
   window.addEventListener('load',tutorFix);
 
   /* MutationObserver: re-apply styles if Tutor Vue.js re-renders accordion elements */
