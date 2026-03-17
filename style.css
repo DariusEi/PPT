@@ -3,7 +3,7 @@ Theme Name: Prop Trading 101
 Theme URI: https://proptrading101.com
 Author: Prop Trading 101
 Description: Professional prop trading education platform
-Version: 6.2.2
+Version: 6.2.3
 License: GNU General Public License v2 or later
 Text Domain: prop-trading-101
 */
@@ -2308,10 +2308,10 @@ body.pt101 .mtr-cta-section h2 {
    GETTING FUNDED PAGE
    ════════════════════════════════════════════════════════════ */
 
-/* ── Page-level colour reset (override dark-theme body defaults) ─ */
+/* ── Page-level colour — dark theme (same as rest of site) ─ */
 body.page-template-template-getting-funded {
-  background: var(--light) !important;
-  color: var(--text-dark) !important;
+  background: var(--bg) !important;
+  color: var(--white) !important;
 }
 body.page-template-template-getting-funded h1,
 body.page-template-template-getting-funded h2,
@@ -2319,15 +2319,15 @@ body.page-template-template-getting-funded h3,
 body.page-template-template-getting-funded h4,
 body.page-template-template-getting-funded h5,
 body.page-template-template-getting-funded h6 {
-  color: var(--text-dark) !important;
+  color: var(--white) !important;
 }
 body.page-template-template-getting-funded p {
-  color: var(--text-dark-2) !important;
+  color: var(--text-mid) !important;
 }
 body.page-template-template-getting-funded li {
-  color: var(--text-dark-2) !important;
+  color: var(--text-mid) !important;
 }
-/* Risk-free dark section: restore white text */
+/* Risk-free dark section — white text is already the default now */
 body.page-template-template-getting-funded .gf-riskfree-section h2 {
   color: var(--white) !important;
 }
