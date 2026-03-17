@@ -3622,67 +3622,67 @@ body.single-lesson #tutor-course-player {
 }, 100 );
 
 
-/* ── HEADER DEBUGGER v2 — remove after diagnosis ── */
+/* ── HEADER DEBUGGER v3 — remove after diagnosis ── */
 add_action( 'wp_footer', function () { ?>
 <script id="pt101-hdr-debug">
 (function(){
   var hdr = document.querySelector('.site-header');
   if (!hdr) return;
   var cs = window.getComputedStyle(hdr);
+  var navH = hdr.getBoundingClientRect().height;
 
   var p = document.createElement('div');
   p.id = 'pt101-debug-panel';
   p.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:999999;background:#000;color:#0f0;font:11px/1.5 monospace;padding:10px 16px;border-top:2px solid #0f0;max-height:55vh;overflow-y:auto';
 
   function row(label, val){ return '<div><b style="color:#ff0">' + label + ':</b> ' + String(val).replace(/</g,'&lt;') + '</div>'; }
+  function bg(el){ return el ? window.getComputedStyle(el).backgroundColor : 'n/a'; }
+  function notTransparent(c){ return c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent'; }
 
-  /* All stylesheets — list which are CORS-blocked */
-  var matchedRules = [], blockedSheets = [];
-  try {
-    Array.from(document.styleSheets).forEach(function(ss){
-      var href = ss.href ? ss.href.replace(/.*\/(?:themes|plugins)\//,'') : 'inline';
-      try {
-        Array.from(ss.cssRules||[]).forEach(function(r){
-          var sel = r.selectorText || '';
-          var bg  = r.style && (r.style.background || r.style.backgroundColor);
-          if (bg && sel.match(/site-header|^body|^html/)){
-            matchedRules.push('[' + href.split('/').pop() + '] ' + sel + ' → ' + bg);
-          }
-        });
-      } catch(e){ blockedSheets.push(href.split('/')[0]); }
-    });
-  } catch(e){}
-
-  /* Computed bg on key page elements */
-  var checks = [
-    ['html',            document.documentElement],
-    ['body',            document.body],
-    ['#page',           document.querySelector('#page')],
-    ['#content',        document.querySelector('#content,.site-content')],
-    ['main/#primary',   document.querySelector('main,#primary,.site-main')],
-    ['.tutor-wrap',     document.querySelector('.tutor-wrap,.tutor-page-wrap,.tutor-course-details-page')],
-    ['.entry-content',  document.querySelector('.entry-content,.post-content')],
-  ];
-  var bgRows = checks.map(function(c){
+  /* ① Header child elements */
+  var hdrNav  = hdr.querySelector('nav');
+  var hdrUl   = hdr.querySelector('.primary-nav');
+  var hdrInner= hdr.querySelector('.header-inner');
+  var hdrCont = hdr.querySelector('.container');
+  var childRows = [
+    ['.header-inner', hdrInner],
+    ['.container (in header)', hdrCont],
+    ['nav (in header)', hdrNav],
+    ['.primary-nav', hdrUl],
+  ].map(function(c){
     if (!c[1]) return '<div style="padding-left:14px;color:#555">' + c[0] + ': not found</div>';
-    var bg = window.getComputedStyle(c[1]).backgroundColor;
-    var col = (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') ? '#666' : '#aff';
-    return '<div style="padding-left:14px;color:' + col + '">' + c[0] + ': ' + bg + '</div>';
+    var b = bg(c[1]);
+    var col = notTransparent(b) ? '#f44' : '#666';
+    return '<div style="padding-left:14px;color:' + col + '">' + c[0] + ': ' + b + '</div>';
+  });
+
+  /* ② ALL fixed/sticky elements overlapping the header zone */
+  var overlapping = [];
+  Array.from(document.querySelectorAll('*')).forEach(function(el){
+    if (el === p) return;
+    var s = window.getComputedStyle(el);
+    var pos = s.position;
+    if (pos !== 'fixed' && pos !== 'sticky') return;
+    var r = el.getBoundingClientRect();
+    if (r.top > navH || r.bottom < 0) return; /* not in header zone */
+    var b = s.backgroundColor;
+    overlapping.push(
+      (el.id ? '#'+el.id : '') +
+      (el.className && typeof el.className === 'string' ? '.'+el.className.trim().split(/\s+/).join('.') : '') +
+      ' [pos:' + pos + '] bg:' + b
+    );
   });
 
   p.innerHTML =
-    '<div style="color:#f80;font-weight:bold;margin-bottom:4px">▶ PT101 Header Debug v2</div>' +
-    row('body classes', document.body.className) +
-    '<hr style="border-color:#333;margin:4px 0">' +
-    row('header bg (computed)', cs.backgroundColor) +
-    row('header backdrop-filter', cs.backdropFilter || cs.webkitBackdropFilter || 'none') +
+    '<div style="color:#f80;font-weight:bold;margin-bottom:4px">▶ PT101 Header Debug v3</div>' +
+    row('header bg', cs.backgroundColor) +
     row('header inline style', hdr.getAttribute('style') || 'none') +
     '<hr style="border-color:#333;margin:4px 0">' +
-    row('page element backgrounds', '') + bgRows.join('') +
+    row('header CHILD element backgrounds (red = non-transparent = suspicious)', '') +
+    childRows.join('') +
     '<hr style="border-color:#333;margin:4px 0">' +
-    row('CSS bg rules on body/header', matchedRules.length ? '' : 'none in readable sheets') +
-    matchedRules.map(function(m){ return '<div style="padding-left:14px;color:#8ff">' + m + '</div>'; }).join('') +
-    (blockedSheets.length ? row('CORS-blocked sheets (unreadable)', blockedSheets.join(', ')) : '');
+    row('ALL fixed/sticky elements in header zone (top ' + Math.round(navH) + 'px)', overlapping.length ? '' : 'none besides .site-header') +
+    overlapping.map(function(m){ return '<div style="padding-left:14px;color:#fa0">' + m + '</div>'; }).join('');
 
   document.body.appendChild(p);
 })();
