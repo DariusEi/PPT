@@ -3595,9 +3595,9 @@ add_action( 'wp_footer', function () {
     document.querySelectorAll('.tutor-nav-link').forEach(function(el){
       el.style.setProperty('padding','18px 28px','important');
     });
-    document.querySelectorAll('.tutor-course-tab-content,#tutor-course-details-tab-course-info').forEach(function(el){
+    /* .tutor-tab has Tutor's tutor-pt-24 utility (24px); override to 48px */
+    document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item').forEach(function(el){
       el.style.setProperty('padding-top','48px','important');
-      el.style.setProperty('padding-bottom','48px','important');
     });
 
     /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
@@ -3619,7 +3619,7 @@ add_action( 'wp_footer', function () {
     });
     /* About Course / description paragraphs: full brightness */
     document.querySelectorAll(
-      '.tutor-course-tab-content p,#tutor-course-details-tab-course-info p,'+
+      '#tutor-course-details-tab-info p,.tutor-tab-item p,'+
       '.tutor-course-description p,.tutor-single-course-main-content p,.tutor-course-details-page p'
     ).forEach(function(el){
       el.style.setProperty('color','rgba(240,239,234,0.9)','important');
@@ -3650,16 +3650,19 @@ add_action( 'wp_footer', function () {
       document.querySelectorAll('.tutor-accordion-item-body').forEach(function(b){
         b.style.setProperty('background','#0f1120','important');
       });
-      /* Lesson list items: generous padding */
-      document.querySelectorAll('.tutor-course-content-list-item a,.tutor-course-topics-list li a,.tutor-course-content-list-item .tutor-lesson-title').forEach(function(el){
-        el.style.setProperty('padding','16px 22px 16px 24px','important');
+      /* Lesson list items: generous padding on the <li> directly */
+      document.querySelectorAll('li.tutor-course-content-list-item').forEach(function(el){
+        el.style.setProperty('padding','14px 22px','important');
+        el.style.setProperty('display','flex','important');
+        el.style.setProperty('justify-content','space-between','important');
+        el.style.setProperty('align-items','center','important');
       });
     }
 
     /* ── "Course Content" heading: more breathing room above accordion ── */
     document.querySelectorAll(
-      '.tutor-course-tab-content h2,.tutor-single-course-content h2,'+
-      '#tutor-course-details-tab-course-info h2'
+      '#tutor-course-details-tab-info h2,#tutor-course-details-tab-info h3,'+
+      '.tutor-tab-item h2,.tutor-tab-item h3'
     ).forEach(function(h){
       h.style.setProperty('margin-bottom','12px','important');
       h.style.setProperty('font-weight','700','important');
@@ -3713,10 +3716,11 @@ body.single-courses .tutor-nav-link.active {
   border-bottom-width: 2px !important;
 }
 
-/* Tab content: generous breathing room */
-body.single-courses .tutor-course-tab-content,
-body.single-courses #tutor-course-details-tab-course-info {
-  padding: 48px 0 !important;
+/* Tab content: generous breathing room (actual class from inspected HTML) */
+.tutor-tab,
+#tutor-course-details-tab-info,
+.tutor-tab-item {
+  padding-top: 48px !important;
 }
 
 /* Section headings (About Course, Course Content): match site tokens */
@@ -3766,11 +3770,18 @@ body.single-courses .tutor-single-course-content h3 {
   background: #0f1120 !important;
 }
 
-/* Lesson list items: comfortable padding, site typography */
+/* Lesson list items: generous padding on the li directly */
+li.tutor-course-content-list-item {
+  padding: 14px 22px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+/* Links inside items: no extra padding (li handles it) */
 .tutor-course-content-list-item a,
 .tutor-course-topics-list li a,
 .tutor-course-content-list-item .tutor-lesson-title {
-  padding: 16px 22px 16px 24px !important;
+  padding: 0 !important;
   gap: 12px !important;
   font-size: 0.875rem !important;
   line-height: 1.5 !important;
