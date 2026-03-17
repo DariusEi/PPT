@@ -3309,18 +3309,17 @@ body.single-courses [class*="course-meta"] * {
 /* The nav itself */
 html body.single-courses nav[tutor-priority-nav],
 html body.single-courses nav.tutor-nav {
-  background: var(--tutor-surface) !important;
-  background-color: var(--tutor-surface) !important;
+  background: #0d0f1a !important;
+  background-color: #0d0f1a !important;
 }
-/* The sticky wrapper inside the course tab area is the actual grey element.
-   Scoped tightly to .tutor-course-details-tab to avoid hitting the site header. */
+/* The sticky wrapper inside the course tab area */
 html body.single-courses .tutor-course-details-tab .tutor-is-sticky,
 html body.single-courses .tutor-course-details-tab,
 html body.single-courses [class*="course-details-tab"],
 html body.single-courses div:has(> nav[tutor-priority-nav]),
 html body.single-courses div:has(> nav.tutor-nav) {
-  background: #13162b !important;
-  background-color: #13162b !important;
+  background: #0d0f1a !important;
+  background-color: #0d0f1a !important;
   border-bottom: 1px solid rgba(255,255,255,.08) !important;
 }
 /* Tab link text — muted default, bright on active */
@@ -3612,69 +3611,49 @@ add_action( 'wp_footer', function () {
     ?>
 <script>
 (function(){
-  /* Diagnostic: always log body classes so we can confirm what the course page uses */
-  console.log('[PT101] body classes: '+document.body.className);
-
-  var PT101_RUN = 0;
   function tutorFix(){
-    PT101_RUN++;
-    console.log('[PT101] tutorFix() call #'+PT101_RUN+' readyState='+document.readyState);
-    window.PT101_RUN_COUNT=PT101_RUN;
-    window.PT101_LAST_RUN=new Date().toLocaleTimeString();
-
     /* Guard: only run on Tutor course pages */
-    var guardA = document.querySelector('.tutor-course-details-tab');
-    var guardB = document.querySelector('.tutor-accordion-item');
-    var guardC = document.querySelector('.tutor-single-course-wrap');
-    console.log('[PT101] guard: .tutor-course-details-tab='+!!guardA+' .tutor-accordion-item='+!!guardB+' .tutor-single-course-wrap='+!!guardC);
-    if(!guardA && !guardB && !guardC){
-      console.log('[PT101] guard failed — no Tutor elements found, exiting');
-      return;
-    }
-    console.log('[PT101] guard passed — applying styles');
+    if(!document.querySelector('.tutor-course-details-tab') &&
+       !document.querySelector('.tutor-accordion-item') &&
+       !document.querySelector('.tutor-single-course-wrap')){ return; }
 
-    /* ── Nav: force consistent dark background (backdrop-filter blends course bg) ── */
+    /* ── Site header: solid dark, no blur ── */
     var hdr=document.querySelector('.site-header');
-    console.log('[PT101] .site-header found='+!!hdr);
     if(hdr){
-      hdr.style.setProperty('background','rgba(13,15,26,0.97)','important');
+      hdr.style.setProperty('background','#0d0f1a','important');
       hdr.style.setProperty('backdrop-filter','none','important');
       hdr.style.setProperty('-webkit-backdrop-filter','none','important');
     }
 
-    /* ── Breathing room: tab links and tab content panel ── */
-    var navLinks = document.querySelectorAll('.tutor-nav-link');
-    console.log('[PT101] .tutor-nav-link count='+navLinks.length);
-    navLinks.forEach(function(el){
+    /* ── Tab links: generous padding ── */
+    document.querySelectorAll('.tutor-nav-link').forEach(function(el){
       el.style.setProperty('padding','18px 28px','important');
     });
-    /* .tutor-tab has Tutor's tutor-pt-24 utility (24px); override to 48px */
-    var tabEls = document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item');
-    console.log('[PT101] tab content els count='+tabEls.length);
-    tabEls.forEach(function(el){
+
+    /* ── Tab content panels: top breathing room ── */
+    document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item').forEach(function(el){
       el.style.setProperty('padding-top','48px','important');
-      /* Probe: log computed value immediately after setting */
-      console.log('[PT101] .tutor-tab computed padding-top AFTER set: '+getComputedStyle(el).paddingTop);
     });
 
-    /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
+    /* ── Tab bar wrapper and nav: match page background ── */
     ['.tutor-course-details-tab .tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
       document.querySelectorAll(s).forEach(function(el){
-        el.style.setProperty('background','#13162b','important');
-        el.style.setProperty('background-color','#13162b','important');
+        el.style.setProperty('background','#0d0f1a','important');
+        el.style.setProperty('background-color','#0d0f1a','important');
       });
     });
-    /* Hide Reviews tab link + its <li> */
+
+    /* ── Hide Reviews tab ── */
     document.querySelectorAll('[data-tutor-nav-target="tutor-course-details-tab-reviews"]').forEach(function(el){
       var li=el.closest('li');
       if(li) li.style.setProperty('display','none','important');
       el.style.setProperty('display','none','important');
     });
-    /* Hide Reviews tab panel */
     document.querySelectorAll('#tutor-course-details-tab-reviews').forEach(function(el){
       el.style.setProperty('display','none','important');
     });
-    /* About Course / description paragraphs: full brightness */
+
+    /* ── Description paragraphs: full brightness ── */
     document.querySelectorAll(
       '#tutor-course-details-tab-info p,.tutor-tab-item p,'+
       '.tutor-course-description p,.tutor-single-course-main-content p,.tutor-course-details-page p'
@@ -3682,12 +3661,10 @@ add_action( 'wp_footer', function () {
       el.style.setProperty('color','rgba(240,239,234,0.9)','important');
     });
 
-    /* ── Accordion spacing: find real container via .tutor-accordion-item ── */
+    /* ── Accordion spacing ── */
     var items = document.querySelectorAll('.tutor-accordion-item');
-    console.log('[PT101] .tutor-accordion-item count='+items.length);
     if(items.length){
       var container = items[0].parentElement;
-      console.log('[PT101 accordion] container tag='+container.tagName+' class="'+container.className+'"');
       container.style.setProperty('margin-top','24px','important');
       container.style.setProperty('display','flex','important');
       container.style.setProperty('flex-direction','column','important');
@@ -3698,19 +3675,14 @@ add_action( 'wp_footer', function () {
         item.style.setProperty('border','1px solid rgba(255,255,255,.08)','important');
         item.style.setProperty('overflow','hidden','important');
       });
-      /* Header bg */
       document.querySelectorAll('.tutor-accordion-item-header').forEach(function(h){
         h.style.setProperty('background','#161929','important');
         h.style.setProperty('padding','20px 24px','important');
       });
-      /* Body bg */
       document.querySelectorAll('.tutor-accordion-item-body').forEach(function(b){
         b.style.setProperty('background','#0f1120','important');
       });
-      /* Lesson list items: generous padding on the <li> directly */
-      var listItems = document.querySelectorAll('li.tutor-course-content-list-item');
-      console.log('[PT101] li.tutor-course-content-list-item count='+listItems.length);
-      listItems.forEach(function(el){
+      document.querySelectorAll('li.tutor-course-content-list-item').forEach(function(el){
         el.style.setProperty('padding','14px 22px','important');
         el.style.setProperty('display','flex','important');
         el.style.setProperty('justify-content','space-between','important');
@@ -3718,7 +3690,7 @@ add_action( 'wp_footer', function () {
       });
     }
 
-    /* ── "Course Content" heading: more breathing room above accordion ── */
+    /* ── Section headings inside tab ── */
     document.querySelectorAll(
       '#tutor-course-details-tab-info h2,#tutor-course-details-tab-info h3,'+
       '.tutor-tab-item h2,.tutor-tab-item h3'
@@ -3728,35 +3700,28 @@ add_action( 'wp_footer', function () {
       h.style.setProperty('letter-spacing','-0.02em','important');
     });
   }
-  console.log('[PT101] script parsed, readyState='+document.readyState);
-  /* Guard flag: prevents MO from re-triggering during our own style mutations */
+
+  /* Guard flag: prevents MO from re-triggering during our own mutations */
   var pt101Applying=false;
-  var _origTutorFix=tutorFix;
+  var _orig=tutorFix;
   tutorFix=function(){
     if(pt101Applying) return;
     pt101Applying=true;
-    _origTutorFix();
-    /* Reset guard after MO microtasks have drained */
+    _orig();
     setTimeout(function(){ pt101Applying=false; }, 0);
   };
 
   if(document.readyState==='loading'){
-    console.log('[PT101] waiting for DOMContentLoaded');
     document.addEventListener('DOMContentLoaded',tutorFix);
   } else {
-    console.log('[PT101] DOM already ready, calling tutorFix immediately');
     tutorFix();
   }
-  /* Multi-point re-apply after load to beat any late-initialising Tutor scripts */
   window.addEventListener('load', function(){
     tutorFix();
-    [200,600,1200,2500].forEach(function(ms){
-      setTimeout(function(){ console.log('[PT101] '+ms+'ms re-run'); tutorFix(); }, ms);
-    });
+    [200,600,1200,2500].forEach(function(ms){ setTimeout(tutorFix, ms); });
   });
 
-  /* MutationObserver: only watch for NEW accordion nodes; attribute watching removed
-     because it caused an infinite loop (our own setProperty triggers it back) */
+  /* MutationObserver: re-apply when new accordion nodes appear */
   var mo=new MutationObserver(function(mutations){
     if(pt101Applying) return;
     var needsFix=false;
@@ -3767,15 +3732,12 @@ add_action( 'wp_footer', function () {
         if(n.nodeType===1&&(
           n.classList.contains('tutor-accordion-item')||
           n.classList.contains('tutor-accordion')||
-          n.querySelector&&n.querySelector('.tutor-accordion-item')
-        )){
-          needsFix=true;
-          break;
-        }
+          (n.querySelector&&n.querySelector('.tutor-accordion-item'))
+        )){ needsFix=true; break; }
       }
       if(needsFix) break;
     }
-    if(needsFix){ console.log('[PT101] MO: new accordion nodes — re-applying'); tutorFix(); }
+    if(needsFix) tutorFix();
   });
   mo.observe(document.body,{childList:true,subtree:true});
 })();
@@ -4087,63 +4049,3 @@ add_action( 'wp_footer', function () {
     <?php
 }, 999 );
 
-/* ── PT101 VISUAL DEBUG OVERLAY — remove when done diagnosing ── */
-add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'courses' ) ) return;
-    ?>
-<style>
-#pt101-dbg {
-  position: fixed;
-  bottom: 12px;
-  left: 12px;
-  z-index: 999999;
-  background: #003300;
-  border: 3px solid #00ff66;
-  color: #00ff66;
-  font: 600 11px/1.4 monospace;
-  padding: 10px 14px;
-  max-width: 440px;
-  border-radius: 6px;
-  pointer-events: none;
-  white-space: pre;
-}
-</style>
-<div id="pt101-dbg">PT101 DEBUG — loading…</div>
-<script>
-(function(){
-  function cs(sel,prop){
-    var el=document.querySelector(sel);
-    if(!el) return sel+' NOT FOUND';
-    var v=getComputedStyle(el)[prop];
-    /* also show inline style attribute for comparison */
-    var inl=el.style[prop]||el.getAttribute('style')||'';
-    return sel+'\n  computed '+prop+': '+v+'\n  inline attr: '+(inl.slice(0,60)||'(none)');
-  }
-  function update(){
-    var lines=[
-      'tutorFix runs: '+(window.PT101_RUN_COUNT||'?'),
-      'last run: '+(window.PT101_LAST_RUN||'never'),
-      '',
-      cs('.tutor-tab','paddingTop'),
-      '',
-      cs('.tutor-accordion-item-header','background'),
-      cs('.tutor-accordion-item-header','padding'),
-      '',
-      cs('li.tutor-course-content-list-item','padding'),
-      '',
-      cs('.tutor-nav-link','padding'),
-    ];
-    var box=document.getElementById('pt101-dbg');
-    if(box) box.textContent=lines.join('\n');
-  }
-  /* Hook into tutorFix counter */
-  window.PT101_RUN_COUNT=0;
-  window.PT101_LAST_RUN='never';
-  var origDescriptor=Object.getOwnPropertyDescriptor(window,'PT101_RUN_COUNT');
-  /* Poll every 800ms */
-  setInterval(update,800);
-  window.addEventListener('load',function(){ setTimeout(update,100); });
-})();
-</script>
-    <?php
-}, 1001 );
