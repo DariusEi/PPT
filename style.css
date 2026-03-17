@@ -3,7 +3,7 @@ Theme Name: Prop Trading 101
 Theme URI: https://proptrading101.com
 Author: Prop Trading 101
 Description: Professional prop trading education platform
-Version: 6.2.6
+Version: 6.2.7
 License: GNU General Public License v2 or later
 Text Domain: prop-trading-101
 */
@@ -237,7 +237,7 @@ body.pt101 section#home h1 {
 .site-header.scrolled { background: #0d0f1a; box-shadow: 0 4px 40px rgba(0,0,0,0.5); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; height: 100%; }
 .site-logo { font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--white); flex-shrink: 0; }
-.header-inner > nav { flex: 1; display: flex; align-items: center; justify-content: center; }
+.header-inner > nav { flex: 1; display: flex; align-items: center; justify-content: center; background: transparent !important; }
 .primary-nav { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
 .primary-nav li { position: relative; }
 .primary-nav li a,
