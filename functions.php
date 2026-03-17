@@ -3691,6 +3691,17 @@ add_action( 'wp_footer', function () {
     });
   }
   console.log('[PT101] script parsed, readyState='+document.readyState);
+  /* Guard flag: prevents MO from re-triggering during our own style mutations */
+  var pt101Applying=false;
+  var _origTutorFix=tutorFix;
+  tutorFix=function(){
+    if(pt101Applying) return;
+    pt101Applying=true;
+    _origTutorFix();
+    /* Reset guard after MO microtasks have drained */
+    setTimeout(function(){ pt101Applying=false; }, 0);
+  };
+
   if(document.readyState==='loading'){
     console.log('[PT101] waiting for DOMContentLoaded');
     document.addEventListener('DOMContentLoaded',tutorFix);
@@ -3698,33 +3709,21 @@ add_action( 'wp_footer', function () {
     console.log('[PT101] DOM already ready, calling tutorFix immediately');
     tutorFix();
   }
-  /* Run at load AND at 500 ms / 1500 ms after load to beat any late Tutor scripts */
+  /* Multi-point re-apply after load to beat any late-initialising Tutor scripts */
   window.addEventListener('load', function(){
     tutorFix();
-    setTimeout(function(){ console.log('[PT101] 500ms re-run'); tutorFix(); }, 500);
-    setTimeout(function(){ console.log('[PT101] 1500ms re-run'); tutorFix(); }, 1500);
+    [200,600,1200,2500].forEach(function(ms){
+      setTimeout(function(){ console.log('[PT101] '+ms+'ms re-run'); tutorFix(); }, ms);
+    });
   });
 
-  /* MutationObserver: re-apply when Tutor adds nodes OR mutates style attributes */
+  /* MutationObserver: only watch for NEW accordion nodes; attribute watching removed
+     because it caused an infinite loop (our own setProperty triggers it back) */
   var mo=new MutationObserver(function(mutations){
+    if(pt101Applying) return;
     var needsFix=false;
     for(var i=0;i<mutations.length;i++){
-      var m=mutations[i];
-      /* Style attribute changed on a watched element */
-      if(m.type==='attributes'&&m.attributeName==='style'){
-        var t=m.target;
-        if(t.classList.contains('tutor-accordion-item')||
-           t.classList.contains('tutor-accordion-item-header')||
-           t.classList.contains('tutor-accordion-item-body')||
-           t.classList.contains('tutor-tab')||
-           t.classList.contains('tutor-tab-item')){
-          console.log('[PT101] MO: style attr changed on '+t.tagName+'.'+t.className.split(' ')[0]+' — re-applying');
-          needsFix=true;
-          break;
-        }
-      }
-      /* New nodes added */
-      var nodes=m.addedNodes;
+      var nodes=mutations[i].addedNodes;
       for(var j=0;j<nodes.length;j++){
         var n=nodes[j];
         if(n.nodeType===1&&(
@@ -3738,14 +3737,9 @@ add_action( 'wp_footer', function () {
       }
       if(needsFix) break;
     }
-    if(needsFix) tutorFix();
+    if(needsFix){ console.log('[PT101] MO: new accordion nodes — re-applying'); tutorFix(); }
   });
-  mo.observe(document.body,{
-    childList:true,
-    subtree:true,
-    attributes:true,
-    attributeFilter:['style']
-  });
+  mo.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
     <?php
