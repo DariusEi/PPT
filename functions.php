@@ -3622,6 +3622,55 @@ body.single-lesson #tutor-course-player {
 }, 100 );
 
 
+/* ── HEADER DEBUGGER — remove after diagnosis ── */
+add_action( 'wp_footer', function () { ?>
+<script id="pt101-hdr-debug">
+(function(){
+  var hdr = document.querySelector('.site-header');
+  if (!hdr) return;
+  var cs  = window.getComputedStyle(hdr);
+
+  /* Build overlay panel */
+  var p = document.createElement('div');
+  p.id = 'pt101-debug-panel';
+  p.style.cssText = [
+    'position:fixed','bottom:0','left:0','right:0','z-index:999999',
+    'background:#000','color:#0f0','font:12px/1.5 monospace',
+    'padding:10px 16px','border-top:2px solid #0f0',
+    'max-height:40vh','overflow-y:auto'
+  ].join(';');
+
+  function row(label, val){ return '<div><b style="color:#ff0">' + label + ':</b> ' + String(val).replace(/</g,'&lt;') + '</div>'; }
+
+  /* Collect matching rules */
+  var matched = [];
+  try {
+    Array.from(document.styleSheets).forEach(function(ss){
+      try {
+        Array.from(ss.cssRules||[]).forEach(function(r){
+          if (r.selectorText && r.selectorText.indexOf('site-header') !== -1){
+            matched.push('[' + (ss.href ? ss.href.split('/').pop() : 'inline') + '] ' +
+              r.selectorText + ' → bg:' + (r.style.background||r.style.backgroundColor||'—'));
+          }
+        });
+      } catch(e){}
+    });
+  } catch(e){}
+
+  p.innerHTML =
+    '<div style="color:#f80;font-weight:bold;margin-bottom:6px">▶ PT101 Header Debug (remove after fix)</div>' +
+    row('body classes', document.body.className) +
+    row('computed bg-color', cs.backgroundColor) +
+    row('computed backdrop', cs.backdropFilter || cs.webkitBackdropFilter || 'none') +
+    row('inline style', hdr.getAttribute('style') || 'none') +
+    row('stylesheet rules matching site-header', '') +
+    matched.map(function(m){ return '<div style="padding-left:16px;color:#8ff">' + m + '</div>'; }).join('');
+
+  document.body.appendChild(p);
+})();
+</script>
+<?php }, 999 );
+
 /* ── Force-override Tutor LMS elements that resist CSS (JS runs after all scripts) ── */
 /* No is_singular gate — course page may be a WP page type, detect via DOM instead */
 add_action( 'wp_footer', function () {
