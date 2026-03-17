@@ -3,7 +3,7 @@ Theme Name: Prop Trading 101
 Theme URI: https://proptrading101.com
 Author: Prop Trading 101
 Description: Professional prop trading education platform
-Version: 6.2.3
+Version: 6.2.4
 License: GNU General Public License v2 or later
 Text Domain: prop-trading-101
 */
@@ -271,8 +271,8 @@ body.pt101 section#home h1 {
   top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(-8px);
-  background: #f0efea;
-  border: 1px solid rgba(30,30,50,0.1);
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 18px;
   padding: 28px 28px 0 28px;
   width: min(620px, calc(100vw - 48px));
@@ -280,10 +280,10 @@ body.pt101 section#home h1 {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
   z-index: 99999;
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-  color: #111320;
+  color: var(--text-hi);
 }
 /* Open */
 #nav-programs.open #programs-dropdown {
@@ -302,30 +302,30 @@ body.pt101 #nav-programs.open #programs-dropdown {
 }
 
 /* Content */
-.nav-dd-inner { color: #111320; }
-.nav-dd-heading { font-size: 0.8rem; font-weight: 700; color: #111320; margin-bottom: 16px; }
+.nav-dd-inner { color: var(--text-hi); }
+.nav-dd-heading { font-size: 0.8rem; font-weight: 700; color: var(--text-mid); margin-bottom: 16px; }
 .nav-dd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin-bottom: 24px; }
 .nav-dd-grid--single { grid-template-columns: 1fr !important; max-width: 50%; }
 .nav-dd-item {
   display: flex; align-items: center; gap: 12px;
   padding: 10px 8px; border-radius: 10px;
-  color: #111320 !important; font-size: 0.88rem; font-weight: 500;
+  color: var(--text-hi) !important; font-size: 0.88rem; font-weight: 500;
   text-decoration: none; background: transparent;
   transition: background 0.15s;
 }
-.nav-dd-item:hover { background: rgba(30,30,50,0.07); }
+.nav-dd-item:hover { background: rgba(255,255,255,0.07); }
 .nav-dd-icon { width: 28px; height: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.nav-dd-icon svg { width: 20px; height: 20px; fill: #111320; }
-.nav-dd-section { border-bottom: 1px solid rgba(30,30,50,0.1); margin-bottom: 20px; padding-bottom: 4px; }
+.nav-dd-icon svg { width: 20px; height: 20px; fill: var(--text-mid); }
+.nav-dd-section { border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 20px; padding-bottom: 4px; }
 .nav-dd-section:last-of-type { border-bottom: none; }
-.nav-dd-footer { border-top: 1.5px solid #111320; padding: 18px 28px 22px; margin: 0 -28px; }
-.nav-dd-footer-label { font-size: 0.85rem; font-weight: 700; color: #111320; margin-bottom: 4px; }
+.nav-dd-footer { border-top: 1px solid rgba(255,255,255,0.1); padding: 18px 28px 22px; margin: 0 -28px; }
+.nav-dd-footer-label { font-size: 0.85rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px; }
 .nav-dd-footer-link {
-  font-size: 0.88rem; color: #111320 !important; text-decoration: none;
+  font-size: 0.88rem; color: var(--text-hi) !important; text-decoration: none;
   display: inline-flex; align-items: center; gap: 6px; transition: gap 0.15s;
 }
 .nav-dd-footer-link:hover { gap: 12px; }
-#programs-dropdown a, #programs-dropdown a:link, #programs-dropdown a:visited { color: #111320 !important; }
+#programs-dropdown a, #programs-dropdown a:link, #programs-dropdown a:visited { color: var(--text-hi) !important; }
 
 /* ── ABOUT DROPDOWN ──────────────────────────────────────── */
 #about-dropdown {
@@ -333,15 +333,15 @@ body.pt101 #nav-programs.open #programs-dropdown {
   top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(-8px);
-  background: #f0efea;
-  border: 1px solid rgba(30,30,50,0.1);
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   padding: 8px;
   width: 210px;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
   z-index: 99999;
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
 }
@@ -363,13 +363,13 @@ body.pt101 #nav-about.open #about-dropdown {
   gap: 10px;
   padding: 10px 12px;
   border-radius: 8px;
-  color: #111320 !important;
+  color: var(--text-hi) !important;
   font-size: 0.88rem;
   font-weight: 500;
   text-decoration: none;
   transition: background 0.15s;
 }
-.about-dd-item:hover { background: rgba(30,30,50,0.07); }
+.about-dd-item:hover { background: rgba(255,255,255,0.06); }
 .about-dd-icon {
   width: 28px;
   height: 28px;
@@ -381,7 +381,7 @@ body.pt101 #nav-about.open #about-dropdown {
   border-radius: 6px;
   color: var(--accent);
 }
-#about-dropdown a, #about-dropdown a:link, #about-dropdown a:visited { color: #111320 !important; }
+#about-dropdown a, #about-dropdown a:link, #about-dropdown a:visited { color: var(--text-hi) !important; }
 
 .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .btn-hdr-login {
