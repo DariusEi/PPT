@@ -3601,8 +3601,24 @@ body.single-lesson .tutor-course-player-sidebar a:hover {
 body.single-lesson {
   padding-bottom: 0 !important;
 }
+/* Course player: fill viewport height, use flex so content stacks from top */
 body.single-lesson #tutor-course-player {
   min-height: calc(100vh - 80px) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+}
+/* Content column: flex column so header / video / text stack naturally, no voids */
+#tutor-course-player-content,
+.tutor-course-player-content,
+body.single-lesson [id*="player-content"],
+body.single-lesson [class*="player-content"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  overflow-y: auto !important;
 }
 </style>
     <?php
@@ -4044,4 +4060,296 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 999 );
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   COURSE PLAYER — UX IMPROVEMENTS  (priority 200, after Tutor's own styles)
+   Fixes: video sizing · content spacing · font inheritance · sidebar polish
+   ════════════════════════════════════════════════════════════════════════════ */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) && ! is_singular( 'quiz' ) && ! is_singular( 'assignments' ) ) return;
+    ?>
+<style id="pt101-player-ux">
+
+/* ── 1. Font: inherit theme PolySans across all player elements ── */
+#tutor-course-player,
+#tutor-course-player *,
+body.single-lesson .tutor-course-spotlight-wrap,
+body.single-lesson .tutor-course-spotlight-wrap * {
+  font-family: 'PolySans', system-ui, -apple-system, sans-serif !important;
+}
+
+/* ── 2. Video container: cap max-height so it never dominates the viewport
+   Strategy: constrain the WRAPPER element, not Plyr internals.
+   Plyr derives height from padding-top:56.25% × container-width.
+   overflow:hidden clips the padded space, max-height caps the render box.   */
+body.single-lesson .tutor-course-spotlight-video,
+body.single-lesson [class*="spotlight-video"],
+body.single-lesson .tutor-lesson-video-wrap,
+body.single-lesson .tutor-video-wrap,
+#tutor-course-player [class*="lesson-video-wrap"],
+#tutor-course-player [class*="video-wrap"]:not([class*="wrapper"]) {
+  max-height: 62vh !important;
+  overflow: hidden !important;
+}
+body.single-lesson .plyr,
+body.single-lesson .plyr__video-wrapper {
+  max-height: 62vh !important;
+  overflow: hidden !important;
+}
+body.single-lesson .plyr video,
+body.single-lesson .plyr iframe {
+  max-height: 62vh !important;
+  object-fit: contain !important;
+}
+
+/* ── 3. Lesson content: reduce the 48px padding down to 24px ──
+   Two earlier rules (48px and 40px) are both overridden here.   */
+body.single-lesson .tutor-lesson-content,
+body.single-lesson [class*="lesson-content"],
+body.single-lesson .tutor-course-spotlight-wrap > div,
+body.single-lesson .tutor-spotlight-wrap .tutor-container,
+#tutor-course-player [class*="lesson-content"],
+#tutor-course-player [class*="spotlight-wrap"] .tutor-container {
+  padding-top:    24px !important;
+  padding-bottom: 24px !important;
+  padding-left:   40px !important;
+  padding-right:  40px !important;
+  max-width: 780px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ── 4. Player header bar: compact, aligned, breathing room ── */
+body.single-lesson [class*="player-header"],
+body.single-lesson .tutor-course-player-header,
+#tutor-course-player-header {
+  padding: 10px 20px !important;
+  gap: 12px !important;
+  min-height: 52px !important;
+  align-items: center !important;
+}
+/* Mark as Complete button in the header: pill, accent, clear CTA */
+body.single-lesson [class*="player-header"] .tutor-btn,
+body.single-lesson [class*="player-header"] button:not([class*="close"]):not([class*="back"]):not([class*="prev"]):not([class*="nav"]),
+#tutor-course-player-header .tutor-btn,
+#tutor-course-player-header button:not([class*="close"]):not([class*="back"]) {
+  background: var(--tutor-accent, #7c6ef5) !important;
+  border-color: var(--tutor-accent, #7c6ef5) !important;
+  color: #fff !important;
+  border-radius: 100px !important;
+  padding: 7px 18px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+  transition: background 0.18s ease, transform 0.12s ease !important;
+}
+body.single-lesson [class*="player-header"] .tutor-btn:hover,
+#tutor-course-player-header .tutor-btn:hover {
+  background: var(--tutor-accent-h, #6a5de0) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── 5. Sidebar: smooth transitions, consistent item rhythm ── */
+#tutor-course-player [class*="content-list-item"],
+body.single-lesson [class*="topic-item"],
+body.single-lesson [class*="lesson-item"] {
+  transition: background-color 0.2s ease, border-left-color 0.2s ease !important;
+}
+/* Completion circle/checkmark: green on done state */
+#tutor-course-player [class*="content-list-item"] [class*="completed"],
+#tutor-course-player [class*="content-list-item"] [class*="check"],
+body.single-lesson [class*="topic-item"] [class*="completed"] {
+  transition: background 0.25s ease, border-color 0.25s ease !important;
+}
+
+/* ── 6. Progress counter text: muted, readable ── */
+body.single-lesson [class*="player-header"] [class*="progress"],
+body.single-lesson [class*="player-header"] [class*="lesson-count"],
+#tutor-course-player-header [class*="progress"] {
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  color: rgba(240, 240, 245, 0.78) !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* ── 7. Footer nav bar ── */
+body.single-lesson [class*="player-content-footer"],
+body.single-lesson [class*="course-player-footer"],
+#tutor-course-player [class*="content-footer"] {
+  padding: 14px 24px !important;
+  gap: 12px !important;
+}
+
+/* ── 8. Mobile ── */
+@media (max-width: 768px) {
+  body.single-lesson .tutor-lesson-content,
+  body.single-lesson [class*="lesson-content"],
+  #tutor-course-player [class*="lesson-content"] {
+    padding: 20px !important;
+    max-width: 100% !important;
+  }
+  body.single-lesson [class*="player-header"],
+  #tutor-course-player-header {
+    padding: 8px 14px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  body.single-lesson .plyr,
+  body.single-lesson .plyr__video-wrapper {
+    max-height: 50vw !important;
+  }
+}
+
+</style>
+    <?php
+}, 200 );
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MARK AS COMPLETE — IMMEDIATE FEEDBACK
+   Intercepts the button click, shows a loading spinner instantly, then
+   resolves to "✓ Completed" once TutorLMS's AJAX mutates the sidebar DOM.
+   Falls back to a 2.5 s optimistic resolve if the MutationObserver is silent.
+   ════════════════════════════════════════════════════════════════════════════ */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Inject CSS once ── */
+  var STYLE_ID = 'pt101-mac-css';
+  if ( ! document.getElementById( STYLE_ID ) ) {
+    var s = document.createElement('style');
+    s.id  = STYLE_ID;
+    s.textContent =
+      '@keyframes pt-spin{to{transform:rotate(360deg)}}' +
+      /* Loading: dim + spinner via ::after */
+      '.pt-mac-loading{opacity:.72!important;pointer-events:none!important;cursor:wait!important}' +
+      '.pt-mac-loading::after{content:"";display:inline-block;width:11px;height:11px;' +
+        'border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;' +
+        'animation:pt-spin .55s linear infinite;margin-left:7px;vertical-align:middle}' +
+      /* Done: green pill */
+      '.pt-mac-done{background:#22c55e!important;border-color:#16a34a!important;' +
+        'color:#fff!important;pointer-events:none!important;border-radius:100px!important}' +
+      /* Sidebar item: green tint on completion mark */
+      '.pt-sidebar-done [class*="completed-mark"],.pt-sidebar-done [class*="check-mark"],' +
+      '.pt-sidebar-done [class*="round-checkbox"]{' +
+        'background:rgba(34,197,94,.22)!important;border-color:#22c55e!important}';
+    document.head.appendChild(s);
+  }
+
+  /* ── Locate the active lesson row in the sidebar ── */
+  function findActiveSidebarItem() {
+    return (
+      document.querySelector('[class*="content-list-item"].is-active')   ||
+      document.querySelector('[class*="topic-item"].is-active')          ||
+      document.querySelector('[class*="lesson-item"].is-active')         ||
+      document.querySelector('[class*="content-list-item"].tutor-active')
+    );
+  }
+
+  /* ── Optimistically tick the sidebar completion circle ── */
+  function markSidebarDone( item ) {
+    if ( ! item ) return;
+    item.classList.add('pt-sidebar-done');
+    var mark = item.querySelector(
+      '[class*="completed-mark"],[class*="check-mark"],[class*="round-checkbox"],input[type="checkbox"]'
+    );
+    if ( mark ) {
+      mark.style.setProperty('background',    'rgba(34,197,94,.22)', 'important');
+      mark.style.setProperty('border-color',  '#22c55e',             'important');
+    }
+  }
+
+  /* ── Bump "X of Y (nn%)" progress text in the header ── */
+  function nudgeProgressText() {
+    var els = document.querySelectorAll(
+      '[class*="player-header"] [class*="progress"],' +
+      '[class*="player-header"] [class*="lesson-count"],' +
+      '#tutor-course-player-header [class*="progress"],' +
+      '.tutor-course-completion-text,[class*="completion-text"]'
+    );
+    els.forEach(function (el) {
+      var m = el.textContent.match(/(\d+)\s*(of|\/)\s*(\d+)/i);
+      if ( ! m ) return;
+      var done  = Math.min( parseInt(m[1], 10) + 1, parseInt(m[3], 10) );
+      var total = parseInt(m[3], 10);
+      var pct   = Math.round((done / total) * 100);
+      el.textContent = el.textContent
+        .replace(m[0], done + ' ' + m[2] + ' ' + total)
+        .replace(/\d+\s*%/, pct + '%');
+    });
+  }
+
+  /* ── Main click handler (event delegation — survives Vue re-renders) ── */
+  document.addEventListener('click', function (e) {
+    /* Match via class */
+    var btn = e.target.closest(
+      '[name="tutor_lesson_mark_complete"],' +
+      '.tutor-btn-complete-lesson,' +
+      '[class*="complete-lesson"],' +
+      '[class*="mark-as-complete"],' +
+      '[class*="mark_as_complete"]'
+    );
+    /* Text-content fallback for Vue-rendered buttons */
+    if ( ! btn ) {
+      var el = e.target.closest('button, input[type="submit"]');
+      if ( el && /mark as complete/i.test(el.textContent.trim()) ) btn = el;
+    }
+    if ( ! btn ) return;
+    if ( btn.classList.contains('pt-mac-loading') || btn.classList.contains('pt-mac-done') ) return;
+
+    /* Snapshot the active sidebar item before Tutor mutates it */
+    var activeItem = findActiveSidebarItem();
+
+    /* ── Instant feedback: loading state ── */
+    btn.classList.add('pt-mac-loading');
+
+    /* ── Watch for TutorLMS to mutate the sidebar on AJAX success ── */
+    var sidebar = document.querySelector(
+      '#tutor-course-player-sidebar,.tutor-course-player-sidebar,' +
+      '.tutor-course-topics-list-wrap,.tutor-lead-info'
+    );
+
+    var resolved = false;
+    var obs      = null;
+
+    function resolve() {
+      if ( resolved ) return;
+      resolved = true;
+      if ( obs ) { obs.disconnect(); obs = null; }
+
+      /* ── Success: green completed state ── */
+      btn.classList.remove('pt-mac-loading');
+      btn.classList.add('pt-mac-done');
+
+      /* Preserve any SVG icon; replace text node */
+      var icon = btn.querySelector('svg, i');
+      btn.innerHTML = '';
+      if ( icon ) btn.appendChild( icon );
+      btn.insertAdjacentText('beforeend', icon ? ' ✓  Completed' : '✓  Completed');
+
+      /* Sidebar + counter */
+      markSidebarDone( activeItem );
+      nudgeProgressText();
+    }
+
+    if ( sidebar ) {
+      obs = new MutationObserver(function () { resolve(); });
+      obs.observe(sidebar, { subtree: true, childList: true, attributes: true });
+    }
+
+    /* Optimistic fallback after 2.5 s */
+    setTimeout( resolve, 2500 );
+
+  }, false);
+
+})();
+</script>
+    <?php
+}, 300 );
 
