@@ -4541,6 +4541,39 @@ body.single-lesson {
   background: #fff !important;
   color: #212327 !important;
 }
+
+/* Override theme's global white text rules for lesson content */
+body.single-lesson h1,
+body.single-lesson h2,
+body.single-lesson h3,
+body.single-lesson h4,
+body.single-lesson h5,
+body.single-lesson h6 {
+  color: #1a1c23 !important;
+}
+body.single-lesson p,
+body.single-lesson li,
+body.single-lesson span,
+body.single-lesson div,
+body.single-lesson td,
+body.single-lesson th,
+body.single-lesson label,
+body.single-lesson blockquote {
+  color: #212327 !important;
+}
+body.single-lesson a {
+  color: #5046e5 !important;
+}
+body.single-lesson a:hover {
+  color: #3730a3 !important;
+}
+/* Muted/secondary text */
+body.single-lesson .tutor-text-muted,
+body.single-lesson [class*="muted"],
+body.single-lesson [class*="meta"] {
+  color: #6b7280 !important;
+}
+
 /* Restore header nav — white text on dark background.
    Target only the nav elements, NOT the dropdown panels (which have their own dark text). */
 body.single-lesson .site-logo,
@@ -4551,6 +4584,30 @@ body.single-lesson .btn-hdr-login,
 body.single-lesson .btn-hdr-enroll {
   color: #f0f0f5 !important;
 }
+/* Buttons: keep visible styling */
+body.single-lesson .tutor-btn,
+body.single-lesson button {
+  border-color: rgba(0,0,0,.15) !important;
+}
+body.single-lesson .tutor-btn-primary,
+body.single-lesson .tutor-lesson-mark-complete,
+body.single-lesson button[data-tutor-action*="complete"],
+body.single-lesson a[data-tutor-action*="complete"] {
+  background: #5046e5 !important;
+  color: #fff !important;
+}
+/* Code blocks */
+body.single-lesson pre,
+body.single-lesson code {
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
+  color: #1f2937 !important;
+}
+/* Content lists */
+body.single-lesson .tutor-lesson-content ul,
+body.single-lesson .tutor-lesson-content ol {
+  color: #212327 !important;
+}
 </style>
     <?php
-}, 1 );
+}, 99999 );
