@@ -4541,15 +4541,14 @@ body.single-lesson {
   background: #fff !important;
   color: #212327 !important;
 }
-/* Restore header — keep it dark with white text (unaffected by body reset) */
-body.single-lesson .site-header,
-body.single-lesson .site-header * {
-  color: #f0f0f5 !important;
-}
-body.single-lesson .site-header a,
-body.single-lesson .site-header button,
-body.single-lesson .site-header .primary-nav li a,
-body.single-lesson .site-header .site-logo {
+/* Restore header nav — white text on dark background.
+   Target only the nav elements, NOT the dropdown panels (which have their own dark text). */
+body.single-lesson .site-logo,
+body.single-lesson .nav-dropdown-trigger,
+body.single-lesson .primary-nav > li > a,
+body.single-lesson .primary-nav > li > button,
+body.single-lesson .btn-hdr-login,
+body.single-lesson .btn-hdr-enroll {
   color: #f0f0f5 !important;
 }
 </style>
