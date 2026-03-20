@@ -6,6 +6,8 @@
 get_header();
 ?>
 
+<main id="primary">
+
 <!-- ═══ HERO ═════════════════════════════════════════════════ -->
 <section class="gf-hero">
   <div class="container">
@@ -125,5 +127,7 @@ get_header();
     <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="btn btn-accent gf-cta-btn">Choose your program</a>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>

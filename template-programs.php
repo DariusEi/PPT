@@ -142,6 +142,8 @@ $tabs = [
 ];
 ?>
 
+<main id="primary">
+
 <!-- ═══ HERO ════════════════════════════════════════════════ -->
 <section class="pg-hero">
   <div class="container">
@@ -305,5 +307,7 @@ $tabs = [
     </div>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>
