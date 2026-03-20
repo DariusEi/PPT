@@ -4533,13 +4533,33 @@ add_action( 'wp_head', function () {
     if ( ! is_singular( 'lesson' ) ) return;
     ?>
 <style id="pt101-lesson-bg-reset">
-/* The theme sets html/body.pt101 { background: #0d0f1a } globally.
-   Reset it on lesson pages so Tutor LMS's native white layout shows correctly. */
+/* The theme sets html/body.pt101 { background: #0d0f1a; color: #fff } globally.
+   Reset on lesson pages so Tutor LMS's native layout shows correctly. */
 html,
 body.pt101.single-lesson,
 body.single-lesson {
   background: #fff !important;
+  color: #212327 !important;
+}
+/* Reset the theme's PolySans font override — let Tutor use its own font stack */
+body.single-lesson *:not(.site-header *):not(.site-footer *) {
+  font-family: inherit;
+}
+/* Ensure all lesson content text is dark and readable */
+body.single-lesson h1,
+body.single-lesson h2,
+body.single-lesson h3,
+body.single-lesson h4,
+body.single-lesson p,
+body.single-lesson li,
+body.single-lesson span,
+body.single-lesson td,
+body.single-lesson th,
+body.single-lesson label {
   color: inherit !important;
+}
+body.single-lesson a {
+  color: #3b82f6 !important;
 }
 </style>
     <?php
