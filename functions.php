@@ -2040,7 +2040,7 @@ add_action( 'wp_footer', function () {
 
 /* ── Enrolled lesson UX/UI polish (single lesson + enrolled course view) ── */
 add_action( 'wp_head', function () {
-    if ( ! is_singular( [ 'lesson', 'courses' ] ) ) return;
+    if ( true ) return;
     ?>
 <style id="pt101-enrolled-ux-polish">
 /* Sticky top lesson bar with better hierarchy */
@@ -2132,7 +2132,7 @@ body.single-lesson [class*="mark-complete"] {
 
 /* ── Enrolled lesson micro-UX: focus active item + quick next shortcut ── */
 add_action( 'wp_footer', function () {
-    if ( ! is_singular( [ 'lesson', 'courses' ] ) ) return;
+    if ( true ) return;
     ?>
 <script>
 (function () {
@@ -2513,6 +2513,7 @@ add_filter( 'login_redirect', function ( $url, $requested, $user ) {
  * design tokens. Targets dashboard, course player, and sidebar.
  */
 add_action( 'wp_head', function () {
+    if ( is_singular( 'lesson' ) ) return;
     ?>
 <style id="pt101-tutor-overrides">
 /* ── Design tokens (match style.css) ── */
@@ -4203,7 +4204,7 @@ body.tutor-frontend .tutor-btn-primary {
 
 /* ── Lesson player: JS force-override sidebar (same pattern as course page) ── */
 add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'lesson' ) ) return;
+    if ( true ) return;
     ?>
 <script>
 (function(){
@@ -4230,3 +4231,324 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 999 );
+
+
+/* ── Lesson completion bridge (single reliable layer) ── */
+add_action( 'wp_footer', function () {
+    if ( true ) return;
+    ?>
+<script>
+(function(){
+  function all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+  function visible(el){ return !!(el && el.offsetParent !== null); }
+  function txt(el){ return ((el && el.textContent) || '').replace(/\s+/g,' ').trim().toLowerCase(); }
+
+  function completionTargets(){
+    var sels = [
+      'form[action*="complete"] button[type="submit"]',
+      'form[action*="complete"] input[type="submit"]',
+      'button[data-tutor-action*="complete"]',
+      'a[data-tutor-action*="complete"]',
+      'button[name*="complete"]',
+      '.tutor-lesson-mark-complete',
+      'a[href*="complete_lesson"]',
+      'a[href*="mark_as_complete"]'
+    ];
+    var out = [];
+    sels.forEach(function(s){ all(s).forEach(function(el){ if(out.indexOf(el)===-1) out.push(el); }); });
+    return out.filter(visible);
+  }
+
+  function isMarkButton(el){
+    if(!el) return false;
+    var t = txt(el);
+    return t.indexOf('mark as complete') !== -1 || t.indexOf('complete lesson') !== -1;
+  }
+
+  document.addEventListener('click', function(e){
+    var trigger = e.target.closest('button, a, [role="button"]');
+    if(!isMarkButton(trigger)) return;
+
+    var targets = completionTargets();
+    if(!targets.length) return;
+
+    // If this click is already on a real completion target, keep native flow.
+    if(targets.indexOf(trigger) !== -1) return;
+
+    // Forward topbar/clone button clicks to Tutor's real completion control.
+    e.preventDefault();
+    var target = targets[0];
+    var form = target.closest && target.closest('form');
+    if(form && typeof form.submit === 'function') {
+      form.submit();
+      return;
+    }
+    target.click();
+  }, true);
+})();
+</script>
+    <?php
+}, 1200 );
+
+/* ── Course info text placement refinement ── */
+add_action( 'wp_head', function () {
+    if ( ! is_singular( 'courses' ) ) return;
+    ?>
+<style id="pt101-course-info-placement-refine-v1">
+/* Pull content closer to tabs and keep it in a readable column */
+body.single-courses #tutor-course-details-tab-info,
+body.single-courses .tutor-course-details-tab-info,
+body.single-courses .tutor-tab-item,
+body.single-courses [class*="course-tab-content"],
+body.single-courses .tutor-single-course-main-content {
+  padding-top: 20px !important;
+}
+
+body.single-courses .tutor-course-description,
+body.single-courses .tutor-course-description p,
+body.single-courses #tutor-course-details-tab-info p,
+body.single-courses .tutor-tab-item p,
+body.single-courses .tutor-single-course-main-content p {
+  max-width: 820px !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  text-align: left !important;
+}
+
+body.single-courses .tutor-course-description p,
+body.single-courses #tutor-course-details-tab-info p,
+body.single-courses .tutor-tab-item p,
+body.single-courses .tutor-single-course-main-content p {
+  line-height: 1.88 !important;
+  font-size: 1.08rem !important;
+  letter-spacing: 0 !important;
+  margin-bottom: 16px !important;
+}
+
+/* Strong heading anchor and cleaner vertical rhythm */
+body.single-courses .tutor-single-course-content h2,
+body.single-courses .tutor-single-course-content h3,
+body.single-courses #tutor-course-details-tab-info h2,
+body.single-courses #tutor-course-details-tab-info h3 {
+  margin-top: 0 !important;
+  margin-bottom: 18px !important;
+  font-size: clamp(1.75rem, 2.4vw, 2.2rem) !important;
+  line-height: 1.18 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Keep section transitions tidy */
+body.single-courses .tutor-single-course-content h3 + p,
+body.single-courses #tutor-course-details-tab-info h3 + p {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 1024px) {
+  body.single-courses .tutor-course-description,
+  body.single-courses .tutor-course-description p,
+  body.single-courses #tutor-course-details-tab-info p,
+  body.single-courses .tutor-tab-item p,
+  body.single-courses .tutor-single-course-main-content p {
+    max-width: none !important;
+  }
+
+  body.single-courses .tutor-course-description p,
+  body.single-courses #tutor-course-details-tab-info p,
+  body.single-courses .tutor-tab-item p,
+  body.single-courses .tutor-single-course-main-content p {
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+  }
+}
+</style>
+    <?php
+}, 1500 );
+
+
+/* ── Tutor lesson page: default structure + dark skin only ── */
+add_action( 'wp_head', function () {
+    if ( true ) return;
+    ?>
+<style id="pt101-lesson-default-dark-skin">
+/* Keep Tutor default layout/spacing. Only recolor for site dark theme. */
+body.single-lesson,
+body.single-lesson #tutor-course-player,
+body.single-lesson .tutor-wrap {
+  background: #090f22 !important;
+  color: #f0efea !important;
+}
+
+body.single-lesson .tutor-course-player-sidebar,
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson .tutor-course-topics-list-wrap,
+body.single-lesson .tutor-lesson-sidebar {
+  background: #11192f !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+
+body.single-lesson .tutor-course-topic-single-header,
+body.single-lesson .tutor-lesson-topbar {
+  background: #4866d9 !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+
+body.single-lesson .tutor-course-topic-single-body,
+body.single-lesson .tutor-single-entry-content,
+body.single-lesson .tutor-lesson-content,
+body.single-lesson .tutor-course-content-wrap {
+  background: transparent !important;
+}
+
+body.single-lesson p,
+body.single-lesson h1,
+body.single-lesson h2,
+body.single-lesson h3,
+body.single-lesson h4,
+body.single-lesson li,
+body.single-lesson span,
+body.single-lesson a {
+  color: #f0efea !important;
+}
+
+body.single-lesson .tutor-text-muted,
+body.single-lesson [class*="muted"],
+body.single-lesson [class*="meta"] {
+  color: rgba(240,239,234,.70) !important;
+}
+
+body.single-lesson button,
+body.single-lesson .tutor-btn {
+  border-color: rgba(255,255,255,.22) !important;
+}
+
+body.single-lesson .tutor-lesson-mark-complete,
+body.single-lesson button[data-tutor-action*="complete"],
+body.single-lesson a[data-tutor-action*="complete"] {
+  background: #7c6ef5 !important;
+  color: #fff !important;
+}
+</style>
+    <?php
+}, 5000 );
+
+
+/* ── Lesson-only dark color pass (default Tutor layout) ── */
+add_action( 'wp_head', function () {
+    if ( true ) return;
+    ?>
+<style id="pt101-lesson-default-dark-skin-v2">
+/* No layout changes: color/background only */
+body.single-lesson .tutor-course-topics-list li,
+body.single-lesson .tutor-course-topic,
+body.single-lesson .tutor-topic-item,
+body.single-lesson .tutor-course-content-list-item,
+body.single-lesson .tutor-course-content-list-item a,
+body.single-lesson .tutor-course-topics-list a {
+  background: #121a2f !important;
+  color: #f0efea !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+
+body.single-lesson .tutor-course-topics-list li.tutor-active,
+body.single-lesson .tutor-course-topics-list li.active,
+body.single-lesson .tutor-course-content-list-item.is-active,
+body.single-lesson .tutor-course-content-list-item.current {
+  background: #1a2340 !important;
+  color: #ffffff !important;
+}
+
+body.single-lesson .tutor-course-topics-list li * {
+  color: inherit !important;
+}
+
+body.single-lesson .tutor-iconic-btn,
+body.single-lesson .tutor-icon,
+body.single-lesson [class*="tutor-icon"] {
+  color: rgba(240,239,234,.78) !important;
+}
+</style>
+    <?php
+}, 5001 );
+
+
+/* ── Lesson page: minimal safe dark skin (default Tutor controls intact) ── */
+add_action( 'wp_head', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<style id="pt101-lesson-default-dark-skin-safe-v3">
+/* Structure/layout untouched: color only */
+body.single-lesson,
+body.single-lesson #tutor-course-player {
+  background: #090f22 !important;
+}
+
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson .tutor-course-player-sidebar,
+body.single-lesson .tutor-course-topics-list-wrap,
+body.single-lesson .tutor-course-content-list-wrap {
+  background: #101a32 !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+
+body.single-lesson .tutor-course-content-list-item,
+body.single-lesson .tutor-course-content-list li,
+body.single-lesson .tutor-course-topics-list li,
+body.single-lesson .tutor-topic-item {
+  background: #111d37 !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+
+body.single-lesson .tutor-course-content-list-item.is-active,
+body.single-lesson .tutor-course-content-list-item.current,
+body.single-lesson .tutor-course-topics-list li.tutor-active,
+body.single-lesson .tutor-course-topics-list li.active {
+  background: #1a2849 !important;
+}
+
+body.single-lesson .tutor-course-content-list-item *,
+body.single-lesson .tutor-course-topics-list li * {
+  color: #e9ecf5 !important;
+}
+
+body.single-lesson .tutor-course-topic-single-header,
+body.single-lesson .tutor-lesson-topbar {
+  background: #4b68de !important;
+  border-color: rgba(255,255,255,.16) !important;
+}
+
+body.single-lesson .tutor-course-topic-single-body,
+body.single-lesson .tutor-single-entry-content,
+body.single-lesson .tutor-lesson-content {
+  background: #0b1227 !important;
+  color: #eef1f8 !important;
+}
+
+body.single-lesson .tutor-course-topic-single-body p,
+body.single-lesson .tutor-single-entry-content p,
+body.single-lesson .tutor-lesson-content p,
+body.single-lesson .tutor-course-topic-single-body h1,
+body.single-lesson .tutor-course-topic-single-body h2,
+body.single-lesson .tutor-course-topic-single-body h3 {
+  color: #eef1f8 !important;
+}
+
+/* Ensure default Tutor nav/completion controls stay visible */
+body.single-lesson .tutor-lesson-nav a,
+body.single-lesson .tutor-btn-complete-lesson,
+body.single-lesson .tutor-lesson-mark-complete,
+body.single-lesson button[data-tutor-action*="complete"],
+body.single-lesson a[data-tutor-action*="complete"] {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,.26) !important;
+}
+
+body.single-lesson .tutor-progress-bar {
+  background: rgba(255,255,255,.18) !important;
+}
+body.single-lesson .tutor-progress-bar__fill,
+body.single-lesson .tutor-progress-bar > span {
+  background: #7c6ef5 !important;
+}
+</style>
+    <?php
+}, 5100 );
