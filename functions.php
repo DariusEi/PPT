@@ -4541,25 +4541,16 @@ body.single-lesson {
   background: #fff !important;
   color: #212327 !important;
 }
-/* Reset the theme's PolySans font override — let Tutor use its own font stack */
-body.single-lesson *:not(.site-header *):not(.site-footer *) {
-  font-family: inherit;
+/* Restore header — keep it dark with white text (unaffected by body reset) */
+body.single-lesson .site-header,
+body.single-lesson .site-header * {
+  color: #f0f0f5 !important;
 }
-/* Ensure all lesson content text is dark and readable */
-body.single-lesson h1,
-body.single-lesson h2,
-body.single-lesson h3,
-body.single-lesson h4,
-body.single-lesson p,
-body.single-lesson li,
-body.single-lesson span,
-body.single-lesson td,
-body.single-lesson th,
-body.single-lesson label {
-  color: inherit !important;
-}
-body.single-lesson a {
-  color: #3b82f6 !important;
+body.single-lesson .site-header a,
+body.single-lesson .site-header button,
+body.single-lesson .site-header .primary-nav li a,
+body.single-lesson .site-header .site-logo {
+  color: #f0f0f5 !important;
 }
 </style>
     <?php
