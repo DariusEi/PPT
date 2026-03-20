@@ -17,7 +17,9 @@ get_header();
     if ( have_posts() ) :
         while ( have_posts() ) :
             the_post();
-            tutor_lesson_content();
+            // Render the Tutor LMS lesson content.
+            // Tutor hooks into the_content filter to inject its lesson player UI.
+            the_content();
         endwhile;
     endif;
     ?>

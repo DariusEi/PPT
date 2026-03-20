@@ -9,12 +9,15 @@
  */
 
 $course_id = get_the_ID();
-$is_enrolled = tutor_utils()->is_enrolled( $course_id );
+$is_enrolled = function_exists( 'tutor_utils' ) ? tutor_utils()->is_enrolled( $course_id ) : false;
 ?>
 
 <div class="pt101-course-sidebar-card">
     <?php
-    // Render Tutor's default lead info (price, enroll button, course info)
-    tutor_course_lead_info();
+    // Render Tutor's default lead info (price, enroll button, course info).
+    // Uses tutor_load_template to load the plugin's own lead-info template parts.
+    if ( function_exists( 'tutor_load_template' ) ) {
+        tutor_load_template( 'single.course.lead-info' );
+    }
     ?>
 </div>

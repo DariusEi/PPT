@@ -18,8 +18,10 @@ get_header();
     if ( have_posts() ) :
         while ( have_posts() ) :
             the_post();
-            // Render the default Tutor LMS course content
-            tutor_course_content();
+            // Render the Tutor LMS course content.
+            // Tutor hooks into the_content filter to inject its course UI
+            // (tabs, curriculum, sidebar, instructor info, etc.).
+            the_content();
         endwhile;
     endif;
     ?>
