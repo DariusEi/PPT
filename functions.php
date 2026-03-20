@@ -3932,6 +3932,7 @@ add_action( 'wp_footer', function () {
 /* wp_footer (priority 101) = output AFTER all enqueued stylesheets in wp_head,
    so our !important rules are the last declarations and always win over Tutor CSS. */
 add_action( 'wp_footer', function () {
+    if ( is_singular( 'lesson' ) ) return; // Don't override lesson pages
     ?>
 <style id="pt101-course-polish">
 
@@ -4526,3 +4527,20 @@ body.single-lesson .tutor-progress-bar > span {
 </style>
     <?php
 }, 5100 );
+
+/* ── Lesson page: reset theme dark background so Tutor LMS controls the canvas ── */
+add_action( 'wp_head', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<style id="pt101-lesson-bg-reset">
+/* The theme sets html/body.pt101 { background: #0d0f1a } globally.
+   Reset it on lesson pages so Tutor LMS's native white layout shows correctly. */
+html,
+body.pt101.single-lesson,
+body.single-lesson {
+  background: #fff !important;
+  color: inherit !important;
+}
+</style>
+    <?php
+}, 1 );
