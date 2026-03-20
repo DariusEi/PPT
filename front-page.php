@@ -6,6 +6,8 @@
 get_header();
 ?>
 
+<main id="primary">
+
 <!-- ═══ HERO ═══════════════════════════════════════════════ -->
 <section class="hero" id="home">
   <div class="hero-grid" aria-hidden="true"></div>
@@ -389,5 +391,7 @@ get_header();
     </span>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>

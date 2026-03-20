@@ -59,7 +59,7 @@
         </div>
         <ul class="footer-legal-links">
           <li><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php esc_html_e( 'Privacy policy', 'prop-trading-101' ); ?></a></li>
-          <li><a href="<?php echo esc_url( home_url( '/terms' ) ); ?>"><?php esc_html_e( 'Terms &amp; conditions', 'prop-trading-101' ); ?></a></li>
+          <li><a href="<?php echo esc_url( home_url( '/terms' ) ); ?>"><?php esc_html_e( 'Terms & conditions', 'prop-trading-101' ); ?></a></li>
           <li><button type="button" class="footer-cookie-btn" data-action="open-cookie-settings"><?php esc_html_e( 'Cookie settings', 'prop-trading-101' ); ?></button></li>
         </ul>
       </div>

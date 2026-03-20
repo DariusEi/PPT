@@ -8,6 +8,41 @@ define( 'PT101_VER', wp_get_theme()->get( 'Version' ) ?: '1.0.0' );
 define( 'PT101_DIR', get_template_directory() );
 define( 'PT101_URI', get_template_directory_uri() );
 
+/* ── TEMP DEBUG LOGGING (SAFE BACKEND ONLY) ───────────────────
+ * This is a temporary diagnostic helper to capture fatals in
+ * wp-content/debug.log without changing frontend output.
+ */
+if ( ! defined( 'WP_DEBUG' ) ) {
+    define( 'WP_DEBUG', true );
+}
+if ( ! defined( 'WP_DEBUG_LOG' ) ) {
+    define( 'WP_DEBUG_LOG', true );
+}
+if ( ! defined( 'WP_DEBUG_DISPLAY' ) ) {
+    define( 'WP_DEBUG_DISPLAY', false );
+}
+@ini_set( 'display_errors', '0' );
+@ini_set( 'log_errors', '1' );
+@ini_set( 'error_log', WP_CONTENT_DIR . '/debug.log' );
+
+register_shutdown_function( function () {
+    $error = error_get_last();
+    if ( ! $error ) {
+        return;
+    }
+    $fatal_types = [ E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ];
+    if ( in_array( (int) $error['type'], $fatal_types, true ) ) {
+        error_log(
+            sprintf(
+                '[PT101 Fatal] %s in %s on line %d',
+                (string) $error['message'],
+                (string) $error['file'],
+                (int) $error['line']
+            )
+        );
+    }
+} );
+
 /* ── SETUP ─────────────────────────────────── */
 function pt101_setup() {
     load_theme_textdomain( 'prop-trading-101', PT101_DIR . '/languages' );
@@ -2003,6 +2038,158 @@ add_action( 'wp_footer', function () {
     <?php
 }, 999 );
 
+/* ── Enrolled lesson UX/UI polish (single lesson + enrolled course view) ── */
+add_action( 'wp_head', function () {
+    if ( ! is_singular( [ 'lesson', 'courses' ] ) ) return;
+    ?>
+<style id="pt101-enrolled-ux-polish">
+/* Sticky top lesson bar with better hierarchy */
+body.single-lesson .tutor-course-topic-single-header,
+body.single-lesson .tutor-lesson-topbar,
+body.single-courses .tutor-course-topic-single-header {
+  position: sticky !important;
+  top: 74px !important;
+  z-index: 60 !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.22) !important;
+}
+body.admin-bar.single-lesson .tutor-course-topic-single-header,
+body.admin-bar.single-lesson .tutor-lesson-topbar,
+body.admin-bar.single-courses .tutor-course-topic-single-header {
+  top: 106px !important;
+}
+
+/* Improve reading comfort in lesson body */
+body.single-lesson .tutor-lesson-content,
+body.single-lesson .tutor-single-entry-content,
+body.single-lesson .tutor-course-topic-single-body {
+  max-width: 860px !important;
+  margin-inline: auto !important;
+}
+body.single-lesson .tutor-lesson-content p,
+body.single-lesson .tutor-single-entry-content p,
+body.single-lesson .tutor-course-topic-single-body p {
+  line-height: 1.85 !important;
+  font-size: 1.08rem !important;
+  color: rgba(240, 240, 245, .88) !important;
+}
+body.single-lesson .tutor-lesson-content h1,
+body.single-lesson .tutor-lesson-content h2,
+body.single-lesson .tutor-lesson-content h3 {
+  color: #f5f6fb !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Sidebar lesson items: stronger active/incomplete states */
+body.single-lesson .tutor-course-topics-list li,
+body.single-courses .tutor-course-topics-list li {
+  border-radius: 10px !important;
+  margin: 4px 6px !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease !important;
+}
+body.single-lesson .tutor-course-topics-list li:hover,
+body.single-courses .tutor-course-topics-list li:hover {
+  border-color: rgba(124,110,245,.45) !important;
+  background: rgba(124,110,245,.10) !important;
+  transform: translateY(-1px) !important;
+}
+body.single-lesson .tutor-course-topics-list li.tutor-active,
+body.single-lesson .tutor-course-topics-list li.active,
+body.single-courses .tutor-course-topics-list li.tutor-active,
+body.single-courses .tutor-course-topics-list li.active {
+  border-color: rgba(124,110,245,.75) !important;
+  background: rgba(124,110,245,.16) !important;
+  box-shadow: 0 0 0 1px rgba(124,110,245,.25) inset !important;
+}
+
+/* Mark-as-complete button: clearer primary action */
+body.single-lesson .tutor-btn.tutor-btn-primary,
+body.single-lesson .tutor-lesson-mark-complete,
+body.single-lesson [class*="mark-complete"] {
+  min-height: 44px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: 0 8px 20px rgba(124,110,245,.28) !important;
+}
+
+/* Mobile: keep reading area spacious and avoid cramped topic list */
+@media (max-width: 1024px) {
+  body.single-lesson .tutor-lesson-content,
+  body.single-lesson .tutor-single-entry-content,
+  body.single-lesson .tutor-course-topic-single-body {
+    max-width: none !important;
+    padding-inline: 18px !important;
+  }
+  body.single-lesson .tutor-course-topics-list li,
+  body.single-courses .tutor-course-topics-list li {
+    margin-inline: 2px !important;
+  }
+}
+</style>
+    <?php
+}, 110 );
+
+/* ── Enrolled lesson micro-UX: focus active item + quick next shortcut ── */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( [ 'lesson', 'courses' ] ) ) return;
+    ?>
+<script>
+(function () {
+  function getActiveLessonItem() {
+    return document.querySelector(
+      '.tutor-course-topics-list li.tutor-active,' +
+      '.tutor-course-topics-list li.active,' +
+      '.tutor-course-topics-list .is-active'
+    );
+  }
+
+  function scrollActiveIntoView() {
+    var active = getActiveLessonItem();
+    if (!active || !active.scrollIntoView) return;
+    active.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
+  function nextLessonLink() {
+    var active = getActiveLessonItem();
+    if (!active) return null;
+    var next = active.nextElementSibling;
+    while (next) {
+      var link = next.querySelector('a[href]');
+      if (link) return link;
+      next = next.nextElementSibling;
+    }
+    return null;
+  }
+
+  function bindShortcut() {
+    document.addEventListener('keydown', function (e) {
+      if (e.defaultPrevented) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key !== 'n' && e.key !== 'N') return;
+      var tag = (document.activeElement && document.activeElement.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      var link = nextLessonLink();
+      if (!link) return;
+      e.preventDefault();
+      window.location.href = link.href;
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      scrollActiveIntoView();
+      bindShortcut();
+    });
+  } else {
+    scrollActiveIntoView();
+    bindShortcut();
+  }
+})();
+</script>
+    <?php
+}, 1000 );
+
 /* ── Validate terms consent on server side ────────────────────── */
 add_action( 'woocommerce_checkout_process', function () {
     if ( empty( $_POST['pt101_terms_consent'] ) ) {
@@ -2113,21 +2300,23 @@ function pt101_ajax_swap_course() {
     wp_send_json_success( [ 'product_id' => $product_id ] );
 }
 
-/* ── TUTOR LMS: COURSE LINK ROUTING ────────────────────────────
- * If the visitor/student is NOT enrolled in a course, send them
- * to the custom program page (proper design + enroll CTA).
- * If they ARE enrolled, keep the Tutor LMS URL so they can
- * access their lessons.
- *
- * Slug map: Tutor LMS course slug → custom program page slug.
+/* ── TUTOR LMS: SAFE COURSE REDIRECT ROUTING ───────────────────
+ * Redirect only on actual single course requests.
+ * This avoids expensive/recursive link filtering in large renders.
  */
-add_filter( 'post_type_link', function ( $url, $post ) {
-    if ( is_admin() ) return $url;
-    if ( ! function_exists( 'tutor_utils' ) ) return $url;
-    if ( 'courses' !== get_post_type( $post ) ) return $url;
+add_action( 'template_redirect', function () {
+    if ( is_admin() || wp_doing_ajax() ) return;
+    if ( ! is_singular( 'courses' ) ) return;
+    if ( ! function_exists( 'tutor_utils' ) ) return;
 
-    // Enrolled users go to the Tutor LMS course player
-    if ( tutor_utils()->is_enrolled( $post->ID ) ) return $url;
+    $course_id = get_queried_object_id();
+    if ( ! $course_id ) return;
+
+    // Enrolled users stay on Tutor LMS player page.
+    if ( tutor_utils()->is_enrolled( $course_id ) ) return;
+
+    $slug = get_post_field( 'post_name', $course_id );
+    if ( ! $slug ) return;
 
     $map = [
         'intro-to-trading'                         => '/intro-to-trading',
@@ -2137,13 +2326,11 @@ add_filter( 'post_type_link', function ( $url, $post ) {
         'mastering-professional-trading'           => '/mastering-professional-trading',
     ];
 
-    $slug = $post->post_name;
     if ( isset( $map[ $slug ] ) ) {
-        return home_url( $map[ $slug ] );
+        wp_safe_redirect( home_url( $map[ $slug ] ), 302 );
+        exit;
     }
-
-    return $url;
-}, 10, 2 );
+}, 9 );
 
 /* ── LOGIN PAGE CSS ─────────────────────────────────────────────
  * Styles for template-login.php — dark, centred card layout.
@@ -2362,14 +2549,54 @@ add_action( 'wp_head', function () {
   --tutor-placeholder-color: rgba(240,239,234,.45);
 }
 
-/* ── Nav: consistent dark background on all Tutor pages ── */
-/* backdrop-filter can pick up different bg colors on course pages, force solid */
-body.single-courses .site-header,
-body.single-lesson .site-header,
-body.single-quiz .site-header,
-body.tutor-frontend .site-header,
-body.tutor-screen-frontend-dashboard .site-header {
-  background: rgba(13,15,26,0.97) !important;
+/* ── Tutor tooltips (ⓘ icon hover on topic/lesson rows) ── */
+/* Tutor v2 renders these as .tutor-tooltip > .tutor-tooltip-content  */
+/* Some versions also use .tutor-tip, .tippy-box, or [data-tippy-content] */
+.tutor-tooltip-content,
+.tutor-tooltip > span:last-child,
+.tutor-tooltip .tutor-tooltip-txt,
+.tippy-box,
+.tutor-tip,
+[class*="tutor-tooltip"]:not([class*="icon"]) {
+  background: #1e2848 !important;
+  color: #f0efea !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 6px !important;
+}
+.tippy-arrow { color: #1e2848 !important; }
+
+/* ── Nav: light text on Tutor single-course/lesson/quiz (dark header) ── */
+body.single-courses .site-logo,
+body.single-lesson .site-logo,
+body.single-quiz .site-logo {
+  color: #f0efea !important;
+}
+body.single-courses .primary-nav li a,
+body.single-lesson .primary-nav li a,
+body.single-quiz .primary-nav li a {
+  color: rgba(240,239,234,0.75) !important;
+}
+body.single-courses .primary-nav li a:hover,
+body.single-lesson .primary-nav li a:hover,
+body.single-quiz .primary-nav li a:hover {
+  color: #f0efea !important;
+  background: rgba(255,255,255,0.06) !important;
+}
+body.single-courses .nav-dropdown-trigger,
+body.single-lesson .nav-dropdown-trigger,
+body.single-quiz .nav-dropdown-trigger {
+  color: rgba(240,239,234,0.75) !important;
+}
+body.single-courses .nav-dropdown-trigger svg path,
+body.single-lesson .nav-dropdown-trigger svg path,
+body.single-quiz .nav-dropdown-trigger svg path {
+  stroke: rgba(240,239,234,0.75) !important;
+}
+body.single-courses .btn-hdr-login,
+body.single-lesson .btn-hdr-login,
+body.single-quiz .btn-hdr-login {
+  color: #f0efea !important;
+  border-color: rgba(240,239,234,0.3) !important;
 }
 
 /* ── Push ALL page content below fixed 64px nav ── */
@@ -3218,7 +3445,6 @@ body.single-lesson [class*="lesson-content"] {
    Uses body.single-courses prefix for high specificity
    ═══════════════════════════════════════════════════════ */
 
-body.single-courses,
 body.single-courses {
   background: var(--tutor-bg) !important;
   color: var(--tutor-text) !important;
@@ -3273,18 +3499,17 @@ body.single-courses [class*="course-meta"] * {
 /* The nav itself */
 html body.single-courses nav[tutor-priority-nav],
 html body.single-courses nav.tutor-nav {
-  background: var(--tutor-surface) !important;
-  background-color: var(--tutor-surface) !important;
+  background: #0d0f1a !important;
+  background-color: #0d0f1a !important;
 }
-/* The sticky wrapper inside the course tab area is the actual grey element.
-   Scoped tightly to .tutor-course-details-tab to avoid hitting the site header. */
+/* The sticky wrapper inside the course tab area */
 html body.single-courses .tutor-course-details-tab .tutor-is-sticky,
 html body.single-courses .tutor-course-details-tab,
 html body.single-courses [class*="course-details-tab"],
 html body.single-courses div:has(> nav[tutor-priority-nav]),
 html body.single-courses div:has(> nav.tutor-nav) {
-  background: #13162b !important;
-  background-color: #13162b !important;
+  background: #0d0f1a !important;
+  background-color: #0d0f1a !important;
   border-bottom: 1px solid rgba(255,255,255,.08) !important;
 }
 /* Tab link text — muted default, bright on active */
@@ -3576,69 +3801,41 @@ add_action( 'wp_footer', function () {
     ?>
 <script>
 (function(){
-  /* Diagnostic: always log body classes so we can confirm what the course page uses */
-  console.log('[PT101] body classes: '+document.body.className);
-
-  var PT101_RUN = 0;
   function tutorFix(){
-    PT101_RUN++;
-    console.log('[PT101] tutorFix() call #'+PT101_RUN+' readyState='+document.readyState);
-    window.PT101_RUN_COUNT=PT101_RUN;
-    window.PT101_LAST_RUN=new Date().toLocaleTimeString();
-
     /* Guard: only run on Tutor course pages */
-    var guardA = document.querySelector('.tutor-course-details-tab');
-    var guardB = document.querySelector('.tutor-accordion-item');
-    var guardC = document.querySelector('.tutor-single-course-wrap');
-    console.log('[PT101] guard: .tutor-course-details-tab='+!!guardA+' .tutor-accordion-item='+!!guardB+' .tutor-single-course-wrap='+!!guardC);
-    if(!guardA && !guardB && !guardC){
-      console.log('[PT101] guard failed — no Tutor elements found, exiting');
-      return;
-    }
-    console.log('[PT101] guard passed — applying styles');
+    if(!document.querySelector('.tutor-course-details-tab') &&
+       !document.querySelector('.tutor-accordion-item') &&
+       !document.querySelector('.tutor-single-course-wrap')){ return; }
 
-    /* ── Nav: force consistent dark background (backdrop-filter blends course bg) ── */
-    var hdr=document.querySelector('.site-header');
-    console.log('[PT101] .site-header found='+!!hdr);
-    if(hdr){
-      hdr.style.setProperty('background','rgba(13,15,26,0.97)','important');
-      hdr.style.setProperty('backdrop-filter','none','important');
-      hdr.style.setProperty('-webkit-backdrop-filter','none','important');
-    }
-
-    /* ── Breathing room: tab links and tab content panel ── */
-    var navLinks = document.querySelectorAll('.tutor-nav-link');
-    console.log('[PT101] .tutor-nav-link count='+navLinks.length);
-    navLinks.forEach(function(el){
+    /* ── Tab links: generous padding ── */
+    document.querySelectorAll('.tutor-nav-link').forEach(function(el){
       el.style.setProperty('padding','18px 28px','important');
     });
-    /* .tutor-tab has Tutor's tutor-pt-24 utility (24px); override to 48px */
-    var tabEls = document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item');
-    console.log('[PT101] tab content els count='+tabEls.length);
-    tabEls.forEach(function(el){
+
+    /* ── Tab content panels: top breathing room ── */
+    document.querySelectorAll('.tutor-tab,#tutor-course-details-tab-info,.tutor-tab-item').forEach(function(el){
       el.style.setProperty('padding-top','48px','important');
-      /* Probe: log computed value immediately after setting */
-      console.log('[PT101] .tutor-tab computed padding-top AFTER set: '+getComputedStyle(el).paddingTop);
     });
 
-    /* Tab bar: force dark — scope .tutor-is-sticky inside course tab only */
+    /* ── Tab bar wrapper and nav: match page background ── */
     ['.tutor-course-details-tab .tutor-is-sticky','.tutor-course-details-tab','nav.tutor-nav','[tutor-priority-nav]'].forEach(function(s){
       document.querySelectorAll(s).forEach(function(el){
-        el.style.setProperty('background','#13162b','important');
-        el.style.setProperty('background-color','#13162b','important');
+        el.style.setProperty('background','#0d0f1a','important');
+        el.style.setProperty('background-color','#0d0f1a','important');
       });
     });
-    /* Hide Reviews tab link + its <li> */
+
+    /* ── Hide Reviews tab ── */
     document.querySelectorAll('[data-tutor-nav-target="tutor-course-details-tab-reviews"]').forEach(function(el){
       var li=el.closest('li');
       if(li) li.style.setProperty('display','none','important');
       el.style.setProperty('display','none','important');
     });
-    /* Hide Reviews tab panel */
     document.querySelectorAll('#tutor-course-details-tab-reviews').forEach(function(el){
       el.style.setProperty('display','none','important');
     });
-    /* About Course / description paragraphs: full brightness */
+
+    /* ── Description paragraphs: full brightness ── */
     document.querySelectorAll(
       '#tutor-course-details-tab-info p,.tutor-tab-item p,'+
       '.tutor-course-description p,.tutor-single-course-main-content p,.tutor-course-details-page p'
@@ -3646,12 +3843,10 @@ add_action( 'wp_footer', function () {
       el.style.setProperty('color','rgba(240,239,234,0.9)','important');
     });
 
-    /* ── Accordion spacing: find real container via .tutor-accordion-item ── */
+    /* ── Accordion spacing ── */
     var items = document.querySelectorAll('.tutor-accordion-item');
-    console.log('[PT101] .tutor-accordion-item count='+items.length);
     if(items.length){
       var container = items[0].parentElement;
-      console.log('[PT101 accordion] container tag='+container.tagName+' class="'+container.className+'"');
       container.style.setProperty('margin-top','24px','important');
       container.style.setProperty('display','flex','important');
       container.style.setProperty('flex-direction','column','important');
@@ -3662,19 +3857,14 @@ add_action( 'wp_footer', function () {
         item.style.setProperty('border','1px solid rgba(255,255,255,.08)','important');
         item.style.setProperty('overflow','hidden','important');
       });
-      /* Header bg */
       document.querySelectorAll('.tutor-accordion-item-header').forEach(function(h){
         h.style.setProperty('background','#161929','important');
         h.style.setProperty('padding','20px 24px','important');
       });
-      /* Body bg */
       document.querySelectorAll('.tutor-accordion-item-body').forEach(function(b){
         b.style.setProperty('background','#0f1120','important');
       });
-      /* Lesson list items: generous padding on the <li> directly */
-      var listItems = document.querySelectorAll('li.tutor-course-content-list-item');
-      console.log('[PT101] li.tutor-course-content-list-item count='+listItems.length);
-      listItems.forEach(function(el){
+      document.querySelectorAll('li.tutor-course-content-list-item').forEach(function(el){
         el.style.setProperty('padding','14px 22px','important');
         el.style.setProperty('display','flex','important');
         el.style.setProperty('justify-content','space-between','important');
@@ -3682,7 +3872,7 @@ add_action( 'wp_footer', function () {
       });
     }
 
-    /* ── "Course Content" heading: more breathing room above accordion ── */
+    /* ── Section headings inside tab ── */
     document.querySelectorAll(
       '#tutor-course-details-tab-info h2,#tutor-course-details-tab-info h3,'+
       '.tutor-tab-item h2,.tutor-tab-item h3'
@@ -3692,35 +3882,28 @@ add_action( 'wp_footer', function () {
       h.style.setProperty('letter-spacing','-0.02em','important');
     });
   }
-  console.log('[PT101] script parsed, readyState='+document.readyState);
-  /* Guard flag: prevents MO from re-triggering during our own style mutations */
+
+  /* Guard flag: prevents MO from re-triggering during our own mutations */
   var pt101Applying=false;
-  var _origTutorFix=tutorFix;
+  var _orig=tutorFix;
   tutorFix=function(){
     if(pt101Applying) return;
     pt101Applying=true;
-    _origTutorFix();
-    /* Reset guard after MO microtasks have drained */
+    _orig();
     setTimeout(function(){ pt101Applying=false; }, 0);
   };
 
   if(document.readyState==='loading'){
-    console.log('[PT101] waiting for DOMContentLoaded');
     document.addEventListener('DOMContentLoaded',tutorFix);
   } else {
-    console.log('[PT101] DOM already ready, calling tutorFix immediately');
     tutorFix();
   }
-  /* Multi-point re-apply after load to beat any late-initialising Tutor scripts */
   window.addEventListener('load', function(){
     tutorFix();
-    [200,600,1200,2500].forEach(function(ms){
-      setTimeout(function(){ console.log('[PT101] '+ms+'ms re-run'); tutorFix(); }, ms);
-    });
+    [200,600,1200,2500].forEach(function(ms){ setTimeout(tutorFix, ms); });
   });
 
-  /* MutationObserver: only watch for NEW accordion nodes; attribute watching removed
-     because it caused an infinite loop (our own setProperty triggers it back) */
+  /* MutationObserver: re-apply when new accordion nodes appear */
   var mo=new MutationObserver(function(mutations){
     if(pt101Applying) return;
     var needsFix=false;
@@ -3731,15 +3914,12 @@ add_action( 'wp_footer', function () {
         if(n.nodeType===1&&(
           n.classList.contains('tutor-accordion-item')||
           n.classList.contains('tutor-accordion')||
-          n.querySelector&&n.querySelector('.tutor-accordion-item')
-        )){
-          needsFix=true;
-          break;
-        }
+          (n.querySelector&&n.querySelector('.tutor-accordion-item'))
+        )){ needsFix=true; break; }
       }
       if(needsFix) break;
     }
-    if(needsFix){ console.log('[PT101] MO: new accordion nodes — re-applying'); tutorFix(); }
+    if(needsFix) tutorFix();
   });
   mo.observe(document.body,{childList:true,subtree:true});
 })();
@@ -4050,70 +4230,3 @@ add_action( 'wp_footer', function () {
 </script>
     <?php
 }, 999 );
-
-/* ── PT101 VISUAL DEBUG OVERLAY — remove when done diagnosing ── */
-add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'courses' ) ) return;
-    ?>
-<style>
-#pt101-dbg {
-  position: fixed;
-  bottom: 12px;
-  left: 12px;
-  z-index: 999999;
-  background: #003300;
-  border: 3px solid #00ff66;
-  color: #00ff66;
-  font: 600 11px/1.4 monospace;
-  padding: 10px 14px;
-  max-width: 440px;
-  border-radius: 6px;
-  pointer-events: none;
-  white-space: pre;
-}
-/* Coloured outlines on every element we target — visible immediately */
-.tutor-tab          { outline: 4px solid cyan   !important; }
-.tutor-tab-item     { outline: 4px solid magenta !important; }
-.tutor-accordion-item-header { outline: 4px solid orange  !important; }
-li.tutor-course-content-list-item { outline: 4px solid yellow !important; }
-nav.tutor-nav .tutor-nav-link     { outline: 4px solid lime   !important; }
-</style>
-<div id="pt101-dbg">PT101 DEBUG — loading…</div>
-<script>
-(function(){
-  function cs(sel,prop){
-    var el=document.querySelector(sel);
-    if(!el) return sel+' NOT FOUND';
-    var v=getComputedStyle(el)[prop];
-    /* also show inline style attribute for comparison */
-    var inl=el.style[prop]||el.getAttribute('style')||'';
-    return sel+'\n  computed '+prop+': '+v+'\n  inline attr: '+(inl.slice(0,60)||'(none)');
-  }
-  function update(){
-    var lines=[
-      'tutorFix runs: '+(window.PT101_RUN_COUNT||'?'),
-      'last run: '+(window.PT101_LAST_RUN||'never'),
-      '',
-      cs('.tutor-tab','paddingTop'),
-      '',
-      cs('.tutor-accordion-item-header','background'),
-      cs('.tutor-accordion-item-header','padding'),
-      '',
-      cs('li.tutor-course-content-list-item','padding'),
-      '',
-      cs('.tutor-nav-link','padding'),
-    ];
-    var box=document.getElementById('pt101-dbg');
-    if(box) box.textContent=lines.join('\n');
-  }
-  /* Hook into tutorFix counter */
-  window.PT101_RUN_COUNT=0;
-  window.PT101_LAST_RUN='never';
-  var origDescriptor=Object.getOwnPropertyDescriptor(window,'PT101_RUN_COUNT');
-  /* Poll every 800ms */
-  setInterval(update,800);
-  window.addEventListener('load',function(){ setTimeout(update,100); });
-})();
-</script>
-    <?php
-}, 1001 );

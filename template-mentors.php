@@ -6,6 +6,8 @@
 get_header();
 ?>
 
+<main id="primary">
+
 <!-- ═══ HERO ═════════════════════════════════════════════════ -->
 <section class="mtr-hero">
   <div class="container">
@@ -88,5 +90,7 @@ get_header();
     <a href="<?php echo esc_url( home_url( '/contact' ) ); ?>" class="btn btn-accent mtr-cta-btn">Become a mentor</a>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>
