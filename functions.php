@@ -4659,51 +4659,68 @@ body.single-lesson .tutor-lesson-content ol {
     <?php
 }, 99999 );
 
-/* ── Lesson page: relocate mark-as-complete into visible content area ── */
+/* ── Lesson page: fixed bottom "Mark as Complete" bar ── */
 add_action( 'wp_footer', function () {
     if ( ! is_singular( 'lesson' ) ) return;
+
+    global $post;
+    $lesson_id = $post->ID;
+    $course_id = 0;
+    $completed  = false;
+
+    /* Get course ID and completion status via Tutor helpers if available */
+    if ( function_exists( 'tutor_utils' ) ) {
+        $course_id = tutor_utils()->get_course_id_by( 'lesson', $lesson_id );
+        $completed = tutor_utils()->is_completed_lesson( $lesson_id );
+    }
+    if ( $completed ) return; /* Already completed – no need to show */
+
+    /* Build nonce for Tutor's AJAX completion */
+    $nonce = wp_create_nonce( 'tutor_nonce_action' );
     ?>
-<style id="pt101-lesson-complete-bar">
-/* Completion bar injected by JS above the prev/next nav */
-.pt101-complete-bar {
+<style id="pt101-fixed-complete-bar">
+/* Fixed bottom bar for lesson completion */
+.pt101-fixed-complete {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 20px;
-  padding: 20px 40px;
-  margin: 32px 0 0;
-  background: #f8f7f4;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,.06);
+  padding: 14px 40px;
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
 }
-.pt101-complete-bar .pt101-progress-wrap {
+.pt101-fixed-complete .pt101-progress-wrap {
   display: flex;
   align-items: center;
-  gap: 14px;
-  flex: 1;
-  min-width: 0;
+  gap: 12px;
+  margin-right: auto;
 }
-.pt101-complete-bar .pt101-progress-label {
-  font-size: 0.875rem;
+.pt101-fixed-complete .pt101-progress-label {
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #374151 !important;
+  color: #374151;
   white-space: nowrap;
 }
-.pt101-complete-bar .pt101-progress-track {
-  flex: 1;
-  max-width: 200px;
+.pt101-fixed-complete .pt101-progress-track {
+  width: 140px;
   height: 6px;
   background: #e5e7eb;
   border-radius: 99px;
   overflow: hidden;
 }
-.pt101-complete-bar .pt101-progress-fill {
+.pt101-fixed-complete .pt101-progress-fill {
   height: 100%;
   background: #5046e5;
   border-radius: 99px;
   transition: width 0.3s;
 }
-.pt101-complete-bar .pt101-mark-btn {
+.pt101-fixed-complete .pt101-mark-btn {
   display: inline-flex !important;
   align-items: center;
   gap: 8px;
@@ -4716,139 +4733,158 @@ add_action( 'wp_footer', function () {
   font-weight: 600 !important;
   cursor: pointer !important;
   white-space: nowrap;
-  transition: background 0.15s !important;
+  transition: background 0.15s;
   text-decoration: none !important;
+  line-height: 1.2 !important;
 }
-.pt101-complete-bar .pt101-mark-btn:hover {
+.pt101-fixed-complete .pt101-mark-btn:hover {
   background: #3730a3 !important;
 }
-.pt101-complete-bar .pt101-mark-btn svg {
+.pt101-fixed-complete .pt101-mark-btn:disabled {
+  opacity: 0.6;
+  cursor: wait !important;
+}
+.pt101-fixed-complete .pt101-mark-btn svg {
   width: 18px;
   height: 18px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+/* On lesson pages, offset the sidebar from the fixed bar */
+body.single-lesson {
+  padding-bottom: 60px !important;
+}
 @media (max-width: 640px) {
-  .pt101-complete-bar {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 16px 20px;
+  .pt101-fixed-complete {
+    padding: 12px 16px;
+  }
+  .pt101-fixed-complete .pt101-progress-track {
+    width: 80px;
   }
 }
 </style>
+
+<div class="pt101-fixed-complete" id="pt101-fixed-complete">
+  <div class="pt101-progress-wrap">
+    <span class="pt101-progress-label" id="pt101-pct-label"></span>
+    <div class="pt101-progress-track">
+      <div class="pt101-progress-fill" id="pt101-pct-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <button type="button" class="pt101-mark-btn" id="pt101-mark-btn">
+    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+    Mark as Complete
+  </button>
+</div>
+
 <script>
 (function(){
-  if(!document.body.classList.contains('single-lesson')) return;
+  var lessonId  = <?php echo (int) $lesson_id; ?>;
+  var courseId  = <?php echo (int) $course_id; ?>;
+  var nonce     = <?php echo wp_json_encode( $nonce ); ?>;
+  var ajaxUrl   = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
+  var bar       = document.getElementById('pt101-fixed-complete');
+  var btn       = document.getElementById('pt101-mark-btn');
+  var pctLabel  = document.getElementById('pt101-pct-label');
+  var pctFill   = document.getElementById('pt101-pct-fill');
 
-  /* Find Tutor's native mark-complete button/form */
-  var selectors = [
-    'form.tutor-lesson-mark-complete',
-    '.tutor-lesson-mark-complete',
-    '.tutor-btn-complete-lesson',
-    'button[data-tutor-action*="complete"]',
-    'a[data-tutor-action*="complete"]',
-    '[class*="complete-lesson-btn"]',
-    '[class*="mark-complete"]'
-  ];
+  if(!bar || !btn) return;
 
-  function findNativeBtn(){
-    for(var i=0;i<selectors.length;i++){
-      var el = document.querySelector(selectors[i]);
-      if(el) return el;
-    }
-    return null;
-  }
-
-  /* Find progress text */
+  /* Try to pick up progress from Tutor's existing DOM */
   function findProgress(){
-    var els = document.querySelectorAll('[class*="progress"], [class*="completing"]');
+    var els = document.querySelectorAll('*');
     for(var i=0;i<els.length;i++){
-      var t = els[i].textContent||'';
-      var m = t.match(/(\d+)%/);
-      if(m) return parseInt(m[1],10);
+      var cn = els[i].className;
+      if(typeof cn === 'string' && (cn.indexOf('progress') > -1 || cn.indexOf('completing') > -1)){
+        var t = els[i].textContent||'';
+        var m = t.match(/(\d+)\s*%/);
+        if(m) return parseInt(m[1],10);
+      }
     }
-    return null;
+    return 0;
   }
 
-  /* Find the content area to insert into */
-  function findContentArea(){
-    var candidates = [
-      '#tutor-course-player-content',
-      '.tutor-course-player-content',
-      '.tutor-lesson-content-wrap',
-      '.tutor-course-spotlight-wrap',
-      '.tutor-lesson-content',
-      '.tutor-single-entry-content'
+  setTimeout(function(){
+    var pct = findProgress();
+    pctLabel.textContent = pct + '% Complete';
+    pctFill.style.width = pct + '%';
+  }, 800);
+
+  /* Find and trigger native completion */
+  function findNativeBtn(){
+    var sels = [
+      'form.tutor-lesson-mark-complete',
+      '.tutor-lesson-mark-complete',
+      '.tutor-btn-complete-lesson',
+      'button[data-tutor-action*="complete"]',
+      'a[data-tutor-action*="complete"]',
+      '[class*="complete-lesson-btn"]',
+      '[class*="mark-complete"]:not(.pt101-mark-btn)'
     ];
-    for(var i=0;i<candidates.length;i++){
-      var el = document.querySelector(candidates[i]);
+    for(var i=0;i<sels.length;i++){
+      var el = document.querySelector(sels[i]);
       if(el) return el;
     }
     return null;
   }
 
-  function init(){
-    var content = findContentArea();
-    if(!content) return;
+  btn.addEventListener('click', function(){
+    btn.disabled = true;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10"/></svg> Completing…';
 
-    /* Don't double-insert */
-    if(document.querySelector('.pt101-complete-bar')) return;
-
-    var nativeBtn = findNativeBtn();
-    var pct = findProgress();
-
-    /* Build the completion bar */
-    var bar = document.createElement('div');
-    bar.className = 'pt101-complete-bar';
-
-    var progressHTML = '';
-    if(pct !== null){
-      progressHTML =
-        '<div class="pt101-progress-wrap">' +
-          '<span class="pt101-progress-label">' + pct + '% Complete</span>' +
-          '<div class="pt101-progress-track"><div class="pt101-progress-fill" style="width:'+pct+'%"></div></div>' +
-        '</div>';
-    }
-
-    var btnHTML =
-      '<button type="button" class="pt101-mark-btn">' +
-        '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' +
-        'Mark as Complete' +
-      '</button>';
-
-    bar.innerHTML = progressHTML + btnHTML;
-    content.appendChild(bar);
-
-    /* Wire up the clone to trigger native completion */
-    var cloneBtn = bar.querySelector('.pt101-mark-btn');
-    cloneBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      var real = findNativeBtn();
-      if(real){
-        /* If it's a form, submit it */
-        var form = real.closest ? real.closest('form') : null;
-        if(!form && real.tagName === 'FORM') form = real;
-        if(form && typeof form.submit === 'function'){
-          form.requestSubmit ? form.requestSubmit() : form.submit();
-          return;
-        }
-        real.click();
+    /* Try native button first */
+    var real = findNativeBtn();
+    if(real){
+      var form = real.closest ? real.closest('form') : null;
+      if(!form && real.tagName === 'FORM') form = real;
+      if(form){
+        if(form.requestSubmit) form.requestSubmit();
+        else form.submit();
         return;
       }
-      /* Fallback: try the standard Tutor AJAX approach */
-      alert('Lesson completion not available. Please refresh the page and try again.');
-    });
-  }
+      real.click();
 
-  /* Run after Tutor loads */
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 500); });
-  } else {
-    setTimeout(init, 500);
-  }
+      /* Give it a moment, then check if page reloaded */
+      setTimeout(function(){
+        btn.disabled = false;
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Mark as Complete';
+      }, 5000);
+      return;
+    }
+
+    /* Fallback: direct AJAX to Tutor LMS */
+    var fd = new FormData();
+    fd.append('action', 'tutor_complete_lesson');
+    fd.append(tutor_data && tutor_data.nonce_key ? tutor_data.nonce_key : '_tutor_nonce', nonce);
+    fd.append('lesson_id', lessonId);
+    if(courseId) fd.append('course_id', courseId);
+
+    fetch(ajaxUrl, { method:'POST', body:fd, credentials:'same-origin' })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data && data.success){
+          btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Completed!';
+          btn.style.background = '#059669';
+          setTimeout(function(){ location.reload(); }, 800);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Mark as Complete';
+          console.warn('Tutor completion failed', data);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Mark as Complete';
+      });
+  });
+
+  /* Add spin animation */
+  var style = document.createElement('style');
+  style.textContent = '@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}';
+  document.head.appendChild(style);
 })();
 </script>
     <?php
