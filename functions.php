@@ -4574,6 +4574,26 @@ body.single-lesson [class*="meta"] {
   color: #6b7280 !important;
 }
 
+/* ── Footer: restore native styling (must come AFTER the broad overrides to win) ── */
+body.single-lesson .site-footer {
+  background: #f0efea !important;
+  color: #111320 !important;
+}
+body.single-lesson .site-footer h4 {
+  color: #000 !important;
+}
+body.single-lesson .site-footer a,
+body.single-lesson .site-footer li,
+body.single-lesson .site-footer span,
+body.single-lesson .site-footer div,
+body.single-lesson .site-footer p {
+  color: #111320 !important;
+}
+body.single-lesson .site-footer .footer-legal-links a,
+body.single-lesson .site-footer .footer-cookie-btn {
+  color: rgba(17,19,32,.55) !important;
+}
+
 /* Restore header nav — white text on dark background.
    Target only the nav elements, NOT the dropdown panels (which have their own dark text). */
 body.single-lesson .site-logo,
@@ -4584,18 +4604,45 @@ body.single-lesson .btn-hdr-login,
 body.single-lesson .btn-hdr-enroll {
   color: #f0f0f5 !important;
 }
-/* Buttons: keep visible styling */
-body.single-lesson .tutor-btn,
-body.single-lesson button {
-  border-color: rgba(0,0,0,.15) !important;
-}
-body.single-lesson .tutor-btn-primary,
+
+/* ── Mark-as-complete button: ensure visible ── */
 body.single-lesson .tutor-lesson-mark-complete,
+body.single-lesson .tutor-btn-complete-lesson,
 body.single-lesson button[data-tutor-action*="complete"],
-body.single-lesson a[data-tutor-action*="complete"] {
+body.single-lesson a[data-tutor-action*="complete"],
+body.single-lesson form[method="post"] button[type="submit"],
+body.single-lesson [class*="complete-lesson"],
+body.single-lesson [class*="mark-complete"] {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   background: #5046e5 !important;
   color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 28px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  letter-spacing: -0.01em !important;
+  transition: background 0.15s !important;
 }
+body.single-lesson .tutor-lesson-mark-complete:hover,
+body.single-lesson .tutor-btn-complete-lesson:hover,
+body.single-lesson button[data-tutor-action*="complete"]:hover,
+body.single-lesson a[data-tutor-action*="complete"]:hover,
+body.single-lesson [class*="complete-lesson"]:hover,
+body.single-lesson [class*="mark-complete"]:hover {
+  background: #3730a3 !important;
+  color: #fff !important;
+}
+
+/* Other buttons */
+body.single-lesson .tutor-btn,
+body.single-lesson button:not(.site-footer button) {
+  border-color: rgba(0,0,0,.15) !important;
+}
+
 /* Code blocks */
 body.single-lesson pre,
 body.single-lesson code {
