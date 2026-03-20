@@ -197,6 +197,7 @@
     carousel.addEventListener('mouseenter', function () { clearInterval(autoplay); });
     carousel.addEventListener('mouseleave', function () { autoplay = startAutoplay(); });
     carousel.addEventListener('touchstart', function () { clearInterval(autoplay); }, { passive: true });
+    carousel.addEventListener('touchend', function () { autoplay = startAutoplay(); }, { passive: true });
   }
 
   /* ── SCROLL COUNTER ANIMATION ───────────────── */

@@ -6,6 +6,8 @@
 get_header();
 ?>
 
+<main id="primary">
+
 <!-- ═══ HERO (centred, dark bg, trust signals) ══════════════════ -->
 <section class="au-hero">
   <div class="au-hero-bg-grid" aria-hidden="true"></div>
@@ -261,5 +263,7 @@ get_header();
     <a href="<?php echo esc_url( home_url( '/programs' ) ); ?>" class="btn btn-accent au-cta-btn">Choose your program</a>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>

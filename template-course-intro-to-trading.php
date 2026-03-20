@@ -6,6 +6,8 @@
 get_header();
 ?>
 
+<main id="primary">
+
 <!-- ═══ COURSE HERO (light variant) ══════════════════════════ -->
 <section class="cdp-hero cdp-hero--light">
   <div class="container">
@@ -273,5 +275,7 @@ get_header();
     </span>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>

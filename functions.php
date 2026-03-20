@@ -3258,7 +3258,6 @@ body.single-lesson [class*="lesson-content"] {
    Uses body.single-courses prefix for high specificity
    ═══════════════════════════════════════════════════════ */
 
-body.single-courses,
 body.single-courses {
   background: var(--tutor-bg) !important;
   color: var(--tutor-text) !important;
