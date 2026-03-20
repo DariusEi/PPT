@@ -6,6 +6,8 @@
 get_header();
 ?>
 
+<main id="primary">
+
 <!-- ═══ HERO ══════════════════════════════════════════════════ -->
 <section class="ct-hero">
   <div class="ct-hero-glow" aria-hidden="true"></div>
@@ -73,5 +75,7 @@ get_header();
     </div>
   </div>
 </section>
+
+</main>
 
 <?php get_footer(); ?>
