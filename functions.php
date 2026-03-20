@@ -4055,33 +4055,6 @@ body.single-courses .tutor-single-course-sidebar > div {
   padding: 22px !important;
 }
 
-/* ── Lesson player sidebar: exact classes from live DOM diagnostic ── */
-body.single-lesson .tutor-lesson-sidebar,
-body.single-lesson .tutor-course-single-sidebar-wrapper,
-body.single-lesson .tutor-course-single-content-wrapper .tutor-lesson-sidebar {
-  background: #111827 !important;
-  background-color: #111827 !important;
-  border-right: 1px solid rgba(255,255,255,.08) !important;
-}
-body.single-lesson .tutor-lesson-sidebar *,
-body.single-lesson .tutor-course-single-sidebar-wrapper * {
-  color: rgba(240,239,234,.85) !important;
-}
-/* Active lesson row */
-body.single-lesson .tutor-lesson-sidebar .tutor-is-active,
-body.single-lesson .tutor-lesson-sidebar [class*="is-active"],
-body.single-lesson .tutor-lesson-sidebar [class*="active"] {
-  background: rgba(124,110,245,.15) !important;
-  border-left: 3px solid #7c6ef5 !important;
-}
-/* Section / topic headers */
-body.single-lesson .tutor-lesson-sidebar [class*="topic-header"],
-body.single-lesson .tutor-lesson-sidebar [class*="section-header"],
-body.single-lesson .tutor-course-single-sidebar-wrapper [class*="topic"] {
-  background: rgba(255,255,255,.04) !important;
-  border-bottom: 1px solid rgba(255,255,255,.07) !important;
-  font-weight: 600 !important;
-}
 
 </style>
     <?php
@@ -4473,6 +4446,7 @@ body.single-lesson [class*="tutor-icon"] {
 
 /* ── Lesson page: minimal safe dark skin (default Tutor controls intact) ── */
 add_action( 'wp_head', function () {
+    if ( true ) return; // Disabled: reverting lesson page to default Tutor LMS design
     if ( ! is_singular( 'lesson' ) ) return;
     ?>
 <style id="pt101-lesson-default-dark-skin-safe-v3">
