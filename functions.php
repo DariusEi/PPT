@@ -4100,16 +4100,27 @@ body.single-lesson .tutor-course-topic-single-footer .tutor-btn {
 
 /* ── Progress + mark as complete bar ── */
 /* Tutor hides this on desktop (expects the header-bar version instead),
-   but the header bar is not rendering — force-show on all viewports. */
+   but the header bar is not rendering — force-show on all viewports.
+   Stick it to the bottom of the viewport so it's always accessible. */
 body.single-lesson .tutor-spotlight-mobile-progress-complete {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
   background: #fff !important;
   align-items: center !important;
   gap: 24px !important;
   padding: 16px 32px !important;
   border-top: 1px solid #e5e7eb !important;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.08) !important;
+  pointer-events: auto !important;
+}
+body.single-lesson .tutor-spotlight-mobile-progress-complete *,
+body.single-lesson .tutor-spotlight-mobile-progress-complete a,
+body.single-lesson .tutor-spotlight-mobile-progress-complete button {
+  pointer-events: auto !important;
 }
 body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-mark-btn,
 body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-complete-btn button {
@@ -4119,6 +4130,10 @@ body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-compl
   border-radius: 8px !important;
   padding: 10px 22px !important;
   font-weight: 600 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 10000 !important;
 }
 body.single-lesson .tutor-progress-bar {
   background: rgba(0,0,0,.1) !important;
@@ -4153,6 +4168,41 @@ body.single-lesson .site-footer .footer-cookie-btn {
   color: rgba(17,19,32,.55) !important;
 }
 </style>
+    <?php
+}, 99999 );
+
+/* ── Lesson: ensure Mark as Complete button is clickable ── */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<script id="pt101-lesson-complete-fix">
+(function(){
+  /* Remove any invisible overlay that might sit above the completion bar */
+  function fixOverlays(){
+    var bar = document.querySelector('.tutor-spotlight-mobile-progress-complete');
+    if(!bar) return;
+    /* Ensure nothing above it steals clicks */
+    bar.style.pointerEvents = 'auto';
+    bar.style.position = 'sticky';
+    bar.style.zIndex = '9999';
+    /* Ensure all children are clickable */
+    var btns = bar.querySelectorAll('button, a, [role="button"], .tutor-topbar-mark-btn');
+    btns.forEach(function(b){
+      b.style.pointerEvents = 'auto';
+      b.style.cursor = 'pointer';
+      b.style.position = 'relative';
+      b.style.zIndex = '10000';
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', fixOverlays);
+  } else {
+    fixOverlays();
+  }
+  setTimeout(fixOverlays, 500);
+  setTimeout(fixOverlays, 1500);
+})();
+</script>
     <?php
 }, 99999 );
 
