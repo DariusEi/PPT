@@ -4674,5 +4674,65 @@ body.single-lesson .tutor-lesson-content ol {
     <?php
 }, 99999 );
 
-/* Custom completion bar removed — Tutor's native bar is now visible
-   after removing the min-height/padding-bottom constraints above. */
+/* ── Lesson page: force-override Tutor's JS-set inline height/overflow ── */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<script id="pt101-lesson-height-fix">
+(function(){
+  function fix(){
+    /* Strip inline height/overflow on the course player and content area */
+    var selectors = [
+      '#tutor-course-player',
+      '.tutor-course-player',
+      '#tutor-course-player-content',
+      '.tutor-course-player-content',
+      '[class*="course-player-content"]'
+    ];
+    selectors.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){
+        el.style.setProperty('height', 'auto', 'important');
+        el.style.setProperty('max-height', 'none', 'important');
+        el.style.setProperty('overflow', 'visible', 'important');
+      });
+    });
+
+    /* Keep sidebar sticky with internal scroll */
+    var sidebarSels = [
+      '#tutor-course-player-sidebar',
+      '.tutor-course-player-sidebar'
+    ];
+    sidebarSels.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){
+        el.style.setProperty('position', 'sticky', 'important');
+        el.style.setProperty('top', '0', 'important');
+        el.style.setProperty('height', '100vh', 'important');
+        el.style.setProperty('overflow-y', 'auto', 'important');
+        el.style.setProperty('align-self', 'flex-start', 'important');
+      });
+    });
+  }
+
+  /* Run immediately, after DOM ready, and after a delay for Tutor's JS */
+  fix();
+  document.addEventListener('DOMContentLoaded', fix);
+  setTimeout(fix, 500);
+  setTimeout(fix, 1500);
+  setTimeout(fix, 3000);
+
+  /* MutationObserver to re-apply if Tutor's JS resets inline styles */
+  var player = document.getElementById('tutor-course-player');
+  if(player){
+    var obs = new MutationObserver(function(mutations){
+      mutations.forEach(function(m){
+        if(m.type === 'attributes' && m.attributeName === 'style'){
+          fix();
+        }
+      });
+    });
+    obs.observe(player, { attributes: true, subtree: true });
+  }
+})();
+</script>
+    <?php
+}, 99999 );
