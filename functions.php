@@ -3781,15 +3781,9 @@ body.single-lesson .tutor-course-player-sidebar a:hover {
   color: #fff !important;
 }
 
-/* Course player bottom padding */
-#tutor-course-player {
-  padding-bottom: 0 !important;
-}
-body.single-lesson {
-  padding-bottom: 0 !important;
-}
+/* Course player: let content flow naturally so completion bar is visible */
 body.single-lesson #tutor-course-player {
-  min-height: calc(100vh - 80px) !important;
+  min-height: auto !important;
 }
 </style>
     <?php
@@ -4659,129 +4653,5 @@ body.single-lesson .tutor-lesson-content ol {
     <?php
 }, 99999 );
 
-/* ── Lesson page: ensure Tutor's native completion bar is visible ── */
-add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'lesson' ) ) return;
-
-    global $post;
-    $lesson_id = $post->ID;
-    $completed = false;
-    if ( function_exists( 'tutor_utils' ) ) {
-        $completed = tutor_utils()->is_completed_lesson( $lesson_id );
-    }
-    if ( $completed ) return;
-
-    $nonce_action = function_exists( 'tutor' ) && isset( tutor()->nonce_action ) ? tutor()->nonce_action : 'tutor_nonce_action';
-    $nonce_field  = function_exists( 'tutor' ) && isset( tutor()->nonce ) ? tutor()->nonce : '_tutor_nonce';
-    ?>
-<style id="pt101-complete-bar-css">
-/* Completion bar injected inside course player via JS */
-.pt101-complete-bar {
-  display: flex !important;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 20px;
-  padding: 14px 32px;
-  background: #f0eef9;
-  border-top: 1px solid rgba(0,0,0,.06);
-}
-.pt101-complete-bar .pt101-mark-btn {
-  display: inline-flex !important;
-  align-items: center;
-  gap: 8px;
-  background: #5046e5 !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 12px 28px !important;
-  font-size: 0.9rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  white-space: nowrap;
-  transition: background 0.15s;
-  text-decoration: none !important;
-  line-height: 1.2 !important;
-}
-.pt101-complete-bar .pt101-mark-btn:hover {
-  background: #3730a3 !important;
-}
-.pt101-complete-bar .pt101-mark-btn svg {
-  width: 18px; height: 18px;
-  fill: none; stroke: currentColor;
-  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
-}
-</style>
-<script>
-(function(){
-  /* Build the form HTML server-side so nonce is correct */
-  var formHTML = <?php
-    ob_start();
-    ?>
-    <div class="pt101-complete-bar">
-      <form method="post" action="">
-        <?php wp_nonce_field( $nonce_action, $nonce_field ); ?>
-        <input type="hidden" name="tutor_action" value="tutor_complete_lesson">
-        <input type="hidden" name="lesson_id" value="<?php echo (int) $lesson_id; ?>">
-        <button type="submit" name="complete_lesson_btn" value="complete_lesson" class="pt101-mark-btn">
-          <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-          Mark as Complete
-        </button>
-      </form>
-    </div>
-    <?php
-    echo wp_json_encode( ob_get_clean() );
-  ?>;
-
-  function inject(){
-    if(document.querySelector('.pt101-complete-bar')) return;
-
-    /* Try to insert inside the course player content area */
-    var targets = [
-      '#tutor-course-player-content',
-      '.tutor-course-player-content',
-      '#tutor-course-player',
-      '.tutor-course-player',
-      '.tutor-lesson-content-wrap',
-      '.tutor-wrap'
-    ];
-    var parent = null;
-    for(var i=0; i<targets.length; i++){
-      parent = document.querySelector(targets[i]);
-      if(parent) break;
-    }
-    if(!parent) parent = document.body;
-
-    var tmp = document.createElement('div');
-    tmp.innerHTML = formHTML;
-    var bar = tmp.firstElementChild;
-
-    /* Try to insert after the nav/footer bar inside the player */
-    var navSelectors = [
-      '.tutor-course-player-content-footer',
-      '[class*="course-player-footer"]',
-      '[class*="player-content-footer"]',
-      '.tutor-course-player-navigation',
-      '[class*="lesson-nav"]'
-    ];
-    var nav = null;
-    for(var j=0; j<navSelectors.length; j++){
-      nav = parent.querySelector(navSelectors[j]);
-      if(nav) break;
-    }
-
-    if(nav && nav.parentNode){
-      nav.parentNode.insertBefore(bar, nav.nextSibling);
-    } else {
-      parent.appendChild(bar);
-    }
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(inject, 300); });
-  } else {
-    setTimeout(inject, 300);
-  }
-})();
-</script>
-    <?php
-}, 99999 );
+/* Custom completion bar removed — Tutor's native bar is now visible
+   after removing the min-height/padding-bottom constraints above. */
