@@ -4659,84 +4659,33 @@ body.single-lesson .tutor-lesson-content ol {
     <?php
 }, 99999 );
 
-/* ── Lesson page: fixed bottom "Mark as Complete" bar ── */
+/* ── Lesson page: ensure Tutor's native completion bar is visible ── */
 add_action( 'wp_footer', function () {
     if ( ! is_singular( 'lesson' ) ) return;
 
     global $post;
     $lesson_id = $post->ID;
-    $course_id = 0;
-    $completed  = false;
-
-    /* Get course ID and completion status via Tutor helpers if available */
+    $completed = false;
     if ( function_exists( 'tutor_utils' ) ) {
-        $course_id = tutor_utils()->get_course_id_by( 'lesson', $lesson_id );
         $completed = tutor_utils()->is_completed_lesson( $lesson_id );
     }
-    if ( $completed ) return; /* Already completed – no need to show */
+    if ( $completed ) return;
 
-    /* Build nonce using Tutor's own nonce action if available */
     $nonce_action = function_exists( 'tutor' ) && isset( tutor()->nonce_action ) ? tutor()->nonce_action : 'tutor_nonce_action';
     $nonce_field  = function_exists( 'tutor' ) && isset( tutor()->nonce ) ? tutor()->nonce : '_tutor_nonce';
-    $nonce_value  = wp_create_nonce( $nonce_action );
-
-    /* Get completion percentage */
-    $completed_count = 0;
-    $total_count     = 0;
-    $pct             = 0;
-    if ( function_exists( 'tutor_utils' ) && $course_id ) {
-        $stats = tutor_utils()->get_course_completed_percent( $course_id, 0, true );
-        if ( is_array( $stats ) ) {
-            $completed_count = isset( $stats['completed'] ) ? (int) $stats['completed'] : 0;
-            $total_count     = isset( $stats['total'] )     ? (int) $stats['total'] : 0;
-        }
-        if ( $total_count > 0 ) {
-            $pct = round( ( $completed_count / $total_count ) * 100 );
-        }
-    }
     ?>
-<style id="pt101-fixed-complete-bar">
-/* Fixed bottom bar for lesson completion */
-.pt101-fixed-complete {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 99999;
-  display: flex;
+<style id="pt101-complete-bar-css">
+/* Completion bar injected inside course player via JS */
+.pt101-complete-bar {
+  display: flex !important;
   align-items: center;
   justify-content: flex-end;
   gap: 20px;
-  padding: 14px 40px;
-  background: #fff;
-  border-top: 1px solid rgba(0,0,0,.08);
-  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
+  padding: 14px 32px;
+  background: #f0eef9;
+  border-top: 1px solid rgba(0,0,0,.06);
 }
-.pt101-fixed-complete .pt101-progress-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-right: auto;
-}
-.pt101-fixed-complete .pt101-progress-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #374151;
-  white-space: nowrap;
-}
-.pt101-fixed-complete .pt101-progress-track {
-  width: 140px;
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 99px;
-  overflow: hidden;
-}
-.pt101-fixed-complete .pt101-progress-fill {
-  height: 100%;
-  background: #5046e5;
-  border-radius: 99px;
-}
-.pt101-fixed-complete .pt101-mark-btn {
+.pt101-complete-bar .pt101-mark-btn {
   display: inline-flex !important;
   align-items: center;
   gap: 8px;
@@ -4753,48 +4702,86 @@ add_action( 'wp_footer', function () {
   text-decoration: none !important;
   line-height: 1.2 !important;
 }
-.pt101-fixed-complete .pt101-mark-btn:hover {
+.pt101-complete-bar .pt101-mark-btn:hover {
   background: #3730a3 !important;
 }
-.pt101-fixed-complete .pt101-mark-btn svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-/* On lesson pages, offset content from the fixed bar */
-body.single-lesson {
-  padding-bottom: 60px !important;
-}
-@media (max-width: 640px) {
-  .pt101-fixed-complete {
-    padding: 12px 16px;
-  }
-  .pt101-fixed-complete .pt101-progress-track {
-    width: 80px;
-  }
+.pt101-complete-bar .pt101-mark-btn svg {
+  width: 18px; height: 18px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
 }
 </style>
-
-<div class="pt101-fixed-complete">
-  <div class="pt101-progress-wrap">
-    <span class="pt101-progress-label"><?php echo (int) $pct; ?>% Complete</span>
-    <div class="pt101-progress-track">
-      <div class="pt101-progress-fill" style="width:<?php echo (int) $pct; ?>%"></div>
+<script>
+(function(){
+  /* Build the form HTML server-side so nonce is correct */
+  var formHTML = <?php
+    ob_start();
+    ?>
+    <div class="pt101-complete-bar">
+      <form method="post" action="">
+        <?php wp_nonce_field( $nonce_action, $nonce_field ); ?>
+        <input type="hidden" name="tutor_action" value="tutor_complete_lesson">
+        <input type="hidden" name="lesson_id" value="<?php echo (int) $lesson_id; ?>">
+        <button type="submit" name="complete_lesson_btn" value="complete_lesson" class="pt101-mark-btn">
+          <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+          Mark as Complete
+        </button>
+      </form>
     </div>
-  </div>
-  <form method="post" action="">
-    <?php wp_nonce_field( $nonce_action, $nonce_field ); ?>
-    <input type="hidden" name="tutor_action" value="tutor_complete_lesson">
-    <input type="hidden" name="lesson_id" value="<?php echo (int) $lesson_id; ?>">
-    <button type="submit" name="complete_lesson_btn" value="complete_lesson" class="pt101-mark-btn">
-      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-      Mark as Complete
-    </button>
-  </form>
-</div>
+    <?php
+    echo wp_json_encode( ob_get_clean() );
+  ?>;
+
+  function inject(){
+    if(document.querySelector('.pt101-complete-bar')) return;
+
+    /* Try to insert inside the course player content area */
+    var targets = [
+      '#tutor-course-player-content',
+      '.tutor-course-player-content',
+      '#tutor-course-player',
+      '.tutor-course-player',
+      '.tutor-lesson-content-wrap',
+      '.tutor-wrap'
+    ];
+    var parent = null;
+    for(var i=0; i<targets.length; i++){
+      parent = document.querySelector(targets[i]);
+      if(parent) break;
+    }
+    if(!parent) parent = document.body;
+
+    var tmp = document.createElement('div');
+    tmp.innerHTML = formHTML;
+    var bar = tmp.firstElementChild;
+
+    /* Try to insert after the nav/footer bar inside the player */
+    var navSelectors = [
+      '.tutor-course-player-content-footer',
+      '[class*="course-player-footer"]',
+      '[class*="player-content-footer"]',
+      '.tutor-course-player-navigation',
+      '[class*="lesson-nav"]'
+    ];
+    var nav = null;
+    for(var j=0; j<navSelectors.length; j++){
+      nav = parent.querySelector(navSelectors[j]);
+      if(nav) break;
+    }
+
+    if(nav && nav.parentNode){
+      nav.parentNode.insertBefore(bar, nav.nextSibling);
+    } else {
+      parent.appendChild(bar);
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(inject, 300); });
+  } else {
+    setTimeout(inject, 300);
+  }
+})();
+</script>
     <?php
 }, 99999 );
