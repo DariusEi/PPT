@@ -4116,3 +4116,61 @@ body.single-lesson .tutor-progress-value {
    exact same <form method="post"> via tutor_lesson_mark_complete_html(),
    so no delegation is needed — each form works on its own. */
 
+/* ── Ensure Mark as Complete button works on lesson pages ──
+   Tutor v2's header bar button may be a JS-driven element (not a native
+   <form> submit) or the theme's smooth-scroll handler may intercept
+   anchor clicks with href="#…". This fallback finds the completion form
+   and force-submits it when the header-bar button is clicked. */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<script>
+(function(){
+  function fixComplete(){
+    /* Find all Mark-as-Complete buttons/links in the header bar */
+    var header = document.querySelector('.tutor-course-topic-single-header');
+    if (!header) return;
+
+    /* Tutor renders the completion action as either:
+       a) <form method="post"> with a <button type="submit">
+       b) <a> or <button> that Tutor's JS handles via AJAX
+       Find the form first; if it exists, ensure clicks submit it. */
+    var form = header.querySelector('form');
+    if (form) {
+      /* The form exists — ensure its submit button works.
+         Attach a capture-phase listener so it fires before any
+         delegated handler that might call preventDefault(). */
+      var btn = form.querySelector('button, [type="submit"], input[type="submit"]');
+      if (btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          form.submit();
+        }, true);
+      }
+      return;
+    }
+
+    /* No form found — the button is JS-driven (Tutor v2 AJAX).
+       Find the clickable element and ensure it can trigger Tutor's
+       own handler by stopping the click from bubbling to the
+       document-level smooth-scroll listener. */
+    var btn = header.querySelector('[class*="complete"], [class*="mark-complete"], a[href^="#"]');
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation(); /* prevent theme's smooth-scroll handler */
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixComplete);
+  } else {
+    fixComplete();
+  }
+  /* Re-run after Tutor's JS may have rendered the button */
+  window.addEventListener('load', function(){ setTimeout(fixComplete, 500); });
+})();
+</script>
+    <?php
+}, 99999 );
+
