@@ -4077,40 +4077,7 @@ body.single-lesson .tutor-btn-complete-lesson:hover {
   filter: brightness(1.12) !important;
 }
 
-/* ── Sidebar ── */
-body.single-lesson .tutor-course-topic-single-sidebar {
-  background: #111827 !important;
-  border-right: 1px solid var(--tutor-border, rgba(255,255,255,.08)) !important;
-  color: var(--tutor-text, #f0efea) !important;
-}
-body.single-lesson .tutor-course-topic-single-sidebar * {
-  color: inherit !important;
-}
-body.single-lesson .tutor-course-topic-single-sidebar a:hover {
-  background: rgba(124,110,245,.1) !important;
-  color: #fff !important;
-}
-/* Active lesson highlight */
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-is-active,
-body.single-lesson .tutor-course-topic-single-sidebar .is-active,
-body.single-lesson .tutor-course-topic-single-sidebar li.current {
-  background: rgba(124,110,245,.12) !important;
-}
-/* Section headers in sidebar */
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-topic-title,
-body.single-lesson .tutor-course-topic-single-sidebar h3,
-body.single-lesson .tutor-course-topic-single-sidebar h4,
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-accordion-item-header {
-  background: rgba(255,255,255,.04) !important;
-  border-bottom: 1px solid var(--tutor-border, rgba(255,255,255,.08)) !important;
-  font-weight: 600 !important;
-}
-/* Completed lesson checkmarks */
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-icon-circle-mark-line::before,
-body.single-lesson .tutor-course-topic-single-sidebar [class*="completed"] svg,
-body.single-lesson .tutor-course-topic-single-sidebar .is-completed .tutor-course-content-list-item-status {
-  color: #34d399 !important;
-}
+/* ── Sidebar: use Tutor LMS default styling ── */
 
 /* ── Content area ── */
 body.single-lesson .tutor-course-topic-single-body {
