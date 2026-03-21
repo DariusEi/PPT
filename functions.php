@@ -4077,19 +4077,7 @@ body.single-lesson .tutor-btn-complete-lesson:hover {
   filter: brightness(1.12) !important;
 }
 
-/* ── Sidebar: dark background + readable light text ── */
-body.single-lesson .tutor-course-topic-single-sidebar,
-body.single-lesson .tutor-course-topic-single-sidebar div,
-body.single-lesson .tutor-course-topic-single-sidebar ul,
-body.single-lesson .tutor-course-topic-single-sidebar ol,
-body.single-lesson .tutor-course-topic-single-sidebar li,
-body.single-lesson .tutor-course-topic-single-sidebar nav,
-body.single-lesson .tutor-course-topic-single-sidebar section,
-body.single-lesson .tutor-course-topic-single-sidebar header,
-body.single-lesson .tutor-course-topic-single-sidebar footer {
-  background: #111827 !important;
-  background-color: #111827 !important;
-}
+/* ── Sidebar: keep light bg, make text dark & readable ── */
 body.single-lesson .tutor-course-topic-single-sidebar,
 body.single-lesson .tutor-course-topic-single-sidebar a,
 body.single-lesson .tutor-course-topic-single-sidebar span,
@@ -4097,45 +4085,12 @@ body.single-lesson .tutor-course-topic-single-sidebar p,
 body.single-lesson .tutor-course-topic-single-sidebar label,
 body.single-lesson .tutor-course-topic-single-sidebar button,
 body.single-lesson .tutor-course-topic-single-sidebar li {
-  color: rgba(240,239,234,.78) !important;
+  color: #1a1c23 !important;
 }
-body.single-lesson .tutor-course-topic-single-sidebar {
-  border-right: 1px solid rgba(255,255,255,.08) !important;
-}
-body.single-lesson .tutor-course-topic-single-sidebar a:hover,
-body.single-lesson .tutor-course-topic-single-sidebar li:hover {
-  background: rgba(124,110,245,.1) !important;
-  color: #fff !important;
-}
-/* Active / current lesson */
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-is-active,
-body.single-lesson .tutor-course-topic-single-sidebar .is-active,
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-topic-single-active,
-body.single-lesson .tutor-course-topic-single-sidebar li.current {
-  background: rgba(124,110,245,.15) !important;
-}
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-is-active *,
-body.single-lesson .tutor-course-topic-single-sidebar .is-active *,
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-topic-single-active * {
-  color: #fff !important;
-}
-/* Section headers */
 body.single-lesson .tutor-course-topic-single-sidebar h3,
-body.single-lesson .tutor-course-topic-single-sidebar h4,
-body.single-lesson .tutor-course-topic-single-sidebar .tutor-accordion-item-header {
-  background: rgba(255,255,255,.03) !important;
-  border-bottom: 1px solid rgba(255,255,255,.06) !important;
-  color: #f0efea !important;
+body.single-lesson .tutor-course-topic-single-sidebar h4 {
+  color: #111320 !important;
   font-weight: 600 !important;
-}
-/* Dividers between items */
-body.single-lesson .tutor-course-topic-single-sidebar li {
-  border-color: rgba(255,255,255,.05) !important;
-}
-/* Green checkmarks for completed */
-body.single-lesson .tutor-course-topic-single-sidebar .is-completed [class*="icon"],
-body.single-lesson .tutor-course-topic-single-sidebar [class*="completed"] svg {
-  color: #34d399 !important;
 }
 
 /* ── Content area ── */
