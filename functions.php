@@ -4083,14 +4083,24 @@ body.single-lesson .tutor-course-topic-single-header .tutor-topbar-course-title 
   color: #fff !important;
 }
 
-/* ── Prev/Next footer bar: match content background ── */
+/* ── Hide the duplicate bottom "Mark as Complete" / Prev-Next footer bar.
+   The header bar already contains the same Mark as Complete form
+   rendered by tutor_lesson_mark_complete_html(), so the footer bar
+   is redundant and causes confusion (hidden until resize). ── */
 body.single-lesson .tutor-course-topic-single-footer {
-  background: #fff !important;
-  border-top: 1px solid #e5e7eb !important;
+  display: none !important;
 }
-body.single-lesson .tutor-course-topic-single-footer .tutor-btn {
-  border-color: rgba(0,0,0,.15) !important;
-  color: #212327 !important;
+
+/* ── Push Tutor header bar below the fixed site nav (64 px) ── */
+body.single-lesson .tutor-course-topic-single-header {
+  position: sticky !important;
+  top: var(--nav-h, 64px) !important;
+  z-index: 999 !important;
+}
+/* Offset the entire course-player body so nothing hides behind the fixed nav */
+body.single-lesson .tutor-course-topic-single-wrap,
+body.single-lesson #tutor-course-topic-single-wrap {
+  padding-top: var(--nav-h, 64px) !important;
 }
 
 /* ── Progress + mark as complete bar ── */
