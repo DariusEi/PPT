@@ -3781,9 +3781,30 @@ body.single-lesson .tutor-course-player-sidebar a:hover {
   color: #fff !important;
 }
 
-/* Course player: let content flow naturally so completion bar is visible */
-body.single-lesson #tutor-course-player {
+/* Course player: override Tutor's 100vh lock so completion bar is visible.
+   Tutor 2.0+ sets height:100vh on the player and overflow on the content
+   area, clipping the completion bar below the fold on desktop. */
+body.single-lesson #tutor-course-player,
+body.single-lesson .tutor-course-player {
+  height: auto !important;
   min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+body.single-lesson #tutor-course-player-content,
+body.single-lesson .tutor-course-player-content {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+/* Keep sidebar usable — let it scroll independently */
+body.single-lesson #tutor-course-player-sidebar,
+body.single-lesson .tutor-course-player-sidebar {
+  position: sticky !important;
+  top: 0;
+  height: 100vh !important;
+  overflow-y: auto !important;
 }
 </style>
     <?php
