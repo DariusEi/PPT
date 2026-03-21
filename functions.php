@@ -4077,20 +4077,82 @@ body.single-lesson .tutor-btn-complete-lesson:hover {
   filter: brightness(1.12) !important;
 }
 
-/* ── Sidebar: keep light bg, make text dark & readable ── */
+/* ── Sidebar: keep Tutor's light bg, override dark theme bleed-in ──
+   The Tutor dark overrides style generic classes (.tutor-course-content-list-item,
+   .tutor-accordion-item-header, etc.) with dark bg + light text. Those same
+   classes appear inside the sidebar, so we must reset them here. */
+body.single-lesson .tutor-course-topic-single-sidebar,
+body.single-lesson .tutor-course-topic-single-sidebar div,
+body.single-lesson .tutor-course-topic-single-sidebar ul,
+body.single-lesson .tutor-course-topic-single-sidebar ol,
+body.single-lesson .tutor-course-topic-single-sidebar li,
+body.single-lesson .tutor-course-topic-single-sidebar nav,
+body.single-lesson .tutor-course-topic-single-sidebar section,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-accordion-item-body,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item {
+  background: #fff !important;
+  background-color: #fff !important;
+}
 body.single-lesson .tutor-course-topic-single-sidebar,
 body.single-lesson .tutor-course-topic-single-sidebar a,
 body.single-lesson .tutor-course-topic-single-sidebar span,
 body.single-lesson .tutor-course-topic-single-sidebar p,
 body.single-lesson .tutor-course-topic-single-sidebar label,
 body.single-lesson .tutor-course-topic-single-sidebar button,
-body.single-lesson .tutor-course-topic-single-sidebar li {
+body.single-lesson .tutor-course-topic-single-sidebar li,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item a,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-lesson-title,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-topic-header *,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-accordion-item-header * {
   color: #1a1c23 !important;
 }
+/* Section headers (topic groups) */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-topic-header,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-accordion-item-header,
 body.single-lesson .tutor-course-topic-single-sidebar h3,
 body.single-lesson .tutor-course-topic-single-sidebar h4 {
+  background: #f8f8fa !important;
+  border-bottom: 1px solid #e5e7eb !important;
   color: #111320 !important;
   font-weight: 600 !important;
+}
+/* Item dividers */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item,
+body.single-lesson .tutor-course-topic-single-sidebar li {
+  border-bottom: 1px solid #f0f0f2 !important;
+  border-left: none !important;
+}
+/* Hover */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item a:hover,
+body.single-lesson .tutor-course-topic-single-sidebar a:hover {
+  background: #f3f0ff !important;
+  color: #5046e5 !important;
+}
+/* Active lesson */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item.is-active,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item.tutor-active,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item.current-lesson {
+  background: #f0edff !important;
+  border-left: 3px solid #7c6ef5 !important;
+}
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item.is-active a,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-content-list-item.tutor-active a {
+  color: #3730a3 !important;
+  font-weight: 600 !important;
+}
+/* Completion checkmarks — green */
+body.single-lesson .tutor-course-topic-single-sidebar .is-completed .tutor-lesson-completed-mark,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-completed-checkmark {
+  background: rgba(52,211,153,.12) !important;
+  border-color: #34d399 !important;
+  color: #34d399 !important;
+}
+/* Uncompleted circles — light gray border */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-lesson-completed-mark,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-round-checkbox {
+  border: 2px solid #d1d5db !important;
+  background: #fff !important;
 }
 
 /* ── Content area ── */
