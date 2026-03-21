@@ -3441,13 +3441,20 @@ body.single-courses .tutor-btn-outline-primary:hover {
    and body.single-lesson (correct Tutor LMS body class)
    ═══════════════════════════════════════════════════════════════ */
 
-/* Sidebar: force dark on EVERYTHING inside it */
+/* Sidebar: force dark on EVERYTHING inside it.
+   Pin the sidebar so it scrolls independently beneath the fixed site header.
+   The site nav is ~60 px tall; use 60 px offset so the sidebar never
+   slides behind it, and give it its own overflow scroll. */
 #tutor-course-player #tutor-course-player-sidebar,
 #tutor-course-player .tutor-course-player-sidebar,
 body.single-lesson #tutor-course-player-sidebar,
 body.single-lesson .tutor-course-player-sidebar {
   background: #111827 !important;
   background-color: #111827 !important;
+  position: sticky !important;
+  top: 60px !important;
+  height: calc(100vh - 60px) !important;
+  overflow-y: auto !important;
 }
 
 
