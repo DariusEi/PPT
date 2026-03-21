@@ -4098,9 +4098,18 @@ body.single-lesson .tutor-course-topic-single-footer .tutor-btn {
   color: #212327 !important;
 }
 
-/* ── Mobile progress + mark as complete bar ── */
+/* ── Progress + mark as complete bar ── */
+/* Tutor hides this on desktop (expects the header-bar version instead),
+   but the header bar is not rendering — force-show on all viewports. */
 body.single-lesson .tutor-spotlight-mobile-progress-complete {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   background: #fff !important;
+  align-items: center !important;
+  gap: 24px !important;
+  padding: 16px 32px !important;
+  border-top: 1px solid #e5e7eb !important;
 }
 body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-mark-btn,
 body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-complete-btn button {
