@@ -2362,7 +2362,6 @@ add_filter( 'login_redirect', function ( $url, $requested, $user ) {
  * design tokens. Targets dashboard, course player, and sidebar.
  */
 add_action( 'wp_head', function () {
-    if ( is_singular( 'lesson' ) ) return;
     ?>
 <style id="pt101-tutor-overrides">
 /* ── Design tokens (match style.css) ── */
@@ -4025,86 +4024,176 @@ body.single-courses #tutor-course-details-tab-info h3 + p {
 add_action( 'wp_head', function () {
     if ( ! is_singular( 'lesson' ) ) return;
     ?>
-<style id="pt101-lesson-bg-reset">
-/* The theme sets html/body { background: #0d0f1a; color: #fff } globally.
-   On lesson pages Tutor renders a white-background content area — reset the
-   body so Tutor's native layout is visible, then scope text colors to the
-   content area only (not the sidebar or header bar). */
+<style id="pt101-lesson-dark-theme">
+/* ══════════════════════════════════════════════════════════════
+   LESSON PAGE — Dark theme matching site design
+   Tokens: --tutor-bg (#0d0f1a), --tutor-surface (#13162b),
+           --tutor-text (#f0efea), --tutor-accent (#7c6ef5)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Base: dark background & light text ── */
 html,
 body.pt101.single-lesson,
 body.single-lesson {
-  background: #fff !important;
-  color: #212327 !important;
+  background: var(--tutor-bg, #0d0f1a) !important;
+  color: var(--tutor-text, #f0efea) !important;
 }
 
-/* ── Lesson content area: dark text on white background ── */
+/* ── Hide site header + footer (Tutor has its own nav) ── */
+body.single-lesson .site-header,
+body.single-lesson .site-footer {
+  display: none !important;
+}
+body.single-lesson {
+  padding-top: 0 !important;
+}
+
+/* ── Header bar ── */
+body.single-lesson .tutor-course-topic-single-header {
+  background: var(--tutor-surface, #13162b) !important;
+  border-bottom: 1px solid var(--tutor-border, rgba(255,255,255,.08)) !important;
+}
+body.single-lesson .tutor-course-topic-single-header,
+body.single-lesson .tutor-course-topic-single-header a,
+body.single-lesson .tutor-course-topic-single-header span,
+body.single-lesson .tutor-course-topic-single-header p {
+  color: #fff !important;
+}
+
+/* ── Mark as Complete button: accent solid + pointer cursor ── */
+body.single-lesson .tutor-course-topic-single-header button,
+body.single-lesson .tutor-course-topic-single-header [class*="complete"],
+body.single-lesson .tutor-course-topic-single-header a[class*="complete"],
+body.single-lesson .tutor-btn-complete-lesson {
+  cursor: pointer !important;
+  background: var(--tutor-accent, #7c6ef5) !important;
+  border-color: var(--tutor-accent, #7c6ef5) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+}
+body.single-lesson .tutor-course-topic-single-header button:hover,
+body.single-lesson .tutor-course-topic-single-header [class*="complete"]:hover,
+body.single-lesson .tutor-btn-complete-lesson:hover {
+  filter: brightness(1.12) !important;
+}
+
+/* ── Sidebar ── */
+body.single-lesson .tutor-course-topic-single-sidebar {
+  background: #111827 !important;
+  border-right: 1px solid var(--tutor-border, rgba(255,255,255,.08)) !important;
+  color: var(--tutor-text, #f0efea) !important;
+}
+body.single-lesson .tutor-course-topic-single-sidebar * {
+  color: inherit !important;
+}
+body.single-lesson .tutor-course-topic-single-sidebar a:hover {
+  background: rgba(124,110,245,.1) !important;
+  color: #fff !important;
+}
+/* Active lesson highlight */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-is-active,
+body.single-lesson .tutor-course-topic-single-sidebar .is-active,
+body.single-lesson .tutor-course-topic-single-sidebar li.current {
+  background: rgba(124,110,245,.12) !important;
+}
+/* Section headers in sidebar */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-course-topic-title,
+body.single-lesson .tutor-course-topic-single-sidebar h3,
+body.single-lesson .tutor-course-topic-single-sidebar h4,
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-accordion-item-header {
+  background: rgba(255,255,255,.04) !important;
+  border-bottom: 1px solid var(--tutor-border, rgba(255,255,255,.08)) !important;
+  font-weight: 600 !important;
+}
+/* Completed lesson checkmarks */
+body.single-lesson .tutor-course-topic-single-sidebar .tutor-icon-circle-mark-line::before,
+body.single-lesson .tutor-course-topic-single-sidebar [class*="completed"] svg,
+body.single-lesson .tutor-course-topic-single-sidebar .is-completed .tutor-course-content-list-item-status {
+  color: #34d399 !important;
+}
+
+/* ── Content area ── */
+body.single-lesson .tutor-course-topic-single-body {
+  background: var(--tutor-bg, #0d0f1a) !important;
+  color: var(--tutor-text, #f0efea) !important;
+}
 body.single-lesson .tutor-course-topic-single-body h1,
 body.single-lesson .tutor-course-topic-single-body h2,
 body.single-lesson .tutor-course-topic-single-body h3,
 body.single-lesson .tutor-course-topic-single-body h4,
 body.single-lesson .tutor-course-topic-single-body h5,
 body.single-lesson .tutor-course-topic-single-body h6 {
-  color: #1a1c23 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
 }
 body.single-lesson .tutor-course-topic-single-body p,
 body.single-lesson .tutor-course-topic-single-body li,
 body.single-lesson .tutor-course-topic-single-body blockquote,
 body.single-lesson .tutor-course-topic-single-body td,
 body.single-lesson .tutor-course-topic-single-body th {
-  color: #212327 !important;
-}
-body.single-lesson .tutor-course-topic-single-body a {
-  color: #5046e5 !important;
-}
-body.single-lesson .tutor-course-topic-single-body a:hover {
-  color: #3730a3 !important;
-}
-body.single-lesson .tutor-course-topic-single-body pre,
-body.single-lesson .tutor-course-topic-single-body code {
-  background: #f3f4f6 !important;
-  border: 1px solid #e5e7eb !important;
-  color: #1f2937 !important;
+  color: rgba(240,239,234,.88) !important;
+  line-height: 1.8 !important;
 }
 body.single-lesson .tutor-course-topic-single-body ul,
 body.single-lesson .tutor-course-topic-single-body ol {
-  color: #212327 !important;
+  color: rgba(240,239,234,.88) !important;
+  padding-left: 1.5em !important;
+}
+body.single-lesson .tutor-course-topic-single-body a {
+  color: var(--tutor-accent, #7c6ef5) !important;
+}
+body.single-lesson .tutor-course-topic-single-body a:hover {
+  color: #a5b4fc !important;
+}
+body.single-lesson .tutor-course-topic-single-body pre,
+body.single-lesson .tutor-course-topic-single-body code {
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 6px !important;
+  color: #a5b4fc !important;
+  font-size: .9em !important;
+}
+body.single-lesson .tutor-course-topic-single-body pre {
+  padding: 16px 20px !important;
+  overflow-x: auto !important;
+}
+body.single-lesson .tutor-course-topic-single-body blockquote {
+  border-left: 3px solid var(--tutor-accent, #7c6ef5) !important;
+  padding-left: 1em !important;
+  opacity: .85 !important;
 }
 
-/* ── Top header bar: white text on Tutor primary-color background ── */
-/* Tutor renders the lesson top bar with bg: var(--tutor-color-primary).
-   Our broad body color reset would make its text dark — target specific
-   children rather than using a wildcard to avoid clobbering status colors. */
-body.single-lesson .tutor-course-topic-single-header,
-body.single-lesson .tutor-course-topic-single-header a,
-body.single-lesson .tutor-course-topic-single-header span,
-body.single-lesson .tutor-course-topic-single-header p,
-body.single-lesson .tutor-course-topic-single-header .tutor-topbar-course-title {
+/* ── Footer bar (Prev / Next) ── */
+body.single-lesson .tutor-course-topic-single-footer {
+  background: var(--tutor-surface, #13162b) !important;
+  border-top: 1px solid var(--tutor-border, rgba(255,255,255,.08)) !important;
+}
+body.single-lesson .tutor-course-topic-single-footer a,
+body.single-lesson .tutor-course-topic-single-footer button,
+body.single-lesson .tutor-course-topic-single-footer .tutor-btn {
+  background: rgba(124,110,245,.15) !important;
+  border: 1px solid rgba(124,110,245,.35) !important;
+  color: var(--tutor-accent, #7c6ef5) !important;
+  border-radius: 8px !important;
+  padding: 10px 22px !important;
+  font-weight: 600 !important;
+  font-size: .875rem !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+body.single-lesson .tutor-course-topic-single-footer a:hover,
+body.single-lesson .tutor-course-topic-single-footer button:hover {
+  background: var(--tutor-accent, #7c6ef5) !important;
   color: #fff !important;
 }
 
-/* ── Hide site header + site footer on lesson pages ──
-   The Tutor course player provides its own header bar (with course title,
-   back button, progress, and Mark as Complete) and Prev/Next navigation.
-   Hiding the fixed site header (z-index: 9999) eliminates the z-index
-   conflict that buried the Mark as Complete button, and removes the
-   80 px body-padding workaround that pushed the footer bar off-screen. */
-body.single-lesson .site-header,
-body.single-lesson .site-footer {
-  display: none !important;
-}
-/* No fixed header → reset body padding so Tutor's layout starts at top */
-body.single-lesson {
-  padding-top: 0 !important;
-}
-
-/* ── Progress + mark as complete bar ── */
-/* Let Tutor handle its own completion UI natively.
-   Only ensure the progress bar colors match our brand. */
+/* ── Progress bar: brand colors ── */
 body.single-lesson .tutor-progress-bar {
-  background: rgba(0,0,0,.1) !important;
+  background: rgba(255,255,255,.08) !important;
 }
 body.single-lesson .tutor-progress-value {
-  background: #5046e5 !important;
+  background: var(--tutor-accent, #7c6ef5) !important;
 }
 </style>
     <?php
