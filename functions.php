@@ -3572,9 +3572,9 @@ add_action( 'wp_footer', function () {
 <script>
 (function(){
   function tutorFix(){
-    /* Guard: only run on Tutor course pages */
+    /* Guard: only run on course DETAIL pages, never on lesson pages */
+    if(document.body.classList.contains('single-lesson')) return;
     if(!document.querySelector('.tutor-course-details-tab') &&
-       !document.querySelector('.tutor-accordion-item') &&
        !document.querySelector('.tutor-single-course-wrap')){ return; }
 
     /* ── Tab links: generous padding ── */
@@ -4094,39 +4094,8 @@ body.single-lesson .tutor-course-topic-single-footer .tutor-btn {
 }
 
 /* ── Progress + mark as complete bar ── */
-/* Tutor hides this on desktop (expects the header-bar version instead),
-   but the header bar is not rendering — force-show on all viewports.
-   Fixed to the viewport bottom so it's always visible and clickable
-   regardless of scroll position or container overflow settings. */
-body.single-lesson {
-  padding-bottom: 72px !important; /* prevent content hiding behind fixed bar */
-}
-body.single-lesson .tutor-spotlight-mobile-progress-complete {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  z-index: 9999 !important;
-  background: #fff !important;
-  align-items: center !important;
-  gap: 24px !important;
-  padding: 16px 32px !important;
-  border-top: 1px solid #e5e7eb !important;
-  box-shadow: 0 -2px 8px rgba(0,0,0,.08) !important;
-}
-body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-mark-btn,
-body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-complete-btn button {
-  background: #5046e5 !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 10px 22px !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-}
+/* Let Tutor handle its own completion UI natively.
+   Only ensure the progress bar colors match our brand. */
 body.single-lesson .tutor-progress-bar {
   background: rgba(0,0,0,.1) !important;
 }
