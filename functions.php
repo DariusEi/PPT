@@ -4044,12 +4044,11 @@ add_action( 'wp_head', function () {
   --tutor-accent:    #7c6ef5;
 }
 
-/* ── Base: dark background & light text ── */
+/* ── Base: dark background only (NO global color — sidebar needs to stay dark-text) ── */
 html,
 body.pt101.single-lesson,
 body.single-lesson {
   background: var(--tutor-bg) !important;
-  color: var(--tutor-text) !important;
 }
 
 /* ── Hide site header + footer (Tutor has its own nav) ── */
@@ -4088,26 +4087,6 @@ body.single-lesson .tutor-course-topic-single-header button:hover,
 body.single-lesson .tutor-course-topic-single-header [class*="complete"]:hover,
 body.single-lesson .tutor-btn-complete-lesson:hover {
   filter: brightness(1.12) !important;
-}
-
-/* ── Sidebar: force readable dark text on white bg ──
-   Target every possible sidebar container class (topic-single & player layouts)
-   and use wildcard to catch all nested elements. */
-body.single-lesson .tutor-course-topic-single-sidebar,
-body.single-lesson [class*="sidebar"] {
-  background: #fff !important;
-}
-body.single-lesson .tutor-course-topic-single-sidebar *,
-body.single-lesson [class*="sidebar"] * {
-  color: #1a1c23 !important;
-}
-/* Sidebar section headers */
-body.single-lesson .tutor-course-topic-single-sidebar h3,
-body.single-lesson .tutor-course-topic-single-sidebar h4,
-body.single-lesson [class*="sidebar"] h3,
-body.single-lesson [class*="sidebar"] h4 {
-  color: #111320 !important;
-  font-weight: 600 !important;
 }
 
 /* ── Content area ── */
