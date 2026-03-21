@@ -2454,15 +2454,14 @@ body.single-quiz .btn-hdr-login {
 body.tutor-screen-frontend-dashboard,
 body.tutor-frontend,
 body.single-courses,
-body.single-lesson,
 body.single-quiz,
 body.single-assignments {
   padding-top: 80px !important;
 }
+/* single-lesson excluded: site header is hidden on lesson pages */
 body.admin-bar.tutor-screen-frontend-dashboard,
 body.admin-bar.tutor-frontend,
-body.admin-bar.single-courses,
-body.admin-bar.single-lesson {
+body.admin-bar.single-courses {
   padding-top: 112px !important; /* 80 + 32px admin bar */
 }
 /* Inner page-wrap must NOT add extra top padding */
@@ -3452,8 +3451,8 @@ body.single-lesson .tutor-course-player-sidebar {
   background: #111827 !important;
   background-color: #111827 !important;
   position: sticky !important;
-  top: 60px !important;
-  height: calc(100vh - 60px) !important;
+  top: 0 !important;
+  height: 100vh !important;
   overflow-y: auto !important;
 }
 
@@ -4083,24 +4082,19 @@ body.single-lesson .tutor-course-topic-single-header .tutor-topbar-course-title 
   color: #fff !important;
 }
 
-/* ── Hide the duplicate bottom "Mark as Complete" / Prev-Next footer bar.
-   The header bar already contains the same Mark as Complete form
-   rendered by tutor_lesson_mark_complete_html(), so the footer bar
-   is redundant and causes confusion (hidden until resize). ── */
-body.single-lesson .tutor-course-topic-single-footer {
+/* ── Hide site header + site footer on lesson pages ──
+   The Tutor course player provides its own header bar (with course title,
+   back button, progress, and Mark as Complete) and Prev/Next navigation.
+   Hiding the fixed site header (z-index: 9999) eliminates the z-index
+   conflict that buried the Mark as Complete button, and removes the
+   80 px body-padding workaround that pushed the footer bar off-screen. */
+body.single-lesson .site-header,
+body.single-lesson .site-footer {
   display: none !important;
 }
-
-/* ── Push Tutor header bar below the fixed site nav (64 px) ── */
-body.single-lesson .tutor-course-topic-single-header {
-  position: sticky !important;
-  top: var(--nav-h, 64px) !important;
-  z-index: 999 !important;
-}
-/* Offset the entire course-player body so nothing hides behind the fixed nav */
-body.single-lesson .tutor-course-topic-single-wrap,
-body.single-lesson #tutor-course-topic-single-wrap {
-  padding-top: var(--nav-h, 64px) !important;
+/* No fixed header → reset body padding so Tutor's layout starts at top */
+body.single-lesson {
+  padding-top: 0 !important;
 }
 
 /* ── Progress + mark as complete bar ── */
@@ -4111,32 +4105,6 @@ body.single-lesson .tutor-progress-bar {
 }
 body.single-lesson .tutor-progress-value {
   background: #5046e5 !important;
-}
-
-/* ── Site header nav — white text on dark header background ── */
-body.single-lesson .site-logo,
-body.single-lesson .nav-dropdown-trigger,
-body.single-lesson .primary-nav > li > a,
-body.single-lesson .primary-nav > li > button,
-body.single-lesson .btn-hdr-login,
-body.single-lesson .btn-hdr-enroll {
-  color: #f0f0f5 !important;
-}
-
-/* ── Site footer ── */
-body.single-lesson .site-footer {
-  background: #f0efea !important;
-  color: #111320 !important;
-}
-body.single-lesson .site-footer h4,
-body.single-lesson .site-footer a,
-body.single-lesson .site-footer li,
-body.single-lesson .site-footer p {
-  color: #111320 !important;
-}
-body.single-lesson .site-footer .footer-legal-links a,
-body.single-lesson .site-footer .footer-cookie-btn {
-  color: rgba(17,19,32,.55) !important;
 }
 </style>
     <?php
