@@ -2038,157 +2038,6 @@ add_action( 'wp_footer', function () {
     <?php
 }, 999 );
 
-/* ── Enrolled lesson UX/UI polish (single lesson + enrolled course view) ── */
-add_action( 'wp_head', function () {
-    if ( true ) return;
-    ?>
-<style id="pt101-enrolled-ux-polish">
-/* Sticky top lesson bar with better hierarchy */
-body.single-lesson .tutor-course-topic-single-header,
-body.single-lesson .tutor-lesson-topbar,
-body.single-courses .tutor-course-topic-single-header {
-  position: sticky !important;
-  top: 74px !important;
-  z-index: 60 !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,.22) !important;
-}
-body.admin-bar.single-lesson .tutor-course-topic-single-header,
-body.admin-bar.single-lesson .tutor-lesson-topbar,
-body.admin-bar.single-courses .tutor-course-topic-single-header {
-  top: 106px !important;
-}
-
-/* Improve reading comfort in lesson body */
-body.single-lesson .tutor-lesson-content,
-body.single-lesson .tutor-single-entry-content,
-body.single-lesson .tutor-course-topic-single-body {
-  max-width: 860px !important;
-  margin-inline: auto !important;
-}
-body.single-lesson .tutor-lesson-content p,
-body.single-lesson .tutor-single-entry-content p,
-body.single-lesson .tutor-course-topic-single-body p {
-  line-height: 1.85 !important;
-  font-size: 1.08rem !important;
-  color: rgba(240, 240, 245, .88) !important;
-}
-body.single-lesson .tutor-lesson-content h1,
-body.single-lesson .tutor-lesson-content h2,
-body.single-lesson .tutor-lesson-content h3 {
-  color: #f5f6fb !important;
-  letter-spacing: -0.02em !important;
-}
-
-/* Sidebar lesson items: stronger active/incomplete states */
-body.single-lesson .tutor-course-topics-list li,
-body.single-courses .tutor-course-topics-list li {
-  border-radius: 10px !important;
-  margin: 4px 6px !important;
-  border: 1px solid rgba(255,255,255,.06) !important;
-  transition: border-color .18s ease, background .18s ease, transform .18s ease !important;
-}
-body.single-lesson .tutor-course-topics-list li:hover,
-body.single-courses .tutor-course-topics-list li:hover {
-  border-color: rgba(124,110,245,.45) !important;
-  background: rgba(124,110,245,.10) !important;
-  transform: translateY(-1px) !important;
-}
-body.single-lesson .tutor-course-topics-list li.tutor-active,
-body.single-lesson .tutor-course-topics-list li.active,
-body.single-courses .tutor-course-topics-list li.tutor-active,
-body.single-courses .tutor-course-topics-list li.active {
-  border-color: rgba(124,110,245,.75) !important;
-  background: rgba(124,110,245,.16) !important;
-  box-shadow: 0 0 0 1px rgba(124,110,245,.25) inset !important;
-}
-
-/* Mark-as-complete button: clearer primary action */
-body.single-lesson .tutor-btn.tutor-btn-primary,
-body.single-lesson .tutor-lesson-mark-complete,
-body.single-lesson [class*="mark-complete"] {
-  min-height: 44px !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.01em !important;
-  box-shadow: 0 8px 20px rgba(124,110,245,.28) !important;
-}
-
-/* Mobile: keep reading area spacious and avoid cramped topic list */
-@media (max-width: 1024px) {
-  body.single-lesson .tutor-lesson-content,
-  body.single-lesson .tutor-single-entry-content,
-  body.single-lesson .tutor-course-topic-single-body {
-    max-width: none !important;
-    padding-inline: 18px !important;
-  }
-  body.single-lesson .tutor-course-topics-list li,
-  body.single-courses .tutor-course-topics-list li {
-    margin-inline: 2px !important;
-  }
-}
-</style>
-    <?php
-}, 110 );
-
-/* ── Enrolled lesson micro-UX: focus active item + quick next shortcut ── */
-add_action( 'wp_footer', function () {
-    if ( true ) return;
-    ?>
-<script>
-(function () {
-  function getActiveLessonItem() {
-    return document.querySelector(
-      '.tutor-course-topics-list li.tutor-active,' +
-      '.tutor-course-topics-list li.active,' +
-      '.tutor-course-topics-list .is-active'
-    );
-  }
-
-  function scrollActiveIntoView() {
-    var active = getActiveLessonItem();
-    if (!active || !active.scrollIntoView) return;
-    active.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }
-
-  function nextLessonLink() {
-    var active = getActiveLessonItem();
-    if (!active) return null;
-    var next = active.nextElementSibling;
-    while (next) {
-      var link = next.querySelector('a[href]');
-      if (link) return link;
-      next = next.nextElementSibling;
-    }
-    return null;
-  }
-
-  function bindShortcut() {
-    document.addEventListener('keydown', function (e) {
-      if (e.defaultPrevented) return;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key !== 'n' && e.key !== 'N') return;
-      var tag = (document.activeElement && document.activeElement.tagName) || '';
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      var link = nextLessonLink();
-      if (!link) return;
-      e.preventDefault();
-      window.location.href = link.href;
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      scrollActiveIntoView();
-      bindShortcut();
-    });
-  } else {
-    scrollActiveIntoView();
-    bindShortcut();
-  }
-})();
-</script>
-    <?php
-}, 1000 );
 
 /* ── Validate terms consent on server side ────────────────────── */
 add_action( 'woocommerce_checkout_process', function () {
@@ -3601,83 +3450,6 @@ body.single-lesson .tutor-course-player-sidebar {
   background-color: #111827 !important;
 }
 
-/* ── Force dark on EVERY element inside the sidebar ─────────────────────────
-   Use the most aggressive selector possible. Tutor v2 uses many class variants
-   so we target by parent ID/class + wildcard, then restore specific overrides.  */
-#tutor-course-player #tutor-course-player-sidebar,
-#tutor-course-player .tutor-course-player-sidebar,
-#tutor-course-player .tutor-popup-course-area,
-#tutor-course-player .tutor-lead-info,
-body.single-lesson #tutor-course-player-sidebar,
-body.single-lesson .tutor-course-player-sidebar,
-body.single-lesson .tutor-popup-course-area,
-body.single-lesson .tutor-lead-info {
-  background: #111827 !important;
-  background-color: #111827 !important;
-}
-
-/* All descendants — wipe any white/grey bg Tutor injects */
-#tutor-course-player #tutor-course-player-sidebar *,
-#tutor-course-player .tutor-course-player-sidebar *,
-#tutor-course-player .tutor-popup-course-area *,
-#tutor-course-player .tutor-lead-info *,
-body.single-lesson #tutor-course-player-sidebar *,
-body.single-lesson .tutor-course-player-sidebar *,
-body.single-lesson .tutor-popup-course-area *,
-body.single-lesson .tutor-lead-info * {
-  background-color: #111827 !important;
-}
-
-/* Restore: topic/accordion HEADERS → slightly lighter */
-#tutor-course-player .tutor-accordion-item-header,
-#tutor-course-player [class*="topic-header"],
-#tutor-course-player [class*="topic-head"],
-#tutor-course-player [class*="section-header"],
-body.single-lesson [class*="topic-header"],
-body.single-lesson [class*="topic-head"] {
-  background-color: #161d2e !important;
-}
-#tutor-course-player .tutor-accordion-item-header:hover,
-#tutor-course-player [class*="topic-header"]:hover {
-  background-color: #1a2340 !important;
-}
-
-/* Active lesson item — purple tint */
-#tutor-course-player .tutor-course-content-list-item.is-active,
-#tutor-course-player [class*="content-list-item"].is-active,
-#tutor-course-player [class*="content-list-item"].current,
-#tutor-course-player [class*="topic-item"].is-active,
-#tutor-course-player [class*="lesson-item"].is-active,
-body.single-lesson [class*="topic-item"].is-active {
-  background-color: rgba(124,110,245,.15) !important;
-  border-left: 3px solid var(--tutor-accent) !important;
-}
-
-/* All sidebar text: readable on dark background */
-#tutor-course-player #tutor-course-player-sidebar,
-#tutor-course-player #tutor-course-player-sidebar *,
-#tutor-course-player .tutor-course-player-sidebar,
-#tutor-course-player .tutor-course-player-sidebar *,
-#tutor-course-player .tutor-popup-course-area,
-#tutor-course-player .tutor-popup-course-area *,
-body.single-lesson #tutor-course-player-sidebar,
-body.single-lesson #tutor-course-player-sidebar *,
-body.single-lesson .tutor-course-player-sidebar *,
-body.single-lesson .tutor-popup-course-area * {
-  color: rgba(240,239,234,.82) !important;
-}
-#tutor-course-player #tutor-course-player-sidebar a:hover,
-body.single-lesson .tutor-course-player-sidebar a:hover {
-  color: #fff !important;
-}
-/* Active / currently playing lesson */
-#tutor-course-player [class*="content-list-item"].is-active a,
-#tutor-course-player [class*="content-list-item"].is-active span,
-#tutor-course-player [class*="topic-item"].is-active a,
-#tutor-course-player [class*="topic-item"].is-active span {
-  color: var(--tutor-text) !important;
-  font-weight: 600 !important;
-}
 
 /* Video: full width — do NOT touch overflow or aspect-ratio,
    Plyr.js uses padding-top:56.25% intrinsic sizing — breaking it makes video collapse.
@@ -3781,31 +3553,6 @@ body.single-lesson .tutor-course-player-sidebar a:hover {
   color: #fff !important;
 }
 
-/* Course player: override Tutor's 100vh lock so completion bar is visible.
-   Tutor 2.0+ sets height:100vh on the player and overflow on the content
-   area, clipping the completion bar below the fold on desktop. */
-body.single-lesson #tutor-course-player,
-body.single-lesson .tutor-course-player {
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-body.single-lesson #tutor-course-player-content,
-body.single-lesson .tutor-course-player-content {
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-/* Keep sidebar usable — let it scroll independently */
-body.single-lesson #tutor-course-player-sidebar,
-body.single-lesson .tutor-course-player-sidebar {
-  position: sticky !important;
-  top: 0;
-  height: 100vh !important;
-  overflow-y: auto !important;
-}
 </style>
     <?php
 }, 100 );
@@ -4191,93 +3938,6 @@ body.tutor-frontend .tutor-btn-primary {
     <?php
 }, 101 );
 
-/* ── Lesson player: JS force-override sidebar (same pattern as course page) ── */
-add_action( 'wp_footer', function () {
-    if ( true ) return;
-    ?>
-<script>
-(function(){
-  function lessonFix(){
-    /* Sidebar: force dark */
-    ['.tutor-lesson-sidebar','.tutor-course-single-sidebar-wrapper'].forEach(function(s){
-      document.querySelectorAll(s).forEach(function(el){
-        el.style.setProperty('background','#111827','important');
-        el.style.setProperty('background-color','#111827','important');
-      });
-    });
-    /* All text inside sidebar: readable */
-    document.querySelectorAll('.tutor-lesson-sidebar *,.tutor-course-single-sidebar-wrapper *').forEach(function(el){
-      var bg=getComputedStyle(el).backgroundColor;
-      if(bg==='rgb(239, 241, 246)'||bg==='rgb(255, 255, 255)'){
-        el.style.setProperty('background-color','#111827','important');
-      }
-    });
-  }
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',lessonFix);}
-  else{lessonFix();}
-  window.addEventListener('load',lessonFix);
-})();
-</script>
-    <?php
-}, 999 );
-
-
-/* ── Lesson completion bridge (single reliable layer) ── */
-add_action( 'wp_footer', function () {
-    if ( true ) return;
-    ?>
-<script>
-(function(){
-  function all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
-  function visible(el){ return !!(el && el.offsetParent !== null); }
-  function txt(el){ return ((el && el.textContent) || '').replace(/\s+/g,' ').trim().toLowerCase(); }
-
-  function completionTargets(){
-    var sels = [
-      'form[action*="complete"] button[type="submit"]',
-      'form[action*="complete"] input[type="submit"]',
-      'button[data-tutor-action*="complete"]',
-      'a[data-tutor-action*="complete"]',
-      'button[name*="complete"]',
-      '.tutor-lesson-mark-complete',
-      'a[href*="complete_lesson"]',
-      'a[href*="mark_as_complete"]'
-    ];
-    var out = [];
-    sels.forEach(function(s){ all(s).forEach(function(el){ if(out.indexOf(el)===-1) out.push(el); }); });
-    return out.filter(visible);
-  }
-
-  function isMarkButton(el){
-    if(!el) return false;
-    var t = txt(el);
-    return t.indexOf('mark as complete') !== -1 || t.indexOf('complete lesson') !== -1;
-  }
-
-  document.addEventListener('click', function(e){
-    var trigger = e.target.closest('button, a, [role="button"]');
-    if(!isMarkButton(trigger)) return;
-
-    var targets = completionTargets();
-    if(!targets.length) return;
-
-    // If this click is already on a real completion target, keep native flow.
-    if(targets.indexOf(trigger) !== -1) return;
-
-    // Forward topbar/clone button clicks to Tutor's real completion control.
-    e.preventDefault();
-    var target = targets[0];
-    var form = target.closest && target.closest('form');
-    if(form && typeof form.submit === 'function') {
-      form.submit();
-      return;
-    }
-    target.click();
-  }, true);
-})();
-</script>
-    <?php
-}, 1200 );
 
 /* ── Course info text placement refinement ── */
 add_action( 'wp_head', function () {
@@ -4354,202 +4014,16 @@ body.single-courses #tutor-course-details-tab-info h3 + p {
 }, 1500 );
 
 
-/* ── Tutor lesson page: default structure + dark skin only ── */
-add_action( 'wp_head', function () {
-    if ( true ) return;
-    ?>
-<style id="pt101-lesson-default-dark-skin">
-/* Keep Tutor default layout/spacing. Only recolor for site dark theme. */
-body.single-lesson,
-body.single-lesson #tutor-course-player,
-body.single-lesson .tutor-wrap {
-  background: #090f22 !important;
-  color: #f0efea !important;
-}
-
-body.single-lesson .tutor-course-player-sidebar,
-body.single-lesson #tutor-course-player-sidebar,
-body.single-lesson .tutor-course-topics-list-wrap,
-body.single-lesson .tutor-lesson-sidebar {
-  background: #11192f !important;
-  border-color: rgba(255,255,255,.10) !important;
-}
-
-body.single-lesson .tutor-course-topic-single-header,
-body.single-lesson .tutor-lesson-topbar {
-  background: #4866d9 !important;
-  border-color: rgba(255,255,255,.14) !important;
-}
-
-body.single-lesson .tutor-course-topic-single-body,
-body.single-lesson .tutor-single-entry-content,
-body.single-lesson .tutor-lesson-content,
-body.single-lesson .tutor-course-content-wrap {
-  background: transparent !important;
-}
-
-body.single-lesson p,
-body.single-lesson h1,
-body.single-lesson h2,
-body.single-lesson h3,
-body.single-lesson h4,
-body.single-lesson li,
-body.single-lesson span,
-body.single-lesson a {
-  color: #f0efea !important;
-}
-
-body.single-lesson .tutor-text-muted,
-body.single-lesson [class*="muted"],
-body.single-lesson [class*="meta"] {
-  color: rgba(240,239,234,.70) !important;
-}
-
-body.single-lesson button,
-body.single-lesson .tutor-btn {
-  border-color: rgba(255,255,255,.22) !important;
-}
-
-body.single-lesson .tutor-lesson-mark-complete,
-body.single-lesson button[data-tutor-action*="complete"],
-body.single-lesson a[data-tutor-action*="complete"] {
-  background: #7c6ef5 !important;
-  color: #fff !important;
-}
-</style>
-    <?php
-}, 5000 );
-
-
-/* ── Lesson-only dark color pass (default Tutor layout) ── */
-add_action( 'wp_head', function () {
-    if ( true ) return;
-    ?>
-<style id="pt101-lesson-default-dark-skin-v2">
-/* No layout changes: color/background only */
-body.single-lesson .tutor-course-topics-list li,
-body.single-lesson .tutor-course-topic,
-body.single-lesson .tutor-topic-item,
-body.single-lesson .tutor-course-content-list-item,
-body.single-lesson .tutor-course-content-list-item a,
-body.single-lesson .tutor-course-topics-list a {
-  background: #121a2f !important;
-  color: #f0efea !important;
-  border-color: rgba(255,255,255,.10) !important;
-}
-
-body.single-lesson .tutor-course-topics-list li.tutor-active,
-body.single-lesson .tutor-course-topics-list li.active,
-body.single-lesson .tutor-course-content-list-item.is-active,
-body.single-lesson .tutor-course-content-list-item.current {
-  background: #1a2340 !important;
-  color: #ffffff !important;
-}
-
-body.single-lesson .tutor-course-topics-list li * {
-  color: inherit !important;
-}
-
-body.single-lesson .tutor-iconic-btn,
-body.single-lesson .tutor-icon,
-body.single-lesson [class*="tutor-icon"] {
-  color: rgba(240,239,234,.78) !important;
-}
-</style>
-    <?php
-}, 5001 );
-
-
-/* ── Lesson page: minimal safe dark skin (default Tutor controls intact) ── */
-add_action( 'wp_head', function () {
-    if ( true ) return; // Disabled: reverting lesson page to default Tutor LMS design
-    if ( ! is_singular( 'lesson' ) ) return;
-    ?>
-<style id="pt101-lesson-default-dark-skin-safe-v3">
-/* Structure/layout untouched: color only */
-body.single-lesson,
-body.single-lesson #tutor-course-player {
-  background: #090f22 !important;
-}
-
-body.single-lesson #tutor-course-player-sidebar,
-body.single-lesson .tutor-course-player-sidebar,
-body.single-lesson .tutor-course-topics-list-wrap,
-body.single-lesson .tutor-course-content-list-wrap {
-  background: #101a32 !important;
-  border-color: rgba(255,255,255,.10) !important;
-}
-
-body.single-lesson .tutor-course-content-list-item,
-body.single-lesson .tutor-course-content-list li,
-body.single-lesson .tutor-course-topics-list li,
-body.single-lesson .tutor-topic-item {
-  background: #111d37 !important;
-  border-color: rgba(255,255,255,.10) !important;
-}
-
-body.single-lesson .tutor-course-content-list-item.is-active,
-body.single-lesson .tutor-course-content-list-item.current,
-body.single-lesson .tutor-course-topics-list li.tutor-active,
-body.single-lesson .tutor-course-topics-list li.active {
-  background: #1a2849 !important;
-}
-
-body.single-lesson .tutor-course-content-list-item *,
-body.single-lesson .tutor-course-topics-list li * {
-  color: #e9ecf5 !important;
-}
-
-body.single-lesson .tutor-course-topic-single-header,
-body.single-lesson .tutor-lesson-topbar {
-  background: #4b68de !important;
-  border-color: rgba(255,255,255,.16) !important;
-}
-
-body.single-lesson .tutor-course-topic-single-body,
-body.single-lesson .tutor-single-entry-content,
-body.single-lesson .tutor-lesson-content {
-  background: #0b1227 !important;
-  color: #eef1f8 !important;
-}
-
-body.single-lesson .tutor-course-topic-single-body p,
-body.single-lesson .tutor-single-entry-content p,
-body.single-lesson .tutor-lesson-content p,
-body.single-lesson .tutor-course-topic-single-body h1,
-body.single-lesson .tutor-course-topic-single-body h2,
-body.single-lesson .tutor-course-topic-single-body h3 {
-  color: #eef1f8 !important;
-}
-
-/* Ensure default Tutor nav/completion controls stay visible */
-body.single-lesson .tutor-lesson-nav a,
-body.single-lesson .tutor-btn-complete-lesson,
-body.single-lesson .tutor-lesson-mark-complete,
-body.single-lesson button[data-tutor-action*="complete"],
-body.single-lesson a[data-tutor-action*="complete"] {
-  color: #ffffff !important;
-  border-color: rgba(255,255,255,.26) !important;
-}
-
-body.single-lesson .tutor-progress-bar {
-  background: rgba(255,255,255,.18) !important;
-}
-body.single-lesson .tutor-progress-bar__fill,
-body.single-lesson .tutor-progress-bar > span {
-  background: #7c6ef5 !important;
-}
-</style>
-    <?php
-}, 5100 );
 
 /* ── Lesson page: reset theme dark background so Tutor LMS controls the canvas ── */
 add_action( 'wp_head', function () {
     if ( ! is_singular( 'lesson' ) ) return;
     ?>
 <style id="pt101-lesson-bg-reset">
-/* The theme sets html/body.pt101 { background: #0d0f1a; color: #fff } globally.
-   Reset on lesson pages so Tutor LMS's native layout shows correctly. */
+/* The theme sets html/body { background: #0d0f1a; color: #fff } globally.
+   On lesson pages Tutor renders a white-background content area — reset the
+   body so Tutor's native layout is visible, then scope text colors to the
+   content area only (not the sidebar or header bar). */
 html,
 body.pt101.single-lesson,
 body.single-lesson {
@@ -4557,60 +4031,94 @@ body.single-lesson {
   color: #212327 !important;
 }
 
-/* Override theme's global white text rules for lesson content */
-body.single-lesson h1,
-body.single-lesson h2,
-body.single-lesson h3,
-body.single-lesson h4,
-body.single-lesson h5,
-body.single-lesson h6 {
+/* ── Lesson content area: dark text on white background ── */
+body.single-lesson .tutor-course-topic-single-body h1,
+body.single-lesson .tutor-course-topic-single-body h2,
+body.single-lesson .tutor-course-topic-single-body h3,
+body.single-lesson .tutor-course-topic-single-body h4,
+body.single-lesson .tutor-course-topic-single-body h5,
+body.single-lesson .tutor-course-topic-single-body h6 {
   color: #1a1c23 !important;
 }
-body.single-lesson p,
-body.single-lesson li,
-body.single-lesson span,
-body.single-lesson div,
-body.single-lesson td,
-body.single-lesson th,
-body.single-lesson label,
-body.single-lesson blockquote {
+body.single-lesson .tutor-course-topic-single-body p,
+body.single-lesson .tutor-course-topic-single-body li,
+body.single-lesson .tutor-course-topic-single-body blockquote,
+body.single-lesson .tutor-course-topic-single-body td,
+body.single-lesson .tutor-course-topic-single-body th {
   color: #212327 !important;
 }
-body.single-lesson a {
+body.single-lesson .tutor-course-topic-single-body a {
   color: #5046e5 !important;
 }
-body.single-lesson a:hover {
+body.single-lesson .tutor-course-topic-single-body a:hover {
   color: #3730a3 !important;
 }
-/* Muted/secondary text */
-body.single-lesson .tutor-text-muted,
-body.single-lesson [class*="muted"],
-body.single-lesson [class*="meta"] {
-  color: #6b7280 !important;
+body.single-lesson .tutor-course-topic-single-body pre,
+body.single-lesson .tutor-course-topic-single-body code {
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
+  color: #1f2937 !important;
+}
+body.single-lesson .tutor-course-topic-single-body ul,
+body.single-lesson .tutor-course-topic-single-body ol {
+  color: #212327 !important;
 }
 
-/* ── Footer: restore native styling (must come AFTER the broad overrides to win) ── */
-body.single-lesson .site-footer {
-  background: #f0efea !important;
-  color: #111320 !important;
+/* ── Top header bar: white text on Tutor primary-color background ── */
+/* Tutor renders the lesson top bar with bg: var(--tutor-color-primary).
+   Our broad body color reset would make its text dark — explicitly keep it white. */
+body.single-lesson .tutor-course-topic-single-header,
+body.single-lesson .tutor-course-topic-single-header * {
+  color: #fff !important;
 }
-body.single-lesson .site-footer h4 {
-  color: #000 !important;
+/* Mark as Complete button in the top bar */
+body.single-lesson .tutor-course-topic-single-header .tutor-topbar-mark-btn,
+body.single-lesson .tutor-course-topic-single-header .tutor-topbar-complete-btn button {
+  background: rgba(255,255,255,.15) !important;
+  border: 1px solid rgba(255,255,255,.5) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 7px 18px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
 }
-body.single-lesson .site-footer a,
-body.single-lesson .site-footer li,
-body.single-lesson .site-footer span,
-body.single-lesson .site-footer div,
-body.single-lesson .site-footer p {
-  color: #111320 !important;
-}
-body.single-lesson .site-footer .footer-legal-links a,
-body.single-lesson .site-footer .footer-cookie-btn {
-  color: rgba(17,19,32,.55) !important;
+body.single-lesson .tutor-course-topic-single-header .tutor-topbar-mark-btn:hover,
+body.single-lesson .tutor-course-topic-single-header .tutor-topbar-complete-btn button:hover {
+  background: rgba(255,255,255,.28) !important;
 }
 
-/* Restore header nav — white text on dark background.
-   Target only the nav elements, NOT the dropdown panels (which have their own dark text). */
+/* ── Prev/Next footer bar: match content background ── */
+body.single-lesson .tutor-course-topic-single-footer {
+  background: #fff !important;
+  border-top: 1px solid #e5e7eb !important;
+}
+body.single-lesson .tutor-course-topic-single-footer .tutor-btn {
+  border-color: rgba(0,0,0,.15) !important;
+  color: #212327 !important;
+}
+
+/* ── Mobile progress + mark as complete bar ── */
+body.single-lesson .tutor-spotlight-mobile-progress-complete {
+  background: #fff !important;
+}
+body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-mark-btn,
+body.single-lesson .tutor-spotlight-mobile-progress-complete .tutor-topbar-complete-btn button {
+  background: #5046e5 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 22px !important;
+  font-weight: 600 !important;
+}
+body.single-lesson .tutor-progress-bar {
+  background: rgba(0,0,0,.1) !important;
+}
+body.single-lesson .tutor-progress-value {
+  background: #5046e5 !important;
+}
+
+/* ── Site header nav — white text on dark header background ── */
 body.single-lesson .site-logo,
 body.single-lesson .nav-dropdown-trigger,
 body.single-lesson .primary-nav > li > a,
@@ -4620,119 +4128,22 @@ body.single-lesson .btn-hdr-enroll {
   color: #f0f0f5 !important;
 }
 
-/* ── Mark-as-complete button: ensure visible ── */
-body.single-lesson .tutor-lesson-mark-complete,
-body.single-lesson .tutor-btn-complete-lesson,
-body.single-lesson button[data-tutor-action*="complete"],
-body.single-lesson a[data-tutor-action*="complete"],
-body.single-lesson form[method="post"] button[type="submit"],
-body.single-lesson [class*="complete-lesson"],
-body.single-lesson [class*="mark-complete"] {
-  display: inline-flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  background: #5046e5 !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 12px 28px !important;
-  font-size: 0.9rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  letter-spacing: -0.01em !important;
-  transition: background 0.15s !important;
+/* ── Site footer ── */
+body.single-lesson .site-footer {
+  background: #f0efea !important;
+  color: #111320 !important;
 }
-body.single-lesson .tutor-lesson-mark-complete:hover,
-body.single-lesson .tutor-btn-complete-lesson:hover,
-body.single-lesson button[data-tutor-action*="complete"]:hover,
-body.single-lesson a[data-tutor-action*="complete"]:hover,
-body.single-lesson [class*="complete-lesson"]:hover,
-body.single-lesson [class*="mark-complete"]:hover {
-  background: #3730a3 !important;
-  color: #fff !important;
+body.single-lesson .site-footer h4,
+body.single-lesson .site-footer a,
+body.single-lesson .site-footer li,
+body.single-lesson .site-footer p {
+  color: #111320 !important;
 }
-
-/* Other buttons */
-body.single-lesson .tutor-btn,
-body.single-lesson button:not(.site-footer button) {
-  border-color: rgba(0,0,0,.15) !important;
-}
-
-/* Code blocks */
-body.single-lesson pre,
-body.single-lesson code {
-  background: #f3f4f6 !important;
-  border: 1px solid #e5e7eb !important;
-  color: #1f2937 !important;
-}
-/* Content lists */
-body.single-lesson .tutor-lesson-content ul,
-body.single-lesson .tutor-lesson-content ol {
-  color: #212327 !important;
+body.single-lesson .site-footer .footer-legal-links a,
+body.single-lesson .site-footer .footer-cookie-btn {
+  color: rgba(17,19,32,.55) !important;
 }
 </style>
     <?php
 }, 99999 );
 
-/* ── Lesson page: force-override Tutor's JS-set inline height/overflow ── */
-add_action( 'wp_footer', function () {
-    if ( ! is_singular( 'lesson' ) ) return;
-    ?>
-<script id="pt101-lesson-height-fix">
-(function(){
-  function fix(){
-    /* Strip inline height/overflow on the course player and content area */
-    var selectors = [
-      '#tutor-course-player',
-      '.tutor-course-player',
-      '#tutor-course-player-content',
-      '.tutor-course-player-content',
-      '[class*="course-player-content"]'
-    ];
-    selectors.forEach(function(sel){
-      document.querySelectorAll(sel).forEach(function(el){
-        el.style.setProperty('height', 'auto', 'important');
-        el.style.setProperty('max-height', 'none', 'important');
-        el.style.setProperty('overflow', 'visible', 'important');
-      });
-    });
-
-    /* Keep sidebar sticky with internal scroll */
-    var sidebarSels = [
-      '#tutor-course-player-sidebar',
-      '.tutor-course-player-sidebar'
-    ];
-    sidebarSels.forEach(function(sel){
-      document.querySelectorAll(sel).forEach(function(el){
-        el.style.setProperty('position', 'sticky', 'important');
-        el.style.setProperty('top', '0', 'important');
-        el.style.setProperty('height', '100vh', 'important');
-        el.style.setProperty('overflow-y', 'auto', 'important');
-        el.style.setProperty('align-self', 'flex-start', 'important');
-      });
-    });
-  }
-
-  /* Run immediately, after DOM ready, and after a delay for Tutor's JS */
-  fix();
-  document.addEventListener('DOMContentLoaded', fix);
-  setTimeout(fix, 500);
-  setTimeout(fix, 1500);
-  setTimeout(fix, 3000);
-
-  /* MutationObserver to re-apply if Tutor's JS resets inline styles */
-  var player = document.getElementById('tutor-course-player');
-  if(player){
-    var obs = new MutationObserver(function(mutations){
-      mutations.forEach(function(m){
-        if(m.type === 'attributes' && m.attributeName === 'style'){
-          fix();
-        }
-      });
-    });
-    obs.observe(player, { attributes: true, subtree: true });
-  }
-})();
-</script>
-    <?php
-}, 99999 );
