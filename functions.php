@@ -4787,13 +4787,10 @@ body.single-lesson {
     </div>
   </div>
   <form method="post" action="">
+    <?php wp_nonce_field( $nonce_action, $nonce_field ); ?>
     <input type="hidden" name="tutor_action" value="tutor_complete_lesson">
-    <input type="hidden" name="<?php echo esc_attr( $nonce_field ); ?>" value="<?php echo esc_attr( $nonce_value ); ?>">
     <input type="hidden" name="lesson_id" value="<?php echo (int) $lesson_id; ?>">
-    <?php if ( $course_id ) : ?>
-      <input type="hidden" name="course_id" value="<?php echo (int) $course_id; ?>">
-    <?php endif; ?>
-    <button type="submit" class="pt101-mark-btn">
+    <button type="submit" name="complete_lesson_btn" value="complete_lesson" class="pt101-mark-btn">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
       Mark as Complete
     </button>
