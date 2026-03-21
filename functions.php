@@ -4163,4 +4163,41 @@ body.single-lesson .site-footer .footer-cookie-btn {
     <?php
 }, 99999 );
 
+/* ── Lesson: delegate bottom bar's Mark as Complete to the header bar button ── */
+/* The mobile progress bar we force-show has a different/incomplete AJAX handler.
+   Intercept its button click and forward it to the header bar button, which is
+   the one Tutor's JS is correctly wired to for completion + sidebar updates. */
+add_action( 'wp_footer', function () {
+    if ( ! is_singular( 'lesson' ) ) return;
+    ?>
+<script id="pt101-lesson-complete-delegate">
+(function () {
+  function bindDelegate() {
+    var bar = document.querySelector('.tutor-spotlight-mobile-progress-complete');
+    if (!bar) return;
+    bar.addEventListener('click', function (e) {
+      var mobileBtn = e.target.closest(
+        '.tutor-topbar-mark-btn, .tutor-topbar-complete-btn button, .tutor-topbar-complete-btn'
+      );
+      if (!mobileBtn) return;
+      var headerBtn = document.querySelector(
+        '.tutor-course-topic-single-header .tutor-topbar-complete-btn button, ' +
+        '.tutor-course-topic-single-header .tutor-topbar-mark-btn'
+      );
+      if (headerBtn) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        headerBtn.click();
+      }
+    }, true); /* capture phase so we beat Tutor's own listener */
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindDelegate);
+  } else {
+    bindDelegate();
+  }
+})();
+</script>
+    <?php
+}, 99999 );
 
