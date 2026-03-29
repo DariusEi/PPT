@@ -4044,11 +4044,22 @@ add_action( 'wp_head', function () {
   --tutor-accent:    #7c6ef5;
 }
 
-/* ── Base: dark background only (NO global color — sidebar needs to stay dark-text) ── */
+/* ── Base: dark background + dark default text ──
+   The theme sets body.pt101 { color: #fff } for the dark site design.
+   Override to dark text here so the WHITE sidebar inherits readable text.
+   The dark areas (header, content-body, footer) each set their own light
+   text color with !important, so they are not affected. */
 html,
 body.pt101.single-lesson,
 body.single-lesson {
   background: var(--tutor-bg) !important;
+  color: #1a1c23 !important;
+}
+/* Theme sets p { color: var(--text-mid) } (faint light) globally.
+   Reset sidebar <p> to inherit dark text from body.  Content-area <p>
+   still gets light text via its own higher-specificity !important rule. */
+body.single-lesson p {
+  color: inherit;
 }
 
 /* ── Hide site header + footer (Tutor has its own nav) ── */
